@@ -39,18 +39,23 @@ export const KunTopBar = () => {
         <KunTopBarBrand />
 
         <NavbarContent className="hidden gap-3 sm:flex">
-          {kunNavItem.map((item) => (
-            <NavbarItem key={item.href} isActive={pathname === item.href}>
-              <Link
-                className={
-                  pathname === item.href ? 'text-primary' : 'text-foreground'
-                }
-                href={item.href}
-              >
-                {item.name}
-              </Link>
-            </NavbarItem>
-          ))}
+          {kunNavItem.map((item) => {
+            const isActive =
+              pathname === item.href ||
+              pathname.startsWith(`${item.href}/`)
+            return (
+              <NavbarItem key={item.href} isActive={isActive}>
+                <Link
+                  className={
+                    isActive ? 'text-primary font-semibold' : 'text-foreground'
+                  }
+                  href={item.href}
+                >
+                  {item.name}
+                </Link>
+              </NavbarItem>
+            )
+          })}
         </NavbarContent>
       </div>
 

@@ -1,24 +1,7 @@
-import { kunMoyuMoe } from '~/config/moyu-moe'
 import type { Metadata } from 'next'
 
 export const kunMetadata: Metadata = {
-  title: '发布 Galgame',
+  title: '上传课程资源 - Toki Learning Hub',
   description:
-    '您需要创建一个新 Galgame, 稍后在 Galgame 页面添加下载资源, 如果已经有这个 Galgame 了, 直接在对应页面添加资源即可',
-  openGraph: {
-    title: '发布 Galgame',
-    description:
-      '您需要创建一个新 Galgame, 稍后在 Galgame 页面添加下载资源, 如果已经有这个 Galgame 了, 直接在对应页面添加资源即可',
-    type: 'website',
-    images: kunMoyuMoe.images
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: '发布 Galgame',
-    description:
-      '您需要创建一个新 Galgame, 稍后在 Galgame 页面添加下载资源, 如果已经有这个 Galgame 了, 直接在对应页面添加资源即可'
-  },
-  alternates: {
-    canonical: `${kunMoyuMoe.domain.main}/edit/create`
-  }
+    '向 Toki Learning Hub 上传课程资料、外部链接或学习工具。我们只保存链接，不会存储实际文件，可自由选择自己的网盘/仓库。'
 }

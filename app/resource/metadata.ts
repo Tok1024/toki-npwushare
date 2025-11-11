@@ -7,18 +7,18 @@ import {
 import type { Metadata } from 'next'
 
 export const kunMetadata: Metadata = {
-  title: 'Galgame 补丁资源下载',
-  description: `最新最全的 Galgame 补丁资源列表, 包括 ${Object.values(SUPPORTED_TYPE_MAP)}, 支持 ${Object.values(SUPPORTED_LANGUAGE_MAP)}, 包含 ${Object.values(SUPPORTED_PLATFORM)} 下载`,
+  title: '课程资源库 - Toki Learning Hub',
+  description: `集中浏览所有课程的资料与工具，类型包括 ${Object.values(SUPPORTED_TYPE_MAP)}，支持多语种与多平台。`,
   openGraph: {
-    title: 'Galgame 补丁资源下载',
-    description: `最新最全的 Galgame 补丁资源列表, 列表, 包括 ${Object.values(SUPPORTED_TYPE_MAP)}, 支持 ${Object.values(SUPPORTED_LANGUAGE_MAP)}, 包含 ${Object.values(SUPPORTED_PLATFORM)} 下载`,
+    title: '课程资源库 - Toki Learning Hub',
+    description: `集中浏览所有课程的资料与工具，类型包括 ${Object.values(SUPPORTED_TYPE_MAP)}, 支持 ${Object.values(SUPPORTED_LANGUAGE_MAP)}, 包含 ${Object.values(SUPPORTED_PLATFORM)}。`,
     type: 'website',
     images: kunMoyuMoe.images
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Galgame 补丁资源下载',
-    description: `最新最全的 Galgame 补丁资源列表, 列表, 包括 ${Object.values(SUPPORTED_TYPE_MAP)}, 支持 ${Object.values(SUPPORTED_LANGUAGE_MAP)}, 包含 ${Object.values(SUPPORTED_PLATFORM)} 下载`
+    title: '课程资源库 - Toki Learning Hub',
+    description: `集中浏览所有课程的资源与工具，类型包含 ${Object.values(SUPPORTED_TYPE_MAP)}。`
   },
   alternates: {
     canonical: `${kunMoyuMoe.domain.main}/resource`

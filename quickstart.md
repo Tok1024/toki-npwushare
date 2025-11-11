@@ -67,7 +67,7 @@ PostgreSQL 存储结果
 - **样式不生效**：HeroUI 组件大多需要配合 Tailwind 类名（例如 `className="space-y-4"`）使用，记得观察已有代码风格。
 
 ## 6. 下一步建议
-- 重构 `components/kun/top-bar/*`，加入“浏览课程 / 学院 / 帮助 / 上传资源”菜单。
+- 重构 `components/kun/top-bar/*`，加入“浏览课程 / 浏览资源/ 学院 / 帮助 / 上传资源”菜单。
 - 实现 `/course` 列表、`/department/[slug]` 学院视图。
 - 资源审核流：`resource.status` 已具备 `pending/published/rejected`，可以在 `/admin` 区域复用。
 

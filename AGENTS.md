@@ -5,8 +5,14 @@
 - Next.js App Router + Prisma + PostgreSQL + Redis；客户端复用 HeroUI/Tailwind。
 - 关键目录：`app/`（页面、API Route）、`components/`（课程、资源、评论、评分组件）、`prisma/schema`（课程实体拆分）、`scripts/`（seed/部署脚本）。
 
+## 最新进展（2025-11-11）
+- 顶部导航已替换为 “浏览课程 / 浏览资源 / 学院 / 帮助 / 上传资源”，但品牌 Logo 与主题色仍保留 TouchGal 风格。
+- 课程详情页完全复用原 Galgame 详情视图并接入 `/api/course/[dept]/[slug]`，Tabs 中的资源、评论、评分均已与课程数据对齐。
+- `/edit/create` 支持“先选学院/课程，缺失时再新建”流程，资源仅保存外链并自动落入 `pending` 审核状态。
+- `scripts/seedCourses.ts` 现可一次写入多学院、多课程、资源、帖子、评分及评论，默认账号 `seed/alice/bob/carol@example.com` 密码均为 `123`。
+
 ## 代办与方向
-1. **TopBar 重构**：导航需要换成 “浏览课程 / 浏览学院 / 帮助文档 / 上传资源 / 个人中心”。现有 `KunTopBarUser` 和 `KunTopBarBrand` 仍指向 TouchGal。
+1. **TopBar / 品牌**：菜单项已更新，但 `KunTopBarBrand` 与 TouchGal Logo、Hero 图、配色仍未替换，需要新的视觉稿与 favicon。
 2. **彻底清理 Galgame 命名**  
    - 组件：`components/galgame`, `components/patch` 等仍包含游戏命名和内容；需逐步替换或迁移到 `course/*`。
    - 类型常量：`constants/galgame.ts`, `constants/resource.ts` 已部分改名，但仍有 patch/galgame 语义；后续根据需求裁剪。

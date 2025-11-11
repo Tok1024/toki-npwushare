@@ -1,3 +1,4 @@
+import { title } from 'process'
 import { z } from 'zod'
 import {
   KUN_GALGAME_RATING_PLAY_STATUS_CONST,
@@ -70,4 +71,36 @@ export const courseRatingUpdateSchema = z.object({
     .refine((v) => KUN_GALGAME_RATING_SPOILER_CONST.includes(v as any), {
       message: '剧透等级不正确'
     })
+})
+
+export const RESOURCE_TYPES = [
+  'note',
+  'slides',
+  'assignment',
+  'exam',
+  'solution',
+  'link',
+  'other'
+] as const
+
+export const courseResourceCreateSchema = z.object({
+  courseId: z.coerce.number().min(1).max(9999999).optional(),
+  courseName: z
+    .string()
+    .trim()
+    .min(1, { message: '课程名称最少为 1 个字符' })
+    .max(200, { message: '课程名称最多为 200 个字符' })
+    .optional(),
+  title: z
+    .string()
+    .trim()
+    .min(1, { message: '标题最少为 1 个字符' })
+    .max(200, { message: '标题最多为 200 个字符' }),
+  type: z.enum(RESOURCE_TYPES),
+  links: z
+    .array(z.string().url({ message: '链接格式不正确' }))
+    .min(1, { message: '请至少提供一个链接' })
+    .max(20, { message: '最多提供 20 个链接' }),
+  term: z.string().trim().max(32).optional(),
+  teacherId: z.coerce.number().min(1).max(9999999).optional()
 })

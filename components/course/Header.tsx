@@ -49,7 +49,7 @@ export const CourseHeader = ({ dept, slug, course, teachers }: Props) => {
           />
         </Tab>
         <Tab key="resources" title="课程资源" className="p-0 min-w-20">
-          <CourseResourceTab dept={dept} slug={slug} />
+          <CourseResourceTab dept={dept} slug={slug} courseId={course.id} />
         </Tab>
         <Tab key="comments" title="讨论版" className="p-0 min-w-20">
           <CourseComments dept={dept} slug={slug} courseId={course.id} />

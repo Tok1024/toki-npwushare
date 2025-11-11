@@ -55,8 +55,8 @@ export const CardContainer = ({ initialResources, initialTotal }: Props) => {
   return (
     <div className="container mx-auto my-4 space-y-6">
       <KunHeader
-        name="Galgame 补丁资源"
-        description="这里展示了所有的 Galgame 补丁资源列表"
+        name="课程资源库"
+        description="集中展示所有课程的最新资料、课件与外部链接。点击任意卡片即可进入对应课程。"
       />
 
       <FilterBar

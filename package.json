@@ -109,6 +109,7 @@
     "remark-rehype": "^11.1.2",
     "sharp": "^0.34.3",
     "sugar-high": "^0.9.3",
+    "swr": "^2.3.6",
     "tailwind-merge": "^3.3.1",
     "time2fa": "^1.4.2",
     "typed.js": "^2.1.0",

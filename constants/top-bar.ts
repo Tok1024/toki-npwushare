@@ -5,32 +5,36 @@ export interface KunNavItem {
 
 export const kunNavItem: KunNavItem[] = [
   {
-    name: '游戏下载',
-    href: '/galgame'
+    name: '浏览课程',
+    href: '/course'
   },
   {
-    name: '游戏标签',
-    href: '/tag'
+    name: '浏览资源',
+    href: '/resource'
   },
   {
-    name: '游戏会社',
-    href: '/company'
+    name: '学院',
+    href: '/department'
   },
   {
-    name: '帮助文档',
+    name: '帮助',
     href: '/doc'
+  },
+  {
+    name: '上传资源',
+    href: '/edit/create'
   }
 ]
 
 export const kunMobileNavItem: KunNavItem[] = [
   ...kunNavItem,
   {
-    name: '评论列表',
+    name: '讨论版',
     href: '/comment'
   },
   {
-    name: '下载资源列表',
-    href: '/resource'
+    name: '经验帖子',
+    href: '/doc'
   },
   {
     name: '联系我们',

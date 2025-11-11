@@ -23,12 +23,8 @@ export const KunFooter = () => {
             <Link href="/doc" className="flex items-center">
               使用指南
             </Link>
-            <Link
-              href={kunMoyuMoe.domain.nav}
-              target="_blank"
-              className="flex items-center"
-            >
-              导航页面
+            <Link href="/course" className="flex items-center">
+              课程导航
             </Link>
 
             <Link href="/friend-link" className="flex items-center">
@@ -36,7 +32,7 @@ export const KunFooter = () => {
             </Link>
 
             <Link
-              href="https://github.com/KUN1007/kun-touchgal-next"
+              href="https://github.com/toki-learning-hub"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center"

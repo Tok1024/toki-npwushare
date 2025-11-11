@@ -6,24 +6,9 @@ import {
 } from '~/utils/validate'
 
 export const loginSchema = z.object({
-  name: z
-    .string()
-    .trim()
-    .email({ message: '请输入合法的邮箱格式, 用户名则应为 1~17 位任意字符' })
-    .or(
-      z.string().trim().regex(kunUsernameRegex, {
-        message: '非法的用户名，用户名为 1~17 位任意字符'
-      })
-    ),
-  password: z.string().trim().regex(kunPasswordRegex, {
-    message:
-      '非法的密码格式，密码的长度为 6 到 1007 位，必须包含至少一个英文字符和一个数字，可以选择性的包含 @!#$%^&*()_-+=\\/ 等特殊字符'
-  }),
-  captcha: z
-    .string()
-    .trim()
-    .min(10, { message: '非法的人机验证码格式' })
-    .max(10)
+  name: z.string().trim().min(1, { message: '请输入用户名或邮箱' }),
+  password: z.string().trim(),
+  captcha: z.string().trim().optional()
 })
 
 export const registerSchema = z.object({

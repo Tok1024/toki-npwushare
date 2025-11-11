@@ -17,10 +17,8 @@ export const login = async (
   input: z.infer<typeof loginSchema>
 ): Promise<UserState | ({ require2FA: boolean } & KunUser) | string> => {
   const { name, password, captcha } = input
-  const res = await checkKunCaptchaExist(captcha)
-  if (!res) {
-    return '人机验证无效, 请完成人机验证'
-  }
+  // 暂时关闭人机验证，如果要恢复请重新调用 checkKunCaptchaExist
+  const res = true
 
   const normalizedName = name.toLowerCase()
   const user = await prisma.user.findFirst({

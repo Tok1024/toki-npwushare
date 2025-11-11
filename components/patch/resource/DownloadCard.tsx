@@ -22,10 +22,13 @@ interface Props {
 
 export const ResourceDownloadCard = ({ resource }: Props) => {
   const handleClickDownload = async () => {
-    await kunFetchPut<KunResponse<{}>>('/patch/resource/download', {
-      patchId: resource.patchId,
-      resourceId: resource.id
-    })
+    // 课程资源（非补丁）不追踪下载，避免调用补丁端统计接口
+    if (resource.patchId && resource.patchId > 0) {
+      await kunFetchPut<KunResponse<{}>>('/patch/resource/download', {
+        patchId: resource.patchId,
+        resourceId: resource.id
+      })
+    }
   }
 
   return (
@@ -51,11 +54,7 @@ export const ResourceDownloadCard = ({ resource }: Props) => {
 
       {resource.content.split(',').map((link) => (
         <div key={Math.random()} className="space-y-2">
-          <KunExternalLink
-            onPress={handleClickDownload}
-            underline="always"
-            link={link}
-          >
+          <KunExternalLink onPress={handleClickDownload} underline="always" link={link}>
             {link}
           </KunExternalLink>
 

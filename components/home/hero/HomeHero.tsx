@@ -5,7 +5,6 @@ import { Chip } from '@heroui/chip'
 import { Sparkles } from 'lucide-react'
 import { KunCarousel } from '../carousel/KunCarousel'
 import { getKunPosts } from '../carousel/mdx'
-import { RandomGalgameButton } from '../carousel/RandomGalgameButton'
 import { Discord } from '~/components/kun/icons/Discord'
 import { KunHomeNavigationItems } from '../NavigationItems'
 import { kunMoyuMoe } from '~/config/moyu-moe'
@@ -22,23 +21,26 @@ export const HomeHero = () => {
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-primary-500" />
                 <Chip color="primary" variant="flat">
-                  欢迎来到 TouchGal
+                  欢迎来到 {kunMoyuMoe.titleShort}
                 </Chip>
               </div>
 
               <div className="space-y-4">
                 <h1 className="py-1 text-3xl font-bold text-transparent xl:text-4xl bg-gradient-to-r from-primary-500 to-secondary-500 bg-clip-text">
-                  一站式 Galgame 文化社区！
+                  集中整理课程资料与经验分享
                 </h1>
                 <p className="text-md text-default-600">
-                  免费, 高质量的 Galgame 资源下载站
+                  上传课件链接、记录心得、邀请同学一起讨论学习路线。
                 </p>
               </div>
 
               <div className="flex items-center gap-2">
-                <RandomGalgameButton color="primary" variant="solid">
-                  随机一部游戏
-                </RandomGalgameButton>
+                <Button color="primary" variant="solid" href="/course" as="a">
+                  浏览课程
+                </Button>
+                <Button color="secondary" variant="flat" href="/resource" as="a">
+                  最新资源
+                </Button>
                 <Tooltip showArrow content="Discord 服务器">
                   <Button
                     isIconOnly

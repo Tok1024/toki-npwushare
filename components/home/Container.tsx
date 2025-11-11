@@ -1,65 +1,21 @@
-import { Button } from '@heroui/button'
-import { ChevronRight } from 'lucide-react'
-import { GalgameCard } from '~/components/galgame/Card'
-import { ResourceCard } from '~/components/resource/ResourceCard'
-import Link from 'next/link'
 import { HomeHero } from './hero/HomeHero'
-import type { HomeResource } from '~/types/api/home'
+import { HomeCourseSection } from './course/HomeCourseSection'
+import { HomeLatestResourceSection } from './resource/HomeLatestResourceSection'
 
-interface Props {
-  galgames: GalgameCard[]
-  resources: HomeResource[]
-}
-
-export const HomeContainer = ({ galgames, resources }: Props) => {
+export const HomeContainer = () => {
   return (
     <div className="mx-auto space-y-8 max-w-7xl">
       <HomeHero />
 
-      <section className="space-y-6">
-        <div className="flex items-center space-x-4">
-          <h2 className="text-lg font-bold sm:text-2xl">最新 Galgame</h2>
-          <Button
-            variant="light"
-            as={Link}
-            color="primary"
-            endContent={<ChevronRight className="size-4" />}
-            href="/galgame"
-          >
-            查看更多
-          </Button>
-        </div>
-        <div className="grid grid-cols-2 gap-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
-          {galgames.map((galgame) => (
-            <GalgameCard
-              key={galgame.id}
-              patch={galgame}
-              openOnNewTab={false}
-            />
-          ))}
-        </div>
+      <section className="space-y-4">
+        <h2 className="text-lg font-bold sm:text-2xl">NWPUShare</h2>
+        <p className="text-default-500">
+          我们希望把零散在网盘、群聊、个人博客里的课程资料集中整理，并给每门课一个“家”。这里的每个链接都指回作者自己的存储空间，平台只做聚合与讨论。
+        </p>
       </section>
 
-      <section className="space-y-6">
-        <div className="flex items-center space-x-4">
-          <h2 className="text-lg font-bold sm:text-2xl">最新补丁资源下载</h2>
-          <Button
-            variant="light"
-            as={Link}
-            color="primary"
-            endContent={<ChevronRight className="size-4" />}
-            href="/resource"
-          >
-            查看更多
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 gap-2 sm:gap-6 md:grid-cols-2">
-          {resources.map((resource) => (
-            <ResourceCard key={resource.id} resource={resource} />
-          ))}
-        </div>
-      </section>
+      <HomeCourseSection />
+      <HomeLatestResourceSection />
     </div>
   )
 }

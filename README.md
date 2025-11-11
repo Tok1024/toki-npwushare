@@ -1,81 +1,47 @@
-![kun-touchgal-next](./public/touchgal.avif)
+![toki-learning-hub](./public/touchgal.avif)
 
-# TouchGal
+# Toki Learning Hub
 
-TouchGal 是一个一站式 Galgame 文化社区。提供Galgame 论坛、Galgame 下载等服务。承诺永久免费, 高质量。为Galgame 爱好者提供一片净土！
+Toki Learning Hub 是一个面向校园与自学场景的资料共享站。课程页面聚合了课件、链接、经验帖与讨论，为“信号与系统 / 数据结构”等课程提供统一的上载、浏览与互动能力。所有资源都只保存外链信息，作者可以自由选择自己的网盘或仓库承载文件。
 
-## 错误反馈
+## 功能概览
 
-如果要反馈错误, 请您加入 TouchGal 的官方 Discord 服务器
+- 课程中心：以 `学院 + 课程` 为核心实体，整合课程信息、资源、经验帖与教师统计。
+- 资源链接：复用对象存储/自定义链接表单，只保留链接与元信息，不做二次存储。
+- 讨论与评分：课程页内置评论、点赞与评分 Tab，方便记录学习心得。
+- 管理后台（WIP）：预留资源审核、用户管理、日志审计接口，便于未来部署在校园网。
 
-https://discord.gg/55zuwkrJ
+## 快速启动
 
-## 开发联系
+1. 安装依赖  
+   ```bash
+   pnpm install
+   ```
+2. 配置 `.env`（可参考 `.env.example`，常用变量如下）
+   ```env
+   KUN_DATABASE_URL=postgresql://postgres:password@127.0.0.1:5432/toki?schema=public
+   NEXT_PUBLIC_KUN_PATCH_ADDRESS_DEV=http://127.0.0.1:3000
+   REDIS_HOST=127.0.0.1
+   REDIS_PORT=6379
+   JWT_SECRET=please-change-me
+   ```
+3. 同步数据库并生成 Prisma Client  
+   ```bash
+   pnpm prisma:generate
+   pnpm prisma:push
+   pnpm run seed:courses   # 可选：导入示例学院/课程/资源
+   ```
+4. 启动开发服务器  
+   ```bash
+   pnpm dev
+   ```
 
-如果有对 Web 开发技术 (Node.js, Nuxt, Next.js, SvelteKit, SolidStart 等) 感兴趣的朋友们, 可以加入本项目的 Telegram 开发群组
+## 贡献说明
 
-[https://t.me/KUNForum](https://t.me/KUNForum)
+- 新增/修改功能前，请保证 `pnpm lint` 与 `pnpm typecheck` 通过。
+- 所有 PR 需要附带：需求背景、测试方式、可回滚方案。
+- UI/文案默认以“学习资料”与“Toki”品牌为准，避免混入旧的 Galgame 语境。
 
-## 如何运行
+## 许可证
 
-确保本地安装有 Node.js, pnpm, PostgreSQL, Redis 环境
-
-- 使用 `git clone` 拉取本项目至本地目录
-- 参考项目根目录的 `.env.example` 文件，新建 `.env` 文件，并自行填写环境变量（`postgresql` 的本地连接配置）
-- 初次运行本项目，可执行 `pnpm prisma:push` 创建此项目所使用的本地数据库
-- 使用 `pnpm dev` 即可运行
-
-```env
-# 数据库 URL, 我们使用 psql
-KUN_DATABASE_URL = "postgresql://postgres:kunloveren@localhost:5432/touchgal?schema=public"
-
-# 网站 URL, 不变即可
-KUN_VISUAL_NOVEL_SITE_URL = "https://www.touchgal.us"
-
-# 开发环境 URL, 不变即可
-NEXT_PUBLIC_KUN_PATCH_ADDRESS_DEV = "http://127.0.0.1:3000"
-NEXT_PUBLIC_KUN_PATCH_ADDRESS_PROD = "https://image.touchgal.moyu.moe"
-
-# 本地 Redis 端口和地址, 一般无需变动
-REDIS_HOST = '127.0.0.1'
-REDIS_PORT = '6379'
-
-# jwt 配置, 开发环境无需变动
-JWT_ISS = 'touchgal'
-JWT_AUD = 'touchgal_admin'
-JWT_SECRET = 'moemoekungalgamekunisthecutest!chinorensukiazkhx'
-
-# NODE_ENV, 开发环境无需变动
-NODE_ENV = "development"
-
-# 邮件服务地址
-KUN_VISUAL_NOVEL_EMAIL_FROM = "鲲 Galgame 补丁"
-KUN_VISUAL_NOVEL_EMAIL_HOST = "moyu.moe"
-KUN_VISUAL_NOVEL_EMAIL_PORT = '587'
-KUN_VISUAL_NOVEL_EMAIL_ACCOUNT = "auth@moyu.moe"
-KUN_VISUAL_NOVEL_EMAIL_PASSWORD = "莲最可爱！"
-
-# S3 相关配置
-KUN_VISUAL_NOVEL_S3_STORAGE_ACCESS_KEY_ID = "kkkkkkkkkkkkkkkkkkkkkkkkkkkk"
-KUN_VISUAL_NOVEL_S3_STORAGE_SECRET_ACCESS_KEY = "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
-KUN_VISUAL_NOVEL_S3_STORAGE_BUCKET_NAME = "kun"
-KUN_VISUAL_NOVEL_S3_STORAGE_ENDPOINT = "https://moyu.moe"
-KUN_VISUAL_NOVEL_S3_STORAGE_REGION = "us-west-001"
-NEXT_PUBLIC_KUN_VISUAL_NOVEL_S3_STORAGE_URL = "https://touchgal-patch.moyu.moe"
-
-# 图床相关配置
-KUN_VISUAL_NOVEL_IMAGE_BED_HOST = "touchgal-image.moyu.moe"
-KUN_VISUAL_NOVEL_IMAGE_BED_URL = "https://touchgal-image.moyu.moe"
-```
-
-## 贡献指南
-
-如果您的更改涉及到对项目源码的变动, **请务必在本地将项目运行成功, 自行测试无误后再 Pull Request**, 否则会严重阻碍代码审计工作
-
-## 开源声明 / 开源协议
-
-本项目由 [鲲 Galgame 补丁 - kun-galgame-patch-next](https://github.com/KUN1007/kun-galgame-patch-next) 修改而来, 原仓库地址
-
-https://github.com/KUN1007/kun-galgame-patch-next
-
-本项目遵从 `AGPL-3.0` 开源协议, 进行任何的修改分发时请注明原始仓库与作者地址
+项目基于 `AGPL-3.0` 发行。二次分发请注明来源，并对外开放修改后的源码。

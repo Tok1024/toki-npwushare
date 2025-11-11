@@ -38,8 +38,17 @@ model user {
   patch           patch[]                @relation("user_patch")
   patch_comment   patch_comment[]        @relation("user_patch_comment")
   patch_resource  patch_resource[]       @relation("user_patch_resource")
+  // 课程资源上传（课程模块）
+  course_resource resource[]             @relation("user_course_resource")
   send_message    user_message[]         @relation("user_send_message")
   receive_message user_message[]         @relation("user_receive_message")
+
+  course_ratings   course_rating[]
+  course_rating_like course_rating_like[] @relation("user_course_rating_like")
+  resource_ratings resource_rating[]
+  posts            post[]
+  comments         comment[]
+  course_comment_like course_comment_like[] @relation("user_course_comment_like")
 
   created DateTime @default(now())
   updated DateTime @updatedAt

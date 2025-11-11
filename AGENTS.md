@@ -1,16 +1,65 @@
 # Repository Guidelines
 
-## Project Structure & Module Organization
-The Next.js App Router lives in `app/`, with route groups such as `app/galgame`, `app/resource`, and API handlers in `app/api`. Reusable UI resides in `components/*`, shared logic and state in `lib/`, `hooks/`, and `store/` (Zustand stores like `store/userStore.ts`). Data access is centralized through Prisma in `prisma/` (schema split across `prisma/schema/*.prisma`) and Redis helpers in `lib/redis.ts`. Assets and styles are placed under `public/` and `styles/`, while automation lives in `scripts/` and background jobs in `server/`.
+## 当前定位
+- 仓库已由 TouchGal 迁移为 **Toki Learning Hub**：面向课程资料/经验分享/讨论的学习平台。
+- Next.js App Router + Prisma + PostgreSQL + Redis；客户端复用 HeroUI/Tailwind。
+- 关键目录：`app/`（页面、API Route）、`components/`（课程、资源、评论、评分组件）、`prisma/schema`（课程实体拆分）、`scripts/`（seed/部署脚本）。
 
-## Build, Test, and Development Commands
-Run `pnpm dev` for the local Next.js server with Turbo mode. `pnpm build` compiles the production bundle (used by PM2 via `ecosystem.config.cjs`). `pnpm start` boots the built app. Schema updates flow through `pnpm prisma:generate` and `pnpm prisma:push`. Use `docker-compose up -d postgres redis` for local infrastructure, or point `KUN_DATABASE_URL`/`REDIS_HOST` to external services.
+## 代办与方向
+1. **TopBar 重构**：导航需要换成 “浏览课程 / 浏览学院 / 帮助文档 / 上传资源 / 个人中心”。现有 `KunTopBarUser` 和 `KunTopBarBrand` 仍指向 TouchGal。
+2. **彻底清理 Galgame 命名**  
+   - 组件：`components/galgame`, `components/patch` 等仍包含游戏命名和内容；需逐步替换或迁移到 `course/*`。
+   - 类型常量：`constants/galgame.ts`, `constants/resource.ts` 已部分改名，但仍有 patch/galgame 语义；后续根据需求裁剪。
+3. **课程索引与学院视图**  
+   - `/course`（列表 + 搜索 + 筛学院）。
+   - `/department/[slug]`（学院视图，列出所有课程、教师、资源）。
+4. **资源发布与审核流**  
+   - 受保护 API：`POST /api/course/[dept]/[slug]/resources`（pending → published），后台审核页面 `/admin`.
+   - 模型：`resource.status` 已具备 pending/published/rejected，可直接利用。
+5. **课程笔记/帖子**  
+   - 当前 `post` 模型/接口尚未绑定到页面；需复用 markdown 编辑器（Milkdown）实现 “经验贴” Tab。
+6. **Brand 与视觉**  
+   - Logo/配色仍是 TouchGal；需要替换 favicon、Hero 图、色彩文案。
+7. **登录体验**  
+   - 临时关闭了 captcha + 密码格式校验。未来恢复时记得重新启用 `loginSchema` 和 `checkKunCaptchaExist`。
 
-## Coding Style & Naming Conventions
-TypeScript + ESLint (`pnpm lint`) and Prettier (`pnpm format`) enforce syntax, 2-space indentation, and import ordering. React components use PascalCase (`KunTopBar`), hooks start with `use*`, utility modules stay camelCase (`utils/kunFetch.ts`). Follow Tailwind utility classes inside JSX; shared CSS belongs in `styles/*.css`. Keep server-only code in `.ts` files under `app/**/actions.ts` or `server/` to avoid bundling into the client.
+## 环境 & 启动
+1. `.env`（示例）  
+   ```
+   KUN_DATABASE_URL=postgresql://postgres:postgres@127.0.0.1:5432/toki?schema=public
+   NEXT_PUBLIC_KUN_PATCH_ADDRESS_DEV=http://127.0.0.1:3000
+   NEXT_PUBLIC_DISABLE_CAPTCHA=true
+   JWT_SECRET=please-change-me
+   REDIS_HOST=127.0.0.1
+   REDIS_PORT=6379
+   ```
+2. 初始化  
+   ```bash
+   pnpm install
+   pnpm prisma:generate
+   pnpm prisma:push
+   pnpm run seed:courses # 可选：导入示例学院/课程/资源
+   pnpm dev
+   ```
+3. Seed 用户  
+   - `seed@example.com / 123`（管理员角色），用于测试评论/评分/上传资源。
 
-## Testing Guidelines
-Automated tests are minimal today, so rely on `pnpm lint`, `pnpm typecheck`, and manual verification in feature branches. When adding tests, colocate them near the feature (e.g., `components/foo/foo.test.tsx`) and prefer React Testing Library or Playwright for UI flows. For Prisma changes, create seed scripts in `prisma/` and verify with `pnpm prisma:push` against a disposable database.
+## 架构概览
+- **课程域**  
+  - Prisma 模型：`department`、`teacher`、`course`、`course_teacher`、`resource`、`post`、`comment`、`course_rating`。
+  - API：`/api/course/**`（详情、资源、帖子、评论、评分、列表）。
+  - 前端：`components/course/*`（Header/Tabs/ResourceList/Comments/Ratings），`components/home/*`（课程列表）。
+- **登录/鉴权**  
+  - 现用自研 JWT + Redis；BetterAuth 尚未接入。
+  - 登录表单在 `components/login/Login.tsx`，暂时关闭 captcha/密码格式校验，仅校验数据库哈希。
 
-## Commit & Pull Request Guidelines
-Commits follow a shorttag style from history (`feat:`, `fix:`, `mod:`, `pref:`). Keep messages in lowercase imperative form and group logically related edits. PRs must describe intent, include setup/testing notes, and link issues or discussion threads. Add screenshots or GIFs for UI tweaks and paste relevant console output for backend changes. Always confirm `pnpm build && pnpm lint && pnpm typecheck` before requesting review.
+## 工作流 & 代码风格
+- TypeScript + ESLint/Prettier；Tailwind 风格在 JSX 中使用 `className="..."`。
+- 服务端逻辑放在 Server Components、Route Handler 或 `app/**/actions.ts`。
+- 状态管理：`store/*`（Zustand），例如用户/搜索设置。
+- 依赖：HeroUI 组件库、Milkdown（富文本）、React Hook Form + Zod。
+
+## 测试与提交流程
+- 目前无自动化测试，依赖 `pnpm lint`、`pnpm typecheck` 及手动验证。
+- Commit 风格：`feat: ...` / `fix: ...` / `mod: ...`。
+- PR 需注明变更点与测试方式，附截图或日志（尤其是 UI/数据层变更）。

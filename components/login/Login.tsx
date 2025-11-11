@@ -18,6 +18,9 @@ import type { UserState } from '~/store/userStore'
 type LoginFormData = z.infer<typeof loginSchema>
 
 export const LoginForm = () => {
+  const shouldBypassCaptcha =
+    process.env.NEXT_PUBLIC_DISABLE_CAPTCHA === 'true'
+  const bypassCaptchaCode = 'bypass-captcha-code'
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [isPending, startTransition] = useTransition()
   const { setUser } = useUserStore((state) => state)
@@ -27,7 +30,8 @@ export const LoginForm = () => {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       name: '',
-      password: ''
+      password: '',
+      captcha: shouldBypassCaptcha ? bypassCaptchaCode : ''
     }
   })
 
@@ -58,7 +62,11 @@ export const LoginForm = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (!isPending) {
-      onOpen()
+      if (shouldBypassCaptcha) {
+        handleCaptchaSuccess(bypassCaptchaCode)
+      } else {
+        onOpen()
+      }
     }
   }
 
@@ -104,16 +112,17 @@ export const LoginForm = () => {
         type="submit"
         isDisabled={isPending}
         isLoading={isPending}
-        onPress={onOpen}
       >
         登录
       </Button>
 
-      <KunCaptchaModal
-        isOpen={isOpen}
-        onClose={onClose}
-        onSuccess={handleCaptchaSuccess}
-      />
+      {!shouldBypassCaptcha && (
+        <KunCaptchaModal
+          isOpen={isOpen}
+          onClose={onClose}
+          onSuccess={handleCaptchaSuccess}
+        />
+      )}
 
       <KunTextDivider text="或" />
 

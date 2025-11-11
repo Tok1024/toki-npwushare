@@ -1,5 +1,4 @@
-import { Tags, MessageSquare, FileText } from 'lucide-react'
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { BookOpen, Share2, MessageSquare } from 'lucide-react'
 import type { LucideProps } from 'lucide-react'
 import type { ForwardRefExoticComponent, RefAttributes } from 'react'
 
@@ -15,22 +14,22 @@ interface HomeNavItem {
 
 export const homeNavigationItems: HomeNavItem[] = [
   {
-    icon: Tags,
-    label: '标签',
-    href: '/tag',
+    icon: BookOpen,
+    label: '课程目录',
+    href: '/course',
     color: 'primary',
     isExternal: false
   },
   {
-    icon: MessageSquare,
-    label: '论坛',
-    href: kunMoyuMoe.domain.forum,
+    icon: Share2,
+    label: '上传资源',
+    href: '/resource',
     color: 'secondary',
-    isExternal: true
+    isExternal: false
   },
   {
-    icon: FileText,
-    label: '文档',
+    icon: MessageSquare,
+    label: '经验帖',
     href: '/doc',
     color: 'success',
     isExternal: false

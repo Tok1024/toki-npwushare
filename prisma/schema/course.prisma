@@ -1,0 +1,246 @@
+// 初版课程中心化数据模型
+
+enum content_status {
+  draft
+  pending
+  published
+  rejected
+}
+
+enum visibility {
+  public
+  unlisted
+  private
+}
+
+enum resource_type {
+  note
+  slides
+  assignment
+  exam
+  solution
+  link
+  other
+}
+
+// 学院 / 部门
+model department {
+  id      Int      @id @default(autoincrement())
+  slug    String   @unique @db.VarChar(128)
+  name    String   @db.VarChar(255)
+  created DateTime @default(now())
+  updated DateTime @updatedAt
+
+  courses course[]
+  teachers teacher[]
+}
+
+// 课程（按学院区分）
+model course {
+  id             Int        @id @default(autoincrement())
+  department_id  Int
+  department     department @relation(fields: [department_id], references: [id], onDelete: Cascade)
+
+  slug           String     @db.VarChar(128) // 与学院组合唯一
+  name           String     @db.VarChar(255)
+  cover_url      String?    @db.VarChar(512)
+  tags           String[]
+
+  resource_count Int        @default(0)
+  post_count     Int        @default(0)
+  rating_avg     Float?
+  rating_count   Int        @default(0)
+  created        DateTime   @default(now())
+  updated        DateTime   @updatedAt
+
+  resources      resource[]
+  posts          post[]
+  ratings        course_rating[]
+  course_teacher course_teacher[]
+  comments       comment[]
+
+  @@unique([department_id, slug])
+  @@index([department_id, created])
+}
+
+model course_rating {
+  id           Int      @id @default(autoincrement())
+  course_id    Int
+  course       course   @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  user_id      Int
+  user         user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  // 与补丁评分结构对齐，便于复用 UI
+  recommend     String
+  overall       Int
+  play_status   String   @default("not_started")
+  short_summary String   @default("") @db.VarChar(1314)
+  spoiler_level String   @default("none")
+  created       DateTime @default(now())
+  updated       DateTime @updatedAt
+
+  like course_rating_like[]
+
+  @@unique([course_id, user_id])
+  @@index([course_id])
+}
+
+model course_rating_like {
+  id Int @id @default(autoincrement())
+
+  course_rating_id Int
+  course_rating    course_rating @relation(fields: [course_rating_id], references: [id], onDelete: Cascade)
+  user_id          Int
+  user             user          @relation("user_course_rating_like", fields: [user_id], references: [id], onDelete: Cascade)
+
+  created DateTime @default(now())
+  updated DateTime @updatedAt
+
+  @@unique([course_rating_id, user_id])
+}
+
+// 教师（可选地归属于某学院）
+model teacher {
+  id            Int         @id @default(autoincrement())
+  department_id Int?
+  department    department? @relation(fields: [department_id], references: [id], onDelete: SetNull)
+  name          String      @db.VarChar(128)
+  title         String?     @db.VarChar(64)  // 职称，可选
+  created       DateTime    @default(now())
+  updated       DateTime    @updatedAt
+
+  // 历史授课关联
+  course_teacher course_teacher[]
+
+  // 实际资源/帖子标注
+  resources resource[]
+  posts     post[]
+
+  @@index([department_id, name])
+}
+
+// 教师-课程 历史授课关联（用于课程页展示“参与教师”）
+model course_teacher {
+  id         Int      @id @default(autoincrement())
+  course_id  Int
+  teacher_id Int
+  course     course   @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  teacher    teacher  @relation(fields: [teacher_id], references: [id], onDelete: Cascade)
+  year       String?  @db.VarChar(16) // 如 2024 或 2024-Fall
+  created    DateTime @default(now())
+
+  @@unique([course_id, teacher_id, year])
+  @@index([teacher_id])
+}
+
+model resource {
+  id           Int            @id @default(autoincrement())
+  course_id    Int
+  course       course         @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  title        String         @db.VarChar(255)
+  type         resource_type
+  // 仅存储资源链接，不保存文件
+  links        String[]
+  s3_key       String?        @db.VarChar(512)
+  mime         String?        @db.VarChar(64)
+  size_bytes   Int?
+  hash_sha256  String?        @db.VarChar(128)
+  status       content_status @default(published)
+  visibility   visibility     @default(public)
+  term         String?        @db.VarChar(32)  // 学期/学年筛选
+  teacher_id   Int?
+  teacher      teacher?       @relation(fields: [teacher_id], references: [id], onDelete: SetNull)
+  // 上传者（必填）
+  author_id    Int
+  author       user           @relation("user_course_resource", fields: [author_id], references: [id], onDelete: Cascade)
+  rating_avg   Float?
+  rating_count Int            @default(0)
+  created      DateTime       @default(now())
+  updated      DateTime       @updatedAt
+
+  ratings      resource_rating[]
+  comments     comment[]
+
+  @@index([course_id, created])
+  @@index([course_id, type, created])
+  @@index([course_id, teacher_id, term, created])
+  @@index([author_id, created])
+  @@index([status, visibility, created])
+}
+
+model resource_rating {
+  id          Int      @id @default(autoincrement())
+  resource_id Int
+  resource    resource @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  user_id     Int
+  user        user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  score       Int
+  created     DateTime @default(now())
+
+  @@unique([resource_id, user_id])
+  @@index([resource_id])
+}
+
+model post {
+  id        Int            @id @default(autoincrement())
+  course_id Int
+  course    course         @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  title     String         @db.VarChar(255)
+  content   String         @db.VarChar(100000)
+  author_id Int?
+  author    user?          @relation(fields: [author_id], references: [id], onDelete: SetNull)
+  term      String?        @db.VarChar(32)
+  teacher_id Int?
+  teacher    teacher?      @relation(fields: [teacher_id], references: [id], onDelete: SetNull)
+  status    content_status @default(published)
+  visibility visibility    @default(public)
+  created   DateTime       @default(now())
+  updated   DateTime       @updatedAt
+
+  comments  comment[]
+
+  @@index([course_id, created])
+  @@index([course_id, teacher_id, term, created])
+  @@index([status, visibility, created])
+}
+
+model comment {
+  id          Int       @id @default(autoincrement())
+  content     String    @db.VarChar(10007)
+  author_id   Int?
+  author      user?     @relation(fields: [author_id], references: [id], onDelete: SetNull)
+  course_id   Int?
+  course      course?   @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  resource_id Int?
+  resource    resource? @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+
+  post_id     Int?
+  post        post?     @relation(fields: [post_id], references: [id], onDelete: Cascade)
+
+  parent_id   Int?
+  parent      comment?  @relation("comment_reply", fields: [parent_id], references: [id], onDelete: Cascade)
+  reply       comment[] @relation("comment_reply")
+
+  like_by course_comment_like[]
+
+  created     DateTime  @default(now())
+  updated     DateTime  @updatedAt
+
+  @@index([course_id, created])
+  @@index([resource_id, created])
+  @@index([post_id, created])
+  @@index([author_id, created])
+}
+
+model course_comment_like {
+  id Int @id @default(autoincrement())
+
+  user_id    Int
+  user       user    @relation("user_course_comment_like", fields: [user_id], references: [id], onDelete: Cascade)
+  comment_id Int
+  comment    comment @relation(fields: [comment_id], references: [id], onDelete: Cascade)
+
+  created DateTime @default(now())
+  updated DateTime @updatedAt
+
+  @@unique([user_id, comment_id])
+}

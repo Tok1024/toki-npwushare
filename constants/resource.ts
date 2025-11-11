@@ -1,54 +1,53 @@
 export const resourceTypes = [
   {
     value: 'pc',
-    label: 'PC游戏',
-    description: '在 Windows, macOS 等电脑设备上运行的游戏'
+    label: '电子课件',
+    description: '课堂使用的 PPT、PDF 或其他电子讲义'
   },
   {
     value: 'row',
-    label: '生肉资源',
-    description: '没有中文翻译, 仅有日语或其它语言的 Galgame'
+    label: '原始资料',
+    description: '教师原版资料、同学整理的扫描件或外文材料'
   },
   {
     value: 'chinese',
-    label: '汉化资源',
-    description: '汉化 Galgame 下载资源, 有简体中文或繁体中文支持'
+    label: '翻译/本地化',
+    description: '自主翻译的课堂资料或补充讲义'
   },
   {
     value: 'patch',
-    label: '补丁资源',
-    description: '与这个 Galgame 相关的补丁资源'
+    label: '工具/补丁',
+    description: '学习辅助工具、脚本、软件配置等'
   },
   {
     value: 'mobile',
-    label: '手机游戏',
-    description: '可以在手机上运行的 Galgame 游戏'
+    label: '移动端资源',
+    description: '可在移动设备使用的学习资料或应用'
   },
   {
     value: 'emulator',
-    label: '模拟器资源',
-    description:
-      '可以在手机模拟器, 例如 KiriKiri, ONS, Tyranor 等模拟器中运行的 Galgame 游戏'
+    label: '实验环境',
+    description: '虚拟机镜像、实验软件、模拟器配置'
   },
   {
     value: 'app',
-    label: '直装资源',
-    description: '可以直接在手机安装并游玩的 Galgame'
+    label: '独立应用',
+    description: '可直接安装使用的学习类应用或便捷工具'
   },
   {
     value: 'tool',
-    label: '游戏工具',
-    description: '辅助游玩 Galgame 的工具, 例如 KRKR 模拟器, Magpie 等'
+    label: '备考/排课工具',
+    description: '日程、排课、刷题等实用工具'
   },
   {
     value: 'notice',
-    label: '官方通知',
-    description: '由官方发布的站点通知'
+    label: '课程通知',
+    description: '课程公告、注意事项、日程变动'
   },
   {
     value: 'other',
     label: '其它',
-    description: '其它内容'
+    description: '不便归类的学习资料'
   }
 ]
 
@@ -66,15 +65,15 @@ export const SUPPORTED_TYPE = [
 ]
 export const SUPPORTED_TYPE_MAP: Record<string, string> = {
   all: '全部类型',
-  pc: 'PC游戏',
-  chinese: '汉化资源',
-  mobile: '手机游戏',
-  emulator: '模拟器资源',
-  row: '生肉资源',
-  app: '直装资源',
-  patch: '补丁资源',
-  tool: '游戏工具',
-  notice: '官方通知',
+  pc: '电子课件',
+  chinese: '翻译资料',
+  mobile: '移动端资源',
+  emulator: '实验环境',
+  row: '原始资料',
+  app: '独立应用',
+  patch: '工具/补丁',
+  tool: '学习工具',
+  notice: '课程通知',
   other: '其它'
 }
 export const ALL_SUPPORTED_TYPE = ['all', ...SUPPORTED_TYPE]
@@ -114,23 +113,23 @@ export const SUPPORTED_RESOURCE_LINK = ['touchgal', 's3', 'user']
 export const storageTypes = [
   {
     value: 'touchgal',
-    label: 'TouchGal 资源盘 (官方可用)',
-    description: '此选项用于官方发布 Galgame 下载资源'
+    label: '站内托管 (仅管理员)',
+    description: '由管理员上传到受控空间的小型资料'
   },
   {
     value: 's3',
     label: '对象存储 (<100MB, 创作者可用)',
-    description: '此选项适合 <100MB 的补丁, 稳定, 永远不会失效过期'
+    description: '适合 <100MB 的文档/工具, 稳定且可长期访问'
   },
   {
     value: 'user',
     label: '自定义链接 (>100MB)',
-    description: '此选项适合 >100MB 的补丁, 这需要您自行提供下载链接'
+    description: '常规方案, 作者可填写任意网盘 / GitHub / 私有地址'
   }
 ]
 
 export const SUPPORTED_RESOURCE_LINK_MAP: Record<string, string> = {
-  touchgal: 'TouchGal 资源盘',
+  touchgal: '站内托管',
   s3: '对象存储下载',
   user: '自定义链接下载'
 }
@@ -146,6 +145,6 @@ export const ALLOWED_EXTENSIONS = ['.zip', '.rar', '.7z']
 export const SUPPORTED_RESOURCE_SECTION = ['galgame', 'patch']
 
 export const RESOURCE_SECTION_MAP: Record<string, string> = {
-  galgame: 'Galgame 资源',
-  patch: 'Galgame 补丁'
+  galgame: '课程资料',
+  patch: '工具 / 附件'
 }

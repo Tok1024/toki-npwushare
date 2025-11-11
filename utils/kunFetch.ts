@@ -20,10 +20,19 @@ const kunFetchRequest = async <T>(
           .join('&')
       : ''
 
-    const fetchAddress =
+    let fetchAddress =
       process.env.NODE_ENV === 'development'
         ? process.env.NEXT_PUBLIC_KUN_PATCH_ADDRESS_DEV
         : process.env.NEXT_PUBLIC_KUN_PATCH_ADDRESS_PROD
+
+    if (!fetchAddress) {
+      if (typeof window !== 'undefined') {
+        fetchAddress = window.location.origin
+      } else {
+        fetchAddress = 'http://127.0.0.1:3000'
+      }
+    }
+
     const fullUrl = `${fetchAddress}/api${url}${queryString}`
 
     const fetchOptions: RequestInit = {

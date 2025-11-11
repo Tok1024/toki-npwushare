@@ -1,94 +1,64 @@
-import { SUPPORTED_TYPE_MAP } from '~/constants/resource'
 import type { KunSiteConfig } from './config'
 
-const KUN_SITE_NAME = 'TouchGal'
-const KUN_SITE_MENTION = '@touchgal'
-const KUN_SITE_TITLE = 'TouchGal - 一站式Galgame文化社区!'
-const KUN_SITE_IMAGE =
-  'https://cloud.touchgaloss.com/uploads/20241217174250074.avif'
-const KUN_SITE_DESCRIPTION =
-  'TouchGal 是一个一站式 Galgame 文化社区。提供Galgame 论坛、Galgame 下载等服务。承诺永久免费, 高质量。为Galgame 爱好者提供一片净土！'
-const KUN_SITE_URL = 'https://www.touchgal.us'
-const KUN_SITE_ARCHIVE = 'https://archive.touchgal.co/'
-const KUN_SITE_FORUM = 'https://bbs.touchgal.co/'
-const KUN_SITE_NAV = 'https://gal.red'
-const KUN_SITE_TELEGRAM_GROUP = 'https://s.miku.cyou/2'
-const KUN_SITE_DISCORD_GROUP = 'https://discord.gg/e4QePvPQTB'
-const KUN_SITE_LIST = [
-  { name: KUN_SITE_NAME, url: 'https://www.touchgal.net' },
-  { name: KUN_SITE_NAME, url: 'https://www.touchgal.moe' },
-  { name: KUN_SITE_NAME, url: 'https://www.touchgal.one' },
-  { name: KUN_SITE_NAME, url: 'https://www.touchgal.com' },
-  { name: KUN_SITE_NAME, url: 'https://www.touchgal.org' },
-  { name: KUN_SITE_NAME, url: 'https://www.touchgal.me' },
-  { name: KUN_SITE_NAME, url: 'https://www.touchgal.co' },
-  { name: KUN_SITE_NAME, url: 'https://www.touchgal.io' }
-]
-const KUN_SITE_KEYWORDS = [
-  'TouchGAL',
-  'Gal',
-  'Galgame',
-  '论坛',
-  '网站',
-  'Galgame 下载',
-  'Galgame 资源',
-  'Galgame wiki',
-  'Galgame 评测',
-  'Galgame 数据分析',
-  'Galgame 新作动态',
-  'Galgame 汉化 / 国际化',
-  'Galgame 制作',
-  'Galgame 讨论',
-  '游戏交流',
-  '其他交流',
-  ...Object.values(SUPPORTED_TYPE_MAP)
-]
+const SITE_NAME = 'Toki Learning Hub'
+const SITE_MENTION = '@toki'
+const SITE_TITLE = 'Toki Learning Hub - 校园学习资源共享站'
+const SITE_IMAGE = '/touchgal.avif'
+const SITE_DESCRIPTION =
+  'Toki Learning Hub 是一个专注于课程资料、经验分享与学习讨论的开放平台。任何人都可以上传课程链接、整理经验帖或参与评论。'
+const SITE_URL = 'https://learn.toki.campus'
+const SITE_FORUM = 'https://forum.toki.campus'
+const SITE_NAV = '/course'
+const SITE_DISCORD = 'https://discord.gg/kun-touchgal'
 
 export const kunMoyuMoe: KunSiteConfig = {
-  title: KUN_SITE_TITLE,
-  titleShort: KUN_SITE_NAME,
-  template: `%s - ${KUN_SITE_NAME}`,
-  description: KUN_SITE_DESCRIPTION,
-  keywords: KUN_SITE_KEYWORDS,
-  canonical: KUN_SITE_URL,
-  author: [
-    { name: KUN_SITE_TITLE, url: KUN_SITE_URL },
-    { name: KUN_SITE_NAME, url: KUN_SITE_NAV },
-    ...KUN_SITE_LIST
+  title: SITE_TITLE,
+  titleShort: SITE_NAME,
+  template: `%s - ${SITE_NAME}`,
+  description: SITE_DESCRIPTION,
+  keywords: [
+    'Toki',
+    '学习资料',
+    '课程资源',
+    '校园经验',
+    '自学分享',
+    '课程评价'
   ],
+  canonical: SITE_URL,
+  author: [{ name: SITE_NAME, url: SITE_URL }],
   creator: {
-    name: KUN_SITE_NAME,
-    mention: KUN_SITE_MENTION,
-    url: KUN_SITE_URL
+    name: SITE_NAME,
+    mention: SITE_MENTION,
+    url: SITE_URL
   },
   publisher: {
-    name: KUN_SITE_NAME,
-    mention: KUN_SITE_MENTION,
-    url: KUN_SITE_URL
+    name: SITE_NAME,
+    mention: SITE_MENTION,
+    url: SITE_URL
   },
   domain: {
-    main: KUN_SITE_URL,
-    imageBed: 'https://cloud.touchgaloss.com',
-    storage: KUN_SITE_URL,
-    kungal: KUN_SITE_URL,
-    telegram_group: KUN_SITE_TELEGRAM_GROUP,
-    discord_group: KUN_SITE_DISCORD_GROUP,
-    archive: KUN_SITE_ARCHIVE,
-    forum: KUN_SITE_FORUM,
-    nav: KUN_SITE_NAV
+    main: SITE_URL,
+    imageBed: SITE_URL,
+    storage: SITE_URL,
+    kungal: SITE_URL,
+    telegram_group: SITE_URL,
+    discord_group: SITE_DISCORD,
+    archive: SITE_URL,
+    forum: SITE_FORUM,
+    nav: SITE_NAV
   },
   og: {
-    title: KUN_SITE_TITLE,
-    description: KUN_SITE_DESCRIPTION,
-    image: KUN_SITE_IMAGE,
-    url: KUN_SITE_URL
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    image: SITE_IMAGE,
+    url: SITE_URL
   },
   images: [
     {
-      url: KUN_SITE_IMAGE,
+      url: SITE_IMAGE,
       width: 1000,
       height: 800,
-      alt: KUN_SITE_TITLE
+      alt: SITE_TITLE
     }
   ]
 }

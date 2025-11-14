@@ -244,3 +244,4 @@ model course_comment_like {
 
   @@unique([user_id, comment_id])
 }
+

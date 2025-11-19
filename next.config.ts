@@ -13,7 +13,7 @@ import type { NextConfig } from 'next'
 const nextConfig: NextConfig = {
   devIndicators: false,
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
-  transpilePackages: ['next-mdx-remote'],
+  transpilePackages: ['next-mdx-remote', 'tailwind-merge'],
   publicRuntimeConfig: {
     NODE_ENV: env.data!.NODE_ENV
   },

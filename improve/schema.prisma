@@ -1,0 +1,273 @@
+/// Prisma schema mirroring the Next.js course platform so the labs can run against the same model.
+/// Table/column names are mapped to snake_case to match the SQL snippets in the labs.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  student
+  admin
+}
+
+enum ResourceStatus {
+  draft
+  published
+  archived
+}
+
+enum PostStatus {
+  draft
+  published
+  archived
+}
+
+enum Visibility {
+  public
+  internal
+  private
+}
+
+enum ResourceType {
+  notes
+  assignment
+  exam
+  project
+  reference
+}
+
+model Department {
+  id          Int       @id @default(autoincrement())
+  code        String    @unique
+  name        String
+  description String?
+  courses     Course[]
+  createdAt   DateTime  @default(now()) @map("created")
+  updatedAt   DateTime  @updatedAt @map("updated")
+
+  @@map("department")
+}
+
+model User {
+  id                     Int                 @id @default(autoincrement())
+  email                  String              @unique
+  name                   String
+  role                   UserRole            @default(student)
+  avatarUrl              String?             @map("avatar_url")
+  createdAt              DateTime            @default(now()) @map("created")
+  updatedAt              DateTime            @updatedAt @map("updated")
+  resourceUploadCount    Int                 @default(0) @map("resource_upload_count")
+  resourceDownloadCount  Int                 @default(0) @map("resource_download_count")
+  contributionScore      Int                 @default(0) @map("contribution_score")
+  resources              Resource[]          @relation("ResourceOwner")
+  posts                  Post[]
+  comments               Comment[]           @relation("CommentAuthor")
+  commentLikes           CourseCommentLike[]
+  courseFeedbacks        CourseFeedback[]
+  resourceRatings        ResourceRating[]
+  resourceInteractions   ResourceInteraction[]
+  badges                 UserBadge[]
+
+  @@map("app_user")
+}
+
+model Course {
+  id            Int               @id @default(autoincrement())
+  department    Department        @relation(fields: [departmentId], references: [id])
+  departmentId  Int               @map("department_id")
+  slug          String
+  code          String
+  name          String
+  description   String?
+  coverUrl      String?           @map("cover_url")
+  tags          String[]
+  instructorName String?          @map("instructor_name")
+  resourceCount Int               @default(0) @map("resource_count")
+  postCount     Int               @default(0) @map("post_count")
+  heartCount    Int               @default(0) @map("heart_count")
+  difficultyAvg Float             @default(0) @map("difficulty_avg")
+  difficultyVotes Int             @default(0) @map("difficulty_votes")
+  createdAt     DateTime          @default(now()) @map("created")
+  updatedAt     DateTime          @updatedAt @map("updated")
+  resources     Resource[]
+  posts         Post[]
+  comments      Comment[]
+  feedbacks     CourseFeedback[]
+
+  @@unique([departmentId, slug])
+  @@unique([code])
+  @@map("course")
+}
+
+model Resource {
+  id         Int            @id @default(autoincrement())
+  course     Course         @relation(fields: [courseId], references: [id])
+  courseId   Int            @map("course_id")
+  teacherName String?       @map("teacher_name")
+  owner      User           @relation("ResourceOwner", fields: [ownerId], references: [id])
+  ownerId    Int            @map("owner_id")
+  status     ResourceStatus @default(draft)
+  visibility Visibility     @default(internal)
+  title      String
+  summary    String?
+  type       ResourceType
+  term       String?
+  links      String[]
+  s3Key      String?        @map("s3_key")
+  mimeType   String?        @map("mime_type")
+  sizeBytes  Int?           @map("size_bytes")
+  checksum   String?
+  ratingAvg  Float          @default(0) @map("rating_avg")
+  ratingCount Int           @default(0) @map("rating_count")
+  downloadCount Int         @default(0) @map("download_count")
+  clickCount Int            @default(0) @map("click_count")
+  createdAt  DateTime       @default(now()) @map("created")
+  updatedAt  DateTime       @updatedAt @map("updated")
+  comments   Comment[]
+  ratings    ResourceRating[]
+  interactions ResourceInteraction[]
+
+  @@index([courseId, createdAt(sort: Desc)])
+  @@index([status, visibility, createdAt])
+  @@map("resource")
+}
+
+model Post {
+  id         Int        @id @default(autoincrement())
+  course     Course     @relation(fields: [courseId], references: [id])
+  courseId   Int        @map("course_id")
+  author     User       @relation(fields: [authorId], references: [id])
+  authorId   Int        @map("author_id")
+  title      String
+  content    String
+  status     PostStatus @default(draft)
+  visibility Visibility @default(internal)
+  createdAt  DateTime   @default(now()) @map("created")
+  updatedAt  DateTime   @updatedAt @map("updated")
+  comments   Comment[]
+
+  @@index([courseId, createdAt(sort: Desc)])
+  @@map("post")
+}
+
+model Comment {
+  id         Int       @id @default(autoincrement())
+  content    String
+  course     Course?   @relation(fields: [courseId], references: [id])
+  courseId   Int?      @map("course_id")
+  resource   Resource? @relation(fields: [resourceId], references: [id])
+  resourceId Int?      @map("resource_id")
+  post       Post?     @relation(fields: [postId], references: [id])
+  postId     Int?      @map("post_id")
+  parent     Comment?  @relation("CommentReplies", fields: [parentId], references: [id])
+  parentId   Int?      @map("parent_id")
+  replies    Comment[] @relation("CommentReplies")
+  author     User      @relation("CommentAuthor", fields: [authorId], references: [id])
+  authorId   Int       @map("author_id")
+  likedBy    CourseCommentLike[]
+  createdAt  DateTime  @default(now()) @map("created")
+  updatedAt  DateTime  @updatedAt @map("updated")
+
+  @@index([courseId])
+  @@index([resourceId])
+  @@index([postId])
+  @@map("comment")
+}
+
+model CourseFeedback {
+  id          Int      @id @default(autoincrement())
+  course      Course   @relation(fields: [courseId], references: [id])
+  courseId    Int      @map("course_id")
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int      @map("user_id")
+  liked       Boolean  @default(false)
+  difficulty  Int?
+  comment     String?
+  createdAt   DateTime @default(now()) @map("created")
+  updatedAt   DateTime @updatedAt @map("updated")
+
+  @@unique([courseId, userId])
+  @@index([courseId])
+  @@index([userId])
+  @@map("course_feedback")
+}
+
+model ResourceRating {
+  id         Int      @id @default(autoincrement())
+  resource   Resource @relation(fields: [resourceId], references: [id])
+  resourceId Int      @map("resource_id")
+  user       User     @relation(fields: [userId], references: [id])
+  userId     Int      @map("user_id")
+  score      Int
+  usefulness Int?
+  comment    String?
+  createdAt  DateTime @default(now()) @map("created")
+  updatedAt  DateTime @updatedAt @map("updated")
+
+  @@unique([resourceId, userId])
+  @@index([resourceId])
+  @@index([userId])
+  @@map("resource_rating")
+}
+
+enum ResourceInteractionType {
+  click
+  download
+}
+
+model ResourceInteraction {
+  id          Int                     @id @default(autoincrement())
+  resource    Resource                @relation(fields: [resourceId], references: [id])
+  resourceId  Int                     @map("resource_id")
+  user        User?                   @relation(fields: [userId], references: [id])
+  userId      Int?                    @map("user_id")
+  interaction ResourceInteractionType
+  createdAt   DateTime                @default(now()) @map("created")
+
+  @@index([resourceId, createdAt(sort: Desc)])
+  @@index([userId, createdAt(sort: Desc)])
+  @@map("resource_interaction")
+}
+
+model Badge {
+  id          Int        @id @default(autoincrement())
+  slug        String     @unique
+  name        String
+  description String?
+  minPoints   Int        @map("min_points")
+  createdAt   DateTime   @default(now()) @map("created")
+  updatedAt   DateTime   @updatedAt @map("updated")
+  holders     UserBadge[]
+
+  @@map("badge")
+}
+
+model UserBadge {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @map("user_id")
+  badge     Badge    @relation(fields: [badgeId], references: [id])
+  badgeId   Int      @map("badge_id")
+  grantedAt DateTime @default(now()) @map("granted_at")
+
+  @@unique([userId, badgeId])
+  @@index([badgeId])
+  @@map("user_badge")
+}
+
+model CourseCommentLike {
+  id        Int      @id @default(autoincrement())
+  comment   Comment  @relation(fields: [commentId], references: [id])
+  commentId Int      @map("comment_id")
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int      @map("user_id")
+  createdAt DateTime @default(now()) @map("created")
+
+  @@unique([commentId, userId])
+  @@index([userId])
+  @@map("course_comment_like")
+}

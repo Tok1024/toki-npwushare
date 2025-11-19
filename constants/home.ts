@@ -8,8 +8,9 @@ interface HomeNavItem {
   >
   label: string
   href: string
-  color: 'primary' | 'secondary' | 'success'
+  color: 'primary' | 'secondary' | 'success' | 'warning'
   isExternal: boolean
+  description: string
 }
 
 export const homeNavigationItems: HomeNavItem[] = [
@@ -18,20 +19,23 @@ export const homeNavigationItems: HomeNavItem[] = [
     label: '课程目录',
     href: '/course',
     color: 'primary',
-    isExternal: false
+    isExternal: false,
+    description: '查阅各学院课程资料'
   },
   {
     icon: Share2,
     label: '上传资源',
     href: '/resource',
-    color: 'secondary',
-    isExternal: false
+    color: 'success',
+    isExternal: false,
+    description: '分享你的学习资料'
   },
   {
     icon: MessageSquare,
     label: '经验帖',
     href: '/doc',
-    color: 'success',
-    isExternal: false
+    color: 'warning',
+    isExternal: false,
+    description: '查看学长学姐经验'
   }
 ]

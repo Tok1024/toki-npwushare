@@ -1,19 +1,69 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { prisma } from '~/prisma'
-import { kunParseDeleteQuery, kunParseGetQuery, kunParsePostBody, kunParsePutBody } from '~/app/api/utils/parseQuery'
+import {
+  kunParseDeleteQuery,
+  kunParsePostBody,
+  kunParsePutBody
+} from '~/app/api/utils/parseQuery'
 import { verifyHeaderCookie } from '~/middleware/_verifyHeaderCookie'
-import { courseRatingCreateSchema, courseRatingUpdateSchema } from '~/validations/course'
-import type { KunPatchRating } from '~/types/api/galgame'
+import {
+  courseFeedbackCreateSchema,
+  courseFeedbackUpdateSchema
+} from '~/validations/course'
 
 const deptSlugSchema = z.object({ dept: z.string(), slug: z.string() })
-const ratingIdSchema = z.object({ ratingId: z.coerce.number().min(1) })
+const feedbackIdSchema = z.object({ feedbackId: z.coerce.number().min(1) })
 
 const getCourse = async (dept: string, slug: string) => {
   const department = await prisma.department.findUnique({ where: { slug: dept } })
   if (!department) return null
-  const course = await prisma.course.findUnique({ where: { department_id_slug: { department_id: department.id, slug } } })
+  const course = await prisma.course.findUnique({
+    where: { department_id_slug: { department_id: department.id, slug } }
+  })
   return course
+}
+
+const mapFeedback = (dept: string, slug: string) => {
+  return (feedback: any) => ({
+    id: feedback.id,
+    courseId: feedback.course_id,
+    liked: feedback.liked,
+    difficulty: feedback.difficulty,
+    comment: feedback.comment,
+    created: feedback.created,
+    updated: feedback.updated,
+    uniqueId: `${dept}/${slug}`,
+    user: feedback.user
+      ? {
+          id: feedback.user.id,
+          name: feedback.user.name,
+          avatar: feedback.user.avatar
+        }
+      : null
+  })
+}
+
+const refreshCourseStats = async (courseId: number) => {
+  const [heartCount, difficultyAgg] = await Promise.all([
+    prisma.course_feedback.count({
+      where: { course_id: courseId, liked: true }
+    }),
+    prisma.course_feedback.aggregate({
+      _avg: { difficulty: true },
+      _count: { difficulty: true },
+      where: { course_id: courseId, difficulty: { not: null } }
+    })
+  ])
+
+  await prisma.course.update({
+    where: { id: courseId },
+    data: {
+      heart_count: heartCount,
+      difficulty_avg: difficultyAgg._avg.difficulty ?? 0,
+      difficulty_votes: difficultyAgg._count.difficulty
+    }
+  })
 }
 
 export const GET = async (
@@ -22,137 +72,118 @@ export const GET = async (
 ) => {
   const payload = await verifyHeaderCookie(req)
   const { dept, slug } = deptSlugSchema.parse(await params)
+
   const course = await getCourse(dept, slug)
   if (!course) return NextResponse.json('课程不存在')
 
-  const data = await prisma.course_rating.findMany({
+  const feedbacks = await prisma.course_feedback.findMany({
     where: { course_id: course.id },
-    include: {
-      user: true,
-      _count: { select: { like: true } },
-      ...(payload ? { like: { where: { user_id: payload.uid } } } : {})
-    },
+    include: { user: true },
     orderBy: { created: 'desc' }
   })
 
-  const list: KunPatchRating[] = data.map((r) => ({
-    id: r.id,
-    uniqueId: `${dept}/${slug}`,
-    recommend: r.recommend,
-    overall: r.overall,
-    playStatus: r.play_status,
-    shortSummary: r.short_summary,
-    spoilerLevel: r.spoiler_level,
-    isLike: Array.isArray((r as any).like) ? ((r as any).like.length > 0) : false,
-    likeCount: r._count.like,
-    userId: r.user_id,
-    patchId: course.id,
-    created: r.created,
-    updated: r.updated,
-    user: { id: r.user.id, name: r.user.name, avatar: r.user.avatar }
-  }))
+  const mapped = feedbacks.map(mapFeedback(dept, slug))
+  const mine = payload
+    ? mapped.find((item) => item.user?.id === payload.uid) ?? null
+    : null
 
-  return NextResponse.json(list)
+  return NextResponse.json({
+    stats: {
+      heartCount: course.heart_count,
+      difficultyAvg: course.difficulty_avg,
+      difficultyVotes: course.difficulty_votes
+    },
+    feedbacks: mapped,
+    mine
+  })
 }
 
 export const POST = async (
   req: NextRequest,
   { params }: { params: Promise<{ dept: string; slug: string }> }
 ) => {
-  const input = await kunParsePostBody(req, courseRatingCreateSchema)
+  const input = await kunParsePostBody(req, courseFeedbackCreateSchema)
   if (typeof input === 'string') return NextResponse.json(input)
   const payload = await verifyHeaderCookie(req)
   if (!payload) return NextResponse.json('用户未登录')
+
   const { dept, slug } = deptSlugSchema.parse(await params)
   const course = await getCourse(dept, slug)
-  if (!course || course.id !== input.courseId) return NextResponse.json('课程不存在')
+  if (!course || course.id !== input.courseId) {
+    return NextResponse.json('课程不存在')
+  }
 
-  const exists = await prisma.course_rating.findUnique({ where: { course_id_user_id: { course_id: course.id, user_id: payload.uid } } })
-  if (exists) return NextResponse.json('您已经评价过该课程')
+  const exists = await prisma.course_feedback.findUnique({
+    where: { course_id_user_id: { course_id: course.id, user_id: payload.uid } }
+  })
+  if (exists) return NextResponse.json('您已经提交过反馈')
 
-  const created = await prisma.course_rating.create({
+  const created = await prisma.course_feedback.create({
     data: {
       course_id: course.id,
       user_id: payload.uid,
-      recommend: input.recommend,
-      overall: input.overall,
-      play_status: input.playStatus,
-      short_summary: input.shortSummary,
-      spoiler_level: input.spoilerLevel
+      liked: input.liked,
+      difficulty: input.difficulty ?? null,
+      comment: input.comment ?? null
     },
-    include: { user: true, _count: { select: { like: true } } }
+    include: { user: true }
   })
 
-  const out: KunPatchRating = {
-    id: created.id,
-    uniqueId: `${dept}/${slug}`,
-    recommend: created.recommend,
-    overall: created.overall,
-    playStatus: created.play_status,
-    shortSummary: created.short_summary,
-    spoilerLevel: created.spoiler_level,
-    isLike: false,
-    likeCount: created._count.like,
-    userId: payload.uid,
-    patchId: course.id,
-    created: created.created,
-    updated: created.updated,
-    user: { id: created.user.id, name: created.user.name, avatar: created.user.avatar }
-  }
+  await refreshCourseStats(course.id)
 
-  return NextResponse.json(out)
+  return NextResponse.json(mapFeedback(dept, slug)(created))
 }
 
 export const PUT = async (req: NextRequest) => {
-  const input = await kunParsePutBody(req, courseRatingUpdateSchema)
+  const input = await kunParsePutBody(req, courseFeedbackUpdateSchema)
   if (typeof input === 'string') return NextResponse.json(input)
   const payload = await verifyHeaderCookie(req)
   if (!payload) return NextResponse.json('用户未登录')
 
-  const existing = await prisma.course_rating.findUnique({ where: { id: input.ratingId } })
-  if (!existing) return NextResponse.json('评价不存在')
-  if (existing.user_id !== payload.uid && payload.role < 3) return NextResponse.json('没有权限')
-
-  const updated = await prisma.course_rating.update({
-    where: { id: input.ratingId },
-    data: {
-      recommend: input.recommend,
-      overall: input.overall,
-      play_status: input.playStatus,
-      short_summary: input.shortSummary,
-      spoiler_level: input.spoilerLevel
-    },
-    include: { user: true, _count: { select: { like: true } } }
+  const existing = await prisma.course_feedback.findUnique({
+    where: { id: input.feedbackId },
+    include: { user: true, course: { include: { department: true } } }
   })
-
-  const out: KunPatchRating = {
-    id: updated.id,
-    uniqueId: '',
-    recommend: updated.recommend,
-    overall: updated.overall,
-    playStatus: updated.play_status,
-    shortSummary: updated.short_summary,
-    spoilerLevel: updated.spoiler_level,
-    isLike: false,
-    likeCount: updated._count.like,
-    userId: updated.user_id,
-    patchId: updated.course_id,
-    created: updated.created,
-    updated: updated.updated,
-    user: { id: updated.user.id, name: updated.user.name, avatar: updated.user.avatar }
+  if (!existing) return NextResponse.json('反馈不存在')
+  if (existing.user_id !== payload.uid && payload.role < 3) {
+    return NextResponse.json('没有权限')
   }
 
-  return NextResponse.json(out)
+  const updated = await prisma.course_feedback.update({
+    where: { id: input.feedbackId },
+    data: {
+      liked: input.liked,
+      difficulty: input.difficulty ?? null,
+      comment: input.comment ?? null
+    },
+    include: { user: true }
+  })
+
+  await refreshCourseStats(existing.course_id)
+
+  const dept = existing.course?.department?.slug ?? ''
+  const slug = existing.course?.slug ?? ''
+
+  return NextResponse.json(mapFeedback(dept, slug)(updated))
 }
 
 export const DELETE = async (req: NextRequest) => {
-  const input = kunParseDeleteQuery(req, ratingIdSchema)
+  const input = kunParseDeleteQuery(req, feedbackIdSchema)
   if (typeof input === 'string') return NextResponse.json(input)
+
   const payload = await verifyHeaderCookie(req)
   if (!payload) return NextResponse.json('用户未登录')
-  const existing = await prisma.course_rating.findUnique({ where: { id: input.ratingId } })
-  if (!existing) return NextResponse.json('评价不存在')
-  if (existing.user_id !== payload.uid && payload.role < 3) return NextResponse.json('没有权限')
-  await prisma.course_rating.delete({ where: { id: input.ratingId } })
+
+  const existing = await prisma.course_feedback.findUnique({
+    where: { id: input.feedbackId }
+  })
+  if (!existing) return NextResponse.json('反馈不存在')
+  if (existing.user_id !== payload.uid && payload.role < 3) {
+    return NextResponse.json('没有权限')
+  }
+
+  await prisma.course_feedback.delete({ where: { id: input.feedbackId } })
+  await refreshCourseStats(existing.course_id)
+
   return NextResponse.json({})
 }

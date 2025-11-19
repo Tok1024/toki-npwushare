@@ -15,9 +15,17 @@ export const CourseIntroTab = ({
           <div className="text-small text-default-500">
             开设学院：{course?.department?.name ?? '—'}
           </div>
+          {course?.code && (
+            <div className="text-small text-default-500">课程代码：{course.code}</div>
+          )}
           {teachers?.length > 0 && (
             <div className="text-small text-default-500">
               授课教师：{teachers.map((t) => t.name).join('、')}
+            </div>
+          )}
+          {course?.instructor_name && (
+            <div className="text-small text-default-500">
+              课程负责人：{course.instructor_name}
             </div>
           )}
           {Array.isArray(course?.tags) && course.tags.length > 0 && (
@@ -25,9 +33,13 @@ export const CourseIntroTab = ({
               标签：{course.tags.join('、')}
             </div>
           )}
+          {course?.description && (
+            <p className="text-small text-default-600 whitespace-pre-wrap">
+              {course.description}
+            </p>
+          )}
         </div>
       </CardBody>
     </Card>
   )
 }
-

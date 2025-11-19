@@ -4,44 +4,23 @@ import { useEffect, useState } from 'react'
 import { Button } from '@heroui/button'
 import Link from 'next/link'
 import { ChevronRight } from 'lucide-react'
-import { GalgameCard } from '~/components/galgame/Card'
+import { CourseCard, type SimpleCourse } from './CourseCard'
 import { kunFetchGet } from '~/utils/kunFetch'
 
 type ApiResp = { total: number; page: number; pageSize: number; list: SimpleCourse[] }
 
 export const HomeCourseSection = () => {
-  const [cards, setCards] = useState<GalgameCard[]>([])
+  const [courses, setCourses] = useState<SimpleCourse[]>([])
 
   useEffect(() => {
     const run = async () => {
       try {
-        const base =
-          process.env.NEXT_PUBLIC_KUN_PATCH_ADDRESS_DEV ??
-          window.location.origin
-        const response = await fetch(`${base}/api/course/list`, {
-          cache: 'no-store'
+        const res = await kunFetchGet<ApiResp | string>('/course/list', {
+          page: 1,
+          pageSize: 8
         })
-        if (!response.ok) {
-          console.error('Failed to fetch course list', response.status)
-          return
-        }
-        const res: ApiResp = await response.json()
-        const mapped: GalgameCard[] = res.list.slice(0, 8).map((c) => ({
-          id: c.id,
-          uniqueId: `course/${c.deptSlug}/${c.slug}`,
-          name: c.name,
-          banner: c.coverUrl || '/touchgal.avif',
-          view: 0,
-        download: 0,
-        type: ['other'],
-        language: [],
-        platform: [],
-        tags: c.tags || [],
-        created: new Date().toISOString(),
-        _count: { favorite_folder: 0, resource: c.resourceCount, comment: c.postCount },
-        averageRating: c.ratingAvg ?? 0
-        }))
-        setCards(mapped)
+        if (typeof res === 'string') return
+        setCourses(res.list.slice(0, 8))
       } catch (error) {
         console.error('Failed to fetch course list', error)
       }
@@ -64,11 +43,15 @@ export const HomeCourseSection = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 gap-2 sm:gap-6 md:grid-cols-3 lg:grid-cols-4">
-        {cards.map((p) => (
-          <GalgameCard key={p.id} patch={p} openOnNewTab={false} />
-        ))}
-      </div>
+      {courses.length === 0 ? (
+        <p className="text-default-400 text-sm">暂无课程，欢迎前往上传页面创建。</p>
+      ) : (
+        <div className="grid gap-2 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {courses.map((course) => (
+            <CourseCard key={course.id} c={course} />
+          ))}
+        </div>
+      )}
     </section>
   )
 }

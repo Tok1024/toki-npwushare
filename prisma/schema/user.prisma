@@ -11,6 +11,9 @@ model user {
   register_time DateTime @default(now())
   moemoepoint   Int      @default(0)
   bio           String   @default("") @db.VarChar(107)
+  resource_upload_count   Int @default(0)
+  resource_download_count Int @default(0)
+  contribution_score      Int @default(0)
 
   enable_email_notice Boolean @default(true)
   daily_image_count   Int     @default(0)
@@ -43,12 +46,13 @@ model user {
   send_message    user_message[]         @relation("user_send_message")
   receive_message user_message[]         @relation("user_receive_message")
 
-  course_ratings   course_rating[]
-  course_rating_like course_rating_like[] @relation("user_course_rating_like")
+  course_feedback course_feedback[]
   resource_ratings resource_rating[]
+  resource_interactions resource_interaction[]
   posts            post[]
   comments         comment[]
   course_comment_like course_comment_like[] @relation("user_course_comment_like")
+  badges           user_badge[]
 
   created DateTime @default(now())
   updated DateTime @updatedAt

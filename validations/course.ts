@@ -1,11 +1,4 @@
-import { title } from 'process'
 import { z } from 'zod'
-import {
-  KUN_GALGAME_RATING_PLAY_STATUS_CONST,
-  KUN_GALGAME_RATING_RECOMMEND_CONST,
-  KUN_GALGAME_RATING_SPOILER_CONST
-} from '~/constants/galgame'
-
 export const courseCommentCreateSchema = z.object({
   courseId: z.coerce.number().min(1).max(9999999),
   parentId: z.coerce.number().min(1).max(9999999).nullable(),
@@ -25,54 +18,31 @@ export const courseCommentUpdateSchema = z.object({
     .max(10007, { message: '评论的内容最多为 10007 个字符' })
 })
 
-export const courseRatingCreateSchema = z.object({
+export const courseFeedbackCreateSchema = z.object({
   courseId: z.coerce.number().min(1).max(9999999),
-  recommend: z
-    .string({ message: '推荐程度不正确' })
-    .refine((v) => KUN_GALGAME_RATING_RECOMMEND_CONST.includes(v as any), {
-      message: '推荐程度不正确'
-    }),
-  overall: z.coerce
-    .number({ message: '评分不正确' })
-    .min(1, { message: '评分最小为 1' })
-    .max(10, { message: '评分最大为 10' }),
-  playStatus: z
-    .string({ message: '状态不正确' })
-    .refine((v) => KUN_GALGAME_RATING_PLAY_STATUS_CONST.includes(v as any), {
-      message: '状态不正确'
-    }),
-  shortSummary: z.string().trim().max(1314, { message: '简评最多 1314 字' }),
-  spoilerLevel: z
-    .string({ message: '剧透等级不正确' })
-    .refine((v) => KUN_GALGAME_RATING_SPOILER_CONST.includes(v as any), {
-      message: '剧透等级不正确'
-    })
+  liked: z.boolean({ message: '请选择是否喜欢该课程' }),
+  difficulty: z
+    .union([z.coerce.number().min(1).max(5), z.null()])
+    .optional(),
+  comment: z
+    .string()
+    .trim()
+    .max(1000, { message: '反馈内容最多 1000 字' })
+    .optional()
 })
 
-export const courseRatingUpdateSchema = z.object({
-  ratingId: z.coerce.number().min(1).max(9999999),
-  recommend: z
-    .string({ message: '推荐程度不正确' })
-    .refine((v) => KUN_GALGAME_RATING_RECOMMEND_CONST.includes(v as any), {
-      message: '推荐程度不正确'
-    }),
-  overall: z.coerce
-    .number({ message: '评分不正确' })
-    .min(1, { message: '评分最小为 1' })
-    .max(10, { message: '评分最大为 10' }),
-  playStatus: z
-    .string({ message: '状态不正确' })
-    .refine((v) => KUN_GALGAME_RATING_PLAY_STATUS_CONST.includes(v as any), {
-      message: '状态不正确'
-    }),
-  shortSummary: z.string().trim().max(1314, { message: '简评最多 1314 字' }),
-  spoilerLevel: z
-    .string({ message: '剧透等级不正确' })
-    .refine((v) => KUN_GALGAME_RATING_SPOILER_CONST.includes(v as any), {
-      message: '剧透等级不正确'
-    })
+export const courseFeedbackUpdateSchema = z.object({
+  feedbackId: z.coerce.number().min(1).max(9999999),
+  liked: z.boolean({ message: '请选择是否喜欢该课程' }),
+  difficulty: z
+    .union([z.coerce.number().min(1).max(5), z.null()])
+    .optional(),
+  comment: z
+    .string()
+    .trim()
+    .max(1000, { message: '反馈内容最多 1000 字' })
+    .optional()
 })
-
 export const RESOURCE_TYPES = [
   'note',
   'slides',

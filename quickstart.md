@@ -17,9 +17,9 @@
 PostgreSQL 存储结果
 ```
 例：课程资源 Tab
-1. `components/course/tabs/CourseResourceTab.tsx`（Client）用 `kunFetchGet('/course/{dept}/{slug}/resources')` 请求数据。
-2. 对应的 API 在 `app/api/course/[dept]/[slug]/resources/route.ts`，从 Prisma 拿资源列表并返回 JSON。
-3. Client Component 拿到 JSON 后映射成补丁的 `ResourceTabs` UI。
+1. `components/course/tabs/CourseResourceTab.tsx`（Client）用 `kunFetchGet('/course/{dept}/{slug}/resources')` 请求数据。  
+2. 对应的 API 在 `app/api/course/[dept]/[slug]/resources/route.ts`，从 Prisma 拿资源列表并返回 JSON。  
+3. Client Component 拿到 JSON 后映射成简洁的资源卡片 UI（标题 + 类型 + 链接按钮）。
 
 ## 3. 学习路线（建议）
 1. **跑起来**：  
@@ -34,7 +34,7 @@ PostgreSQL 存储结果
 2. **看文件位置**：  
    - `app/course/[dept]/[slug]/page.tsx`：课程详情页入口。  
    - `components/course/Header.tsx`：课程信息 + Tabs。  
-   - `components/course/comment/*`、`components/course/rating/*`：评论/评分。  
+   - `components/course/comment/*`、`components/course/feedback/*`：评论 / 红心 + 难度反馈。  
    - `app/api/course/**`：课程相关 API。  
    - `scripts/seedCourses.ts`：示例数据脚本。
 3. **理解函数流**：从页面进入对应组件 -> 组件调用 API -> API 查询 Prisma -> 返回 JSON -> 组件渲染 UI。
@@ -51,9 +51,9 @@ PostgreSQL 存储结果
 3. 逻辑：和 GET 同样先找 department 与 course，校验登录用户后 `prisma.resource.create`。
 
 ### 4.3 前端按钮（Client Component）
-1. 在 `components/course/tabs/CourseResourceTab.tsx` 添加一个 “上传资源” 按钮（只有登录用户可见）。  
-2. 使用 HeroUI Modal + React Hook Form（或简单 `useState`）收集 `title/type/links`。  
-3. 点击提交时调用 `kunFetchPost('/course/${dept}/${slug}/resources', body)`，成功后刷新列表或本地 `setResources([...resources, newResource])`。
+1. 在 `components/course/tabs/CourseResourceTab.tsx` 确保“上传资源”按钮指向 `/edit/create`，或添加一个 HeroUI Modal 收集 `title/type/links`。  
+2. 使用 React Hook Form + Zod（`courseResourceCreateSchema`）收集并校验字段。  
+3. 点击提交时调用 `kunFetchPost('/course/${dept}/${slug}/resources', body)`，成功后更新列表或提示用户前往审核页。
 
 ### 4.4 联调验证
 1. 确保 `.env` 中 `NEXT_PUBLIC_DISABLE_CAPTCHA=true`，使用 seed 用户登录。  

@@ -56,8 +56,9 @@ export default async function CourseIndexPage({ searchParams }: Props) {
               slug: course.slug,
               deptSlug: course.department.slug,
               tags: course.tags,
-              ratingAvg: course.rating_avg,
-              ratingCount: course.rating_count,
+              heartCount: course.heart_count,
+              difficultyAvg: course.difficulty_avg,
+              difficultyVotes: course.difficulty_votes,
               resourceCount: course.resource_count,
               postCount: course.post_count
             }}

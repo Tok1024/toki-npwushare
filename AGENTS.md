@@ -3,13 +3,15 @@
 ## 当前定位
 - 仓库已由 TouchGal 迁移为 **Toki Learning Hub**：面向课程资料/经验分享/讨论的学习平台。
 - Next.js App Router + Prisma + PostgreSQL + Redis；客户端复用 HeroUI/Tailwind。
-- 关键目录：`app/`（页面、API Route）、`components/`（课程、资源、评论、评分组件）、`prisma/schema`（课程实体拆分）、`scripts/`（seed/部署脚本）。
+- 关键目录：`app/`（页面、API Route）、`components/`（课程、资源、评论、反馈组件）、`prisma/schema`（课程实体拆分）、`scripts/`（seed/部署脚本）。
 
 ## 最新进展（2025-11-11）
 - 顶部导航已替换为 “浏览课程 / 浏览资源 / 学院 / 帮助 / 上传资源”，但品牌 Logo 与主题色仍保留 TouchGal 风格。
-- 课程详情页完全复用原 Galgame 详情视图并接入 `/api/course/[dept]/[slug]`，Tabs 中的资源、评论、评分均已与课程数据对齐。
+- 课程详情页完全复用原 Galgame 详情视图并接入 `/api/course/[dept]/[slug]`，Tabs 中的资源、评论、反馈均已与课程数据对齐。
+- 旧 TouchGal 代码（补丁页面、后台、脚本、patch Prisma schema 等）已经整体移动至 `archive/touchgal/**`，并在 `archive/README.md` 中统一说明，主仓库只保留课程相关实现。
 - `/edit/create` 支持“先选学院/课程，缺失时再新建”流程，资源仅保存外链并自动落入 `pending` 审核状态。
-- `scripts/seedCourses.ts` 现可一次写入多学院、多课程、资源、帖子、评分及评论，默认账号 `seed/alice/bob/carol@example.com` 密码均为 `123`。
+- 课程评分体系改为 `course_feedback`（红心 + 难度投票 + 短评），列表及详情页均展示 `heart_count/difficulty_avg` 聚合指标。
+- `scripts/seedCourses.ts` 现可一次写入多学院、多课程、资源、帖子、反馈及评论，默认账号 `seed/alice/bob/carol@example.com` 密码均为 `123`。
 
 ## 代办与方向
 1. **TopBar / 品牌**：菜单项已更新，但 `KunTopBarBrand` 与 TouchGal Logo、Hero 图、配色仍未替换，需要新的视觉稿与 favicon。
@@ -48,12 +50,12 @@
    pnpm dev
    ```
 3. Seed 用户  
-   - `seed@example.com / 123`（管理员角色），用于测试评论/评分/上传资源。
+  - `seed@example.com / 123`（管理员角色），用于测试评论/反馈/上传资源。
 
 ## 架构概览
 - **课程域**  
-  - Prisma 模型：`department`、`teacher`、`course`、`course_teacher`、`resource`、`post`、`comment`、`course_rating`。
-  - API：`/api/course/**`（详情、资源、帖子、评论、评分、列表）。
+  - Prisma 模型：`department`、`teacher`、`course`、`course_teacher`、`resource`、`post`、`comment`、`course_feedback`、`resource_rating`、`resource_interaction`。
+  - API：`/api/course/**`（详情、资源、帖子、评论、反馈、列表）。
   - 前端：`components/course/*`（Header/Tabs/ResourceList/Comments/Ratings），`components/home/*`（课程列表）。
 - **登录/鉴权**  
   - 现用自研 JWT + Redis；BetterAuth 尚未接入。
@@ -64,6 +66,7 @@
 - 服务端逻辑放在 Server Components、Route Handler 或 `app/**/actions.ts`。
 - 状态管理：`store/*`（Zustand），例如用户/搜索设置。
 - 依赖：HeroUI 组件库、Milkdown（富文本）、React Hook Form + Zod。
+- 归档：触发 TouchGal 时代的页面/API/脚本均位于 `archive/touchgal/**`，具体见 `archive/README.md`；新手迭代路线见 `docs/improvement-guide.md`。
 
 ## 测试与提交流程
 - 目前无自动化测试，依赖 `pnpm lint`、`pnpm typecheck` 及手动验证。

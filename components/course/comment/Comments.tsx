@@ -10,7 +10,6 @@ import { formatDistanceToNow } from '~/utils/formatDistanceToNow'
 import { CommentLikeButton } from './Like'
 import { CommentDropdown } from './Dropdown'
 import { CommentContent } from './Content'
-import { scrollIntoComment } from '~/components/patch/comment/_scrollIntoComment'
 import { useUserStore } from '~/store/userStore'
 import { KunNull } from '~/components/kun/Null'
 import { cn } from '~/utils/cn'
@@ -46,9 +45,15 @@ export const CourseComments = ({ dept, slug, courseId }: { dept: string; slug: s
 
   const toggleSortOrder = () => setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'))
 
+  const scrollIntoComment = (commentId: number) => {
+    if (typeof document === 'undefined') return
+    const el = document.getElementById(`comment-${commentId}`)
+    el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   const setNewComment = async (newComment: PatchComment) => {
     setComments((prev) => [...prev, newComment])
-    await new Promise((r) => setTimeout(r, 500))
+    await new Promise((r) => setTimeout(r, 300))
     scrollIntoComment(newComment.id)
   }
 
@@ -113,4 +118,3 @@ export const CourseComments = ({ dept, slug, courseId }: { dept: string; slug: s
     </div>
   )
 }
-

@@ -1,11 +1,11 @@
 import type { KunSiteConfig } from './config'
 
-const SITE_NAME = 'Toki Learning Hub'
+const SITE_NAME = 'NWPUShare'
 const SITE_MENTION = '@toki'
-const SITE_TITLE = 'Toki Learning Hub - 校园学习资源共享站'
+const SITE_TITLE = 'NWPUShare - 校园学习资源共享站'
 const SITE_IMAGE = '/touchgal.avif'
 const SITE_DESCRIPTION =
-  'Toki Learning Hub 是一个专注于课程资料、经验分享与学习讨论的开放平台。任何人都可以上传课程链接、整理经验帖或参与评论。'
+  'NWPUShare 是一个专注于课程资料、经验分享与学习讨论的开放平台。任何人都可以上传课程链接、整理经验帖或参与评论。'
 const SITE_URL = 'https://learn.toki.campus'
 const SITE_FORUM = 'https://forum.toki.campus'
 const SITE_NAV = '/course'

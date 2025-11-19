@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Card, CardBody } from '@heroui/card'
 import { Button } from '@heroui/button'
-import { ChevronRight } from 'lucide-react'
+import { ChevronRight, FileText } from 'lucide-react'
 
 type Item = {
   id: number
@@ -59,21 +59,35 @@ export const HomeLatestResourceSection = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-2 sm:gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-2">
         {items.map((r) => (
           <Card
             key={r.id}
             isPressable
             as={Link}
             href={`/course/${r.deptSlug}/${r.courseSlug}`}
-            className="w-full"
+            className="w-full border border-default-100 shadow-sm hover:shadow-md transition-all bg-white/50 backdrop-blur-sm group"
           >
-            <CardBody className="space-y-1">
-              <div className="text-tiny text-default-500">{r.courseName}</div>
-              <h3 className="font-medium line-clamp-2">{r.title}</h3>
-              <div className="text-tiny text-default-500">
-                {r.type} · {r.teacherName ?? '未标注教师'}
+            <CardBody className="p-4 flex flex-row items-center gap-4">
+              <div className="p-3 rounded-xl bg-blue-50 text-blue-500 group-hover:bg-blue-100 transition-colors">
+                <FileText className="w-6 h-6" />
               </div>
+
+              <div className="flex-1 min-w-0 space-y-1">
+                <div className="flex items-center gap-2 text-xs text-slate-500">
+                  <span className="font-medium text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">
+                    {r.courseName}
+                  </span>
+                  <span>•</span>
+                  <span>{r.teacherName ?? '教师未知'}</span>
+                </div>
+                <h3 className="font-semibold text-slate-800 truncate">
+                  {r.title}
+                </h3>
+                <div className="text-xs text-slate-400">{r.type}</div>
+              </div>
+
+              <ChevronRight className="w-5 h-5 text-slate-300 group-hover:text-blue-500 transition-colors" />
             </CardBody>
           </Card>
         ))}

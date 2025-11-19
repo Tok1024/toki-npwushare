@@ -52,8 +52,9 @@ export const GET = async (req: NextRequest) => {
     slug: c.slug,
     deptSlug: c.department.slug,
     tags: c.tags,
-    ratingAvg: c.rating_avg,
-    ratingCount: c.rating_count,
+    heartCount: c.heart_count,
+    difficultyAvg: c.difficulty_avg,
+    difficultyVotes: c.difficulty_votes,
     resourceCount: c.resource_count,
     postCount: c.post_count,
     coverUrl: c.cover_url
@@ -61,4 +62,3 @@ export const GET = async (req: NextRequest) => {
 
   return NextResponse.json({ total, page, pageSize, list: data })
 }
-

@@ -6,7 +6,7 @@ import { Tabs, Tab } from '@heroui/tabs'
 import { CourseResourceTab } from './tabs/CourseResourceTab'
 import { CourseIntroTab } from './tabs/CourseIntroTab'
 import { CourseComments } from './comment/Comments'
-import { CourseRatings } from './rating/Ratings'
+import { CourseFeedbackSection } from './feedback/FeedbackSection'
 
 interface Props {
   dept: string
@@ -24,9 +24,15 @@ export const CourseHeader = ({ dept, slug, course, teachers }: Props) => {
         <CardBody className="space-y-2">
           <div className="text-small text-default-500">{dept}</div>
           <h1 className="text-2xl font-bold">{course.name}</h1>
-          <div className="text-small text-default-500">
-            资源 {course.resource_count} · 帖子 {course.post_count}
-            {typeof course.rating_avg === 'number' && ` · 评分 ${course.rating_avg.toFixed(1)} (${course.rating_count})`}
+          <div className="text-small text-default-500 flex flex-wrap gap-2">
+            <span>资源 {course.resource_count}</span>
+            <span>帖子 {course.post_count}</span>
+            {course.heart_count > 0 && <span>红心 {course.heart_count}</span>}
+            {course.difficulty_votes > 0 && (
+              <span>
+                难度 {course.difficulty_avg?.toFixed(1)} ({course.difficulty_votes} 票)
+              </span>
+            )}
           </div>
           {teachers?.length > 0 && (
             <div className="text-small text-default-500">
@@ -54,8 +60,8 @@ export const CourseHeader = ({ dept, slug, course, teachers }: Props) => {
         <Tab key="comments" title="讨论版" className="p-0 min-w-20">
           <CourseComments dept={dept} slug={slug} courseId={course.id} />
         </Tab>
-        <Tab key="rating" title="课程评价" className="p-0 min-w-20">
-          <CourseRatings dept={dept} slug={slug} courseId={course.id} />
+        <Tab key="feedback" title="课程反馈" className="p-0 min-w-20">
+          <CourseFeedbackSection dept={dept} slug={slug} courseId={course.id} />
         </Tab>
       </Tabs>
     </div>

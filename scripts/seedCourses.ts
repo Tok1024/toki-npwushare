@@ -27,6 +27,7 @@ type SeedResource = {
   term?: string
   teacher?: string
   authorEmail?: string
+  summary?: string
 }
 
 type SeedPost = {
@@ -37,19 +38,11 @@ type SeedPost = {
   authorEmail: string
 }
 
-type SeedRating = {
+type SeedFeedback = {
   userEmail: string
-  recommend: 'strong_no' | 'no' | 'neutral' | 'yes' | 'strong_yes'
-  overall: number
-  playStatus:
-    | 'not_started'
-    | 'in_progress'
-    | 'finished_one'
-    | 'finished_main'
-    | 'finished_all'
-    | 'dropped'
-  shortSummary: string
-  spoilerLevel: 'none' | 'portion' | 'serious'
+  liked: boolean
+  difficulty?: number
+  comment?: string
 }
 
 type SeedComment = {
@@ -60,11 +53,14 @@ type SeedComment = {
 type SeedCourse = {
   slug: string
   name: string
+  code?: string
+  description?: string
+  instructor?: string
   tags: string[]
   teachers: { name: string; year: string }[]
   resources: SeedResource[]
   posts: SeedPost[]
-  ratings: SeedRating[]
+  feedbacks: SeedFeedback[]
   courseComments?: SeedComment[]
   resourceComments?: { resourceTitle: string; comments: SeedComment[] }[]
 }
@@ -96,6 +92,10 @@ const departments: SeedDepartment[] = [
       {
         slug: 'signal-and-system',
         name: '信号与系统',
+        code: 'CS2001',
+        description:
+          '围绕连续与离散信号展开，覆盖卷积、傅里叶、拉普拉斯等基础内容，帮助学生建立系统分析思维。',
+        instructor: '张晓',
         tags: ['必修', '大二', '信号'],
         teachers: [
           { name: '张晓', year: '2024-Fall' },
@@ -108,6 +108,7 @@ const departments: SeedDepartment[] = [
             term: '2024-Fall',
             teacher: '张晓',
             authorEmail: 'seed@example.com',
+            summary: '课堂讲义+随堂小测答案 PDF 打包。',
             links: ['https://pan.example.com/s/cs-signal-lecture']
           },
           {
@@ -116,6 +117,7 @@ const departments: SeedDepartment[] = [
             term: '2024-Fall',
             teacher: '李倩',
             authorEmail: 'alice@example.com',
+            summary: '包含封面、数据表与结论模板，适用于所有实验。',
             links: ['https://drive.example.com/file/exp-template']
           },
           {
@@ -124,6 +126,7 @@ const departments: SeedDepartment[] = [
             term: '2024-Fall',
             teacher: '张晓',
             authorEmail: 'bob@example.com',
+            summary: '将信号分类、系统性质整理成一张速记图，考前复习非常方便。',
             links: ['https://mirror.example.com/signal-mindmap']
           }
         ],
@@ -145,22 +148,18 @@ const departments: SeedDepartment[] = [
             authorEmail: 'alice@example.com'
           }
         ],
-        ratings: [
+        feedbacks: [
           {
             userEmail: 'seed@example.com',
-            recommend: 'yes',
-            overall: 9,
-            playStatus: 'finished_main',
-            shortSummary: '授课节奏紧凑但给了很多练习，适合提前预习。',
-            spoilerLevel: 'none'
+            liked: true,
+            difficulty: 4,
+            comment: '授课节奏紧凑但练习题充足，跟上节奏就很稳。'
           },
           {
             userEmail: 'bob@example.com',
-            recommend: 'neutral',
-            overall: 7,
-            playStatus: 'finished_main',
-            shortSummary: '实验环节较多，硬件背景薄弱的同学需要多花时间。',
-            spoilerLevel: 'none'
+            liked: true,
+            difficulty: 3,
+            comment: '实验要求较多，硬件基础薄弱的同学要提前准备。'
           }
         ],
         courseComments: [
@@ -219,14 +218,12 @@ const departments: SeedDepartment[] = [
             authorEmail: 'bob@example.com'
           }
         ],
-        ratings: [
+        feedbacks: [
           {
             userEmail: 'alice@example.com',
-            recommend: 'strong_yes',
-            overall: 10,
-            playStatus: 'finished_all',
-            shortSummary: '项目驱动+OJ 双轨制，非常锻炼代码能力。',
-            spoilerLevel: 'none'
+            liked: true,
+            difficulty: 4,
+            comment: '项目驱动 + OJ 双轨制，非常锻炼代码能力。'
           }
         ],
         courseComments: [
@@ -263,14 +260,12 @@ const departments: SeedDepartment[] = [
           }
         ],
         posts: [],
-        ratings: [
+        feedbacks: [
           {
             userEmail: 'carol@example.com',
-            recommend: 'yes',
-            overall: 8,
-            playStatus: 'in_progress',
-            shortSummary: 'Lab 占比很大，建议组队完成，助教答疑响应快。',
-            spoilerLevel: 'none'
+            liked: true,
+            difficulty: 5,
+            comment: 'Lab 占比非常大，建议组队完成，助教答疑响应快。'
           }
         ]
       }
@@ -318,14 +313,12 @@ const departments: SeedDepartment[] = [
             authorEmail: 'alice@example.com'
           }
         ],
-        ratings: [
+        feedbacks: [
           {
             userEmail: 'bob@example.com',
-            recommend: 'yes',
-            overall: 8,
-            playStatus: 'finished_main',
-            shortSummary: '偏工程实践，报告写作要求细致。',
-            spoilerLevel: 'none'
+            liked: true,
+            difficulty: 3,
+            comment: '偏工程实践，报告写作要求细致。'
           }
         ],
         courseComments: [
@@ -371,22 +364,18 @@ const departments: SeedDepartment[] = [
           }
         ],
         posts: [],
-        ratings: [
+        feedbacks: [
           {
             userEmail: 'alice@example.com',
-            recommend: 'yes',
-            overall: 9,
-            playStatus: 'finished_main',
-            shortSummary: '强调证明与推导，打牢数学基础。',
-            spoilerLevel: 'none'
+            liked: true,
+            difficulty: 4,
+            comment: '强调证明与推导，打牢数学基础。'
           },
           {
             userEmail: 'carol@example.com',
-            recommend: 'neutral',
-            overall: 7,
-            playStatus: 'in_progress',
-            shortSummary: '大作业需要写 LaTeX，第一次可能略痛苦。',
-            spoilerLevel: 'none'
+            liked: true,
+            difficulty: 3,
+            comment: '大作业需要写 LaTeX，第一次可能略痛苦。'
           }
         ],
         courseComments: [
@@ -410,14 +399,12 @@ const departments: SeedDepartment[] = [
           }
         ],
         posts: [],
-        ratings: [
+        feedbacks: [
           {
             userEmail: 'seed@example.com',
-            recommend: 'yes',
-            overall: 8,
-            playStatus: 'finished_main',
-            shortSummary: '课堂例题覆盖考点，期末难度适中。',
-            spoilerLevel: 'none'
+            liked: true,
+            difficulty: 3,
+            comment: '课堂例题覆盖考点，期末难度适中。'
           }
         ]
       }
@@ -546,6 +533,8 @@ async function main() {
             type: resource.type,
             term: resource.term ?? null,
             teacher_id: teacherId,
+             teacher_name: resource.teacher ?? null,
+             summary: resource.summary ?? null,
             author_id: authorId,
             links: resource.links,
             status: 'published',
@@ -577,28 +566,24 @@ async function main() {
         })
       }
 
-      for (const rating of courseSeed.ratings) {
-        const userId = userMap.get(rating.userEmail)?.id
+      for (const feedback of courseSeed.feedbacks ?? []) {
+        const userId = userMap.get(feedback.userEmail)?.id
         if (!userId) continue
-        await prisma.course_rating.upsert({
+        await prisma.course_feedback.upsert({
           where: {
             course_id_user_id: { course_id: course.id, user_id: userId }
           },
           update: {
-            recommend: rating.recommend,
-            overall: rating.overall,
-            play_status: rating.playStatus,
-            short_summary: rating.shortSummary,
-            spoiler_level: rating.spoilerLevel
+            liked: feedback.liked,
+            difficulty: feedback.difficulty ?? null,
+            comment: feedback.comment ?? null
           },
           create: {
             course_id: course.id,
             user_id: userId,
-            recommend: rating.recommend,
-            overall: rating.overall,
-            play_status: rating.playStatus,
-            short_summary: rating.shortSummary,
-            spoiler_level: rating.spoilerLevel
+            liked: feedback.liked,
+            difficulty: feedback.difficulty ?? null,
+            comment: feedback.comment ?? null
           }
         })
       }
@@ -631,17 +616,20 @@ async function main() {
         }
       }
 
-      const [resourceCount, postCount, ratingAgg] = await Promise.all([
+      const [resourceCount, postCount, heartCount, difficultyAgg] = await Promise.all([
         prisma.resource.count({
           where: { course_id: course.id, status: 'published' }
         }),
         prisma.post.count({
           where: { course_id: course.id, status: 'published' }
         }),
-        prisma.course_rating.aggregate({
-          _avg: { overall: true },
-          _count: { overall: true },
-          where: { course_id: course.id }
+        prisma.course_feedback.count({
+          where: { course_id: course.id, liked: true }
+        }),
+        prisma.course_feedback.aggregate({
+          _avg: { difficulty: true },
+          _count: { difficulty: true },
+          where: { course_id: course.id, difficulty: { not: null } }
         })
       ])
 
@@ -650,15 +638,16 @@ async function main() {
         data: {
           resource_count: resourceCount,
           post_count: postCount,
-          rating_count: ratingAgg._count.overall,
-          rating_avg: ratingAgg._avg.overall
+          heart_count: heartCount,
+          difficulty_avg: difficultyAgg._avg.difficulty ?? 0,
+          difficulty_votes: difficultyAgg._count.difficulty
         }
       })
     }
   }
 
   console.log(
-    'Seed data has been populated for departments, courses, resources、posts、评论与评分。'
+    'Seed data has been populated for departments, courses, resources、posts、评论与课程反馈。'
   )
 }
 

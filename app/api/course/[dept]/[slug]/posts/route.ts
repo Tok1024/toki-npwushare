@@ -23,7 +23,9 @@ export const GET = async (
   const page = parsed.page ?? 1
   const pageSize = parsed.pageSize ?? 20
 
-  const department = await prisma.department.findUnique({ where: { slug: dept } })
+  const department = await prisma.department.findUnique({
+    where: { slug: dept }
+  })
   if (!department) return NextResponse.json('学院不存在')
 
   const course = await prisma.course.findUnique({

@@ -14,41 +14,47 @@ interface Props {
 
 export const UserCommentCard = ({ comment }: Props) => {
   return (
-    <Card>
-      <CardBody className="space-y-2">
+    <Card className="border border-default-100 shadow-sm hover:shadow-md transition-all bg-white/50 backdrop-blur-sm">
+      <CardBody className="space-y-3 p-4">
         {comment.quotedUserUid && (
-          <h4 className="space-x-2">
-            <span className="text-default-500">回复给</span>
-            <Link href={`/user/${comment.quotedUserUid}/resource`}>
+          <h4 className="space-x-2 text-sm">
+            <span className="text-slate-400">回复给</span>
+            <Link
+              href={`/user/${comment.quotedUserUid}/resource`}
+              className="text-blue-500 font-medium"
+            >
               {comment.quotedUsername}
             </Link>
           </h4>
         )}
 
-        <p>{comment.content}</p>
+        <p className="text-slate-700 text-sm leading-relaxed">
+          {comment.content}
+        </p>
 
-        <div className="flex items-center justify-between text-default-500">
-          <span className="text-sm text-muted-foreground">
-            发布于 {formatDistanceToNow(comment.created)}
-          </span>
+        <div className="flex items-center justify-between pt-2 border-t border-default-100">
+          <div className="flex flex-col gap-1">
+            <span className="text-xs text-slate-400">
+              发布于 {formatDistanceToNow(comment.created)}
+            </span>
+            <div className="text-xs text-slate-500">
+              位置{' '}
+              <Link
+                size="sm"
+                href={`/${comment.patchUniqueId}`}
+                className="text-blue-500 hover:underline"
+              >
+                {comment.patchName}
+              </Link>
+            </div>
+          </div>
 
           <Tooltip content="点赞数">
-            <Chip
-              startContent={<Heart className="size-4" />}
-              variant="light"
-              size="sm"
-              className="gap-2 text-default-500"
-            >
+            <div className="flex items-center gap-1 text-xs text-slate-400 hover:text-rose-500 transition-colors cursor-default">
+              <Heart className="size-3.5" />
               {comment.like}
-            </Chip>
+            </div>
           </Tooltip>
-        </div>
-
-        <div className="text-sm text-default-500">
-          位置{' '}
-          <Link size="sm" underline="always" href={`/${comment.patchUniqueId}`}>
-            {comment.patchName}
-          </Link>
         </div>
       </CardBody>
     </Card>

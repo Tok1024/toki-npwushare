@@ -1,7 +1,12 @@
-"use client"
+'use client'
 
 import { useEffect, useState } from 'react'
-import { ModalBody, ModalContent, ModalFooter, ModalHeader } from '@heroui/react'
+import {
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader
+} from '@heroui/react'
 import { Button } from '@heroui/button'
 import { Switch, Slider, Textarea } from '@heroui/react'
 import toast from 'react-hot-toast'
@@ -81,7 +86,9 @@ export const FeedbackModal = ({
   return (
     <ModalContent>
       <ModalHeader className="flex-col items-start space-y-1">
-        <p className="text-lg font-semibold">{initial ? '更新反馈' : '提交课程反馈'}</p>
+        <p className="text-lg font-semibold">
+          {initial ? '更新反馈' : '提交课程反馈'}
+        </p>
         <p className="text-small text-default-500">
           红心用来表示喜欢，难度投票帮助后来者评估课程强度。
         </p>

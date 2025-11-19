@@ -14,4 +14,3 @@ NWPUShare 是一个面向校园与自学场景的资料共享站。课程页面�
 本项目基于 [KUN1007/kun-touchgal-next](https://github.com/KUN1007/kun-touchgal-next) 项目二次开发，并同样遵循 [AGPL-3.0](https://www.gnu.org/licenses/agpl-3.0.html) 开源协议。
 
 感谢 TouchGAL 开发组的卓越工作。
-

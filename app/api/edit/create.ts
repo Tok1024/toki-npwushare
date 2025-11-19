@@ -93,7 +93,9 @@ export const createGalgame = async (
   if (vndbId) {
     try {
       await ensurePatchCompaniesFromVNDB(res.patchId, vndbId, uid)
-    } catch {}
+    } catch {
+      // ignore
+    }
   }
 
   if (tag.length) {

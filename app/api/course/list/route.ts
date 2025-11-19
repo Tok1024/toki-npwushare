@@ -3,6 +3,8 @@ import { z } from 'zod'
 import { prisma } from '~/prisma'
 import { kunParseGetQuery } from '~/app/api/utils/parseQuery'
 
+//这个页是server component, 可以直接用prisma
+
 const QuerySchema = z.object({
   page: z.coerce.number().int().min(1).optional(),
   pageSize: z.coerce.number().int().min(1).max(100).optional(),

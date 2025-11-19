@@ -46,7 +46,7 @@ export default async function CourseIndexPage({ searchParams }: Props) {
         </Button>
       </form>
 
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {courses.map((course) => (
           <CourseCard
             key={course.id}
@@ -65,7 +65,7 @@ export default async function CourseIndexPage({ searchParams }: Props) {
           />
         ))}
         {courses.length === 0 && (
-          <p className="text-default-400">
+          <p className="text-default-400 col-span-full text-center py-10">
             未找到匹配的课程，可以尝试其它关键词。
           </p>
         )}

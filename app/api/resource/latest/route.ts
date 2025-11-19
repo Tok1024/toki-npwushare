@@ -49,4 +49,3 @@ export const GET = async (req: NextRequest) => {
 
   return NextResponse.json({ total, page, pageSize, list: data })
 }
-

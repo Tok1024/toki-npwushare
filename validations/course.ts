@@ -21,9 +21,7 @@ export const courseCommentUpdateSchema = z.object({
 export const courseFeedbackCreateSchema = z.object({
   courseId: z.coerce.number().min(1).max(9999999),
   liked: z.boolean({ message: '请选择是否喜欢该课程' }),
-  difficulty: z
-    .union([z.coerce.number().min(1).max(5), z.null()])
-    .optional(),
+  difficulty: z.union([z.coerce.number().min(1).max(5), z.null()]).optional(),
   comment: z
     .string()
     .trim()
@@ -34,9 +32,7 @@ export const courseFeedbackCreateSchema = z.object({
 export const courseFeedbackUpdateSchema = z.object({
   feedbackId: z.coerce.number().min(1).max(9999999),
   liked: z.boolean({ message: '请选择是否喜欢该课程' }),
-  difficulty: z
-    .union([z.coerce.number().min(1).max(5), z.null()])
-    .optional(),
+  difficulty: z.union([z.coerce.number().min(1).max(5), z.null()]).optional(),
   comment: z
     .string()
     .trim()

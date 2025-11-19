@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import useSWR from 'swr'
 import { Select, SelectItem, Input } from '@heroui/react'
@@ -24,7 +24,9 @@ export const DepartmentCoursePicker = ({
 
   return (
     <div className="space-y-2">
-      <label className="text-small text-default-500">选择已有课程（可选）</label>
+      <label className="text-small text-default-500">
+        选择已有课程（可选）
+      </label>
       <Select
         placeholder="直接选择已有课程"
         selectedKeys={courseId ? [courseId] : []}

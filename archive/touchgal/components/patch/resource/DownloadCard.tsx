@@ -54,7 +54,11 @@ export const ResourceDownloadCard = ({ resource }: Props) => {
 
       {resource.content.split(',').map((link) => (
         <div key={Math.random()} className="space-y-2">
-          <KunExternalLink onPress={handleClickDownload} underline="always" link={link}>
+          <KunExternalLink
+            onPress={handleClickDownload}
+            underline="always"
+            link={link}
+          >
             {link}
           </KunExternalLink>
 

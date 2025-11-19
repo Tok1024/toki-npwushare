@@ -30,40 +30,53 @@ export default async function DepartmentPage() {
         description="按学院浏览课程，快速定位你所在院系的资料与经验分享。"
       />
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {departments.map((dept) => (
-          <Card key={dept.slug} className="border border-content2 bg-content1/40">
-            <CardBody className="space-y-3">
-              <div className="flex items-center justify-between">
+          <Card
+            key={dept.slug}
+            className="border border-default-100 shadow-sm hover:shadow-md transition-all bg-white/50 backdrop-blur-sm"
+          >
+            <CardBody className="space-y-4 p-5">
+              <div className="flex items-center justify-between pb-2 border-b border-default-100">
                 <div>
-                  <p className="text-small text-default-500">{dept.slug}</p>
-                  <h2 className="text-xl font-semibold">{dept.name}</h2>
+                  <p className="text-xs font-bold text-blue-500 uppercase tracking-wider">
+                    {dept.slug}
+                  </p>
+                  <h2 className="text-lg font-bold text-slate-800 mt-0.5">
+                    {dept.name}
+                  </h2>
                 </div>
-                <span className="text-small text-default-500">
-                  课程 {dept._count.courses}
-                </span>
+                <div className="flex flex-col items-end">
+                  <span className="text-2xl font-bold text-slate-700 leading-none">
+                    {dept._count.courses}
+                  </span>
+                  <span className="text-xs text-slate-400 mt-1">课程</span>
+                </div>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-2.5">
                 {dept.courses.length ? (
                   dept.courses.map((course) => (
                     <div
                       key={course.id}
-                      className="flex items-center justify-between text-sm text-default-600"
+                      className="flex items-center justify-between text-sm group"
                     >
                       <Link
-                        className="text-primary hover:underline"
+                        className="text-slate-600 group-hover:text-blue-600 transition-colors truncate max-w-[70%]"
                         href={`/course/${dept.slug}/${course.slug}`}
+                        title={course.name}
                       >
                         {course.name}
                       </Link>
-                      <span className="text-default-400">
-                        资源 {course.resource_count}
+                      <span className="text-xs text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded group-hover:bg-blue-50 group-hover:text-blue-500 transition-colors">
+                        {course.resource_count} 资源
                       </span>
                     </div>
                   ))
                 ) : (
-                  <p className="text-default-400">该学院暂无课程</p>
+                  <p className="text-sm text-slate-400 italic py-2">
+                    该学院暂无热门课程
+                  </p>
                 )}
               </div>
             </CardBody>

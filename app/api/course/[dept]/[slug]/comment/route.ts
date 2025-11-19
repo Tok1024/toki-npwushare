@@ -1,21 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { prisma } from '~/prisma'
-import { kunParseDeleteQuery, kunParseGetQuery, kunParsePostBody, kunParsePutBody } from '~/app/api/utils/parseQuery'
+import {
+  kunParseDeleteQuery,
+  kunParseGetQuery,
+  kunParsePostBody,
+  kunParsePutBody
+} from '~/app/api/utils/parseQuery'
 import { verifyHeaderCookie } from '~/middleware/_verifyHeaderCookie'
 import { markdownToHtml } from '~/app/api/utils/render/markdownToHtml'
-import { courseCommentCreateSchema, courseCommentUpdateSchema } from '~/validations/course'
+import {
+  courseCommentCreateSchema,
+  courseCommentUpdateSchema
+} from '~/validations/course'
 import { nestCourseComments } from './_helpers'
 import type { PatchComment } from '~/types/api/patch'
 
 const deptSlugSchema = z.object({ dept: z.string(), slug: z.string() })
 
 const commentIdSchema = z.object({
-  commentId: z.coerce.number({ message: '评论 ID 必须为数字' }).min(1).max(9999999)
+  commentId: z.coerce
+    .number({ message: '评论 ID 必须为数字' })
+    .min(1)
+    .max(9999999)
 })
 
 const getCourse = async (dept: string, slug: string) => {
-  const department = await prisma.department.findUnique({ where: { slug: dept } })
+  const department = await prisma.department.findUnique({
+    where: { slug: dept }
+  })
   if (!department) return null
   const course = await prisma.course.findUnique({
     where: { department_id_slug: { department_id: department.id, slug } }
@@ -56,7 +69,11 @@ export const GET = async (
       created: String(c.created),
       updated: String(c.updated),
       reply: [],
-      user: { id: c.author?.id || 0, name: c.author?.name || 'User', avatar: c.author?.avatar || '' }
+      user: {
+        id: c.author?.id || 0,
+        name: c.author?.name || 'User',
+        avatar: c.author?.avatar || ''
+      }
     }))
   )
 
@@ -74,7 +91,8 @@ export const POST = async (
 
   const { dept, slug } = deptSlugSchema.parse(await params)
   const course = await getCourse(dept, slug)
-  if (!course || input.courseId !== course.id) return NextResponse.json('课程不存在')
+  if (!course || input.courseId !== course.id)
+    return NextResponse.json('课程不存在')
 
   const created = await prisma.comment.create({
     data: {
@@ -94,11 +112,17 @@ export const PUT = async (req: NextRequest) => {
   const payload = await verifyHeaderCookie(req)
   if (!payload) return NextResponse.json('用户未登录')
 
-  const existing = await prisma.comment.findUnique({ where: { id: input.commentId } })
+  const existing = await prisma.comment.findUnique({
+    where: { id: input.commentId }
+  })
   if (!existing) return NextResponse.json('评论不存在')
-  if (existing.author_id !== payload.uid && payload.role < 3) return NextResponse.json('没有权限')
+  if (existing.author_id !== payload.uid && payload.role < 3)
+    return NextResponse.json('没有权限')
 
-  const updated = await prisma.comment.update({ where: { id: input.commentId }, data: { content: input.content } })
+  const updated = await prisma.comment.update({
+    where: { id: input.commentId },
+    data: { content: input.content }
+  })
   return NextResponse.json(updated)
 }
 
@@ -108,9 +132,12 @@ export const DELETE = async (req: NextRequest) => {
   const payload = await verifyHeaderCookie(req)
   if (!payload) return NextResponse.json('用户未登录')
 
-  const existing = await prisma.comment.findUnique({ where: { id: input.commentId } })
+  const existing = await prisma.comment.findUnique({
+    where: { id: input.commentId }
+  })
   if (!existing) return NextResponse.json('评论不存在')
-  if (existing.author_id !== payload.uid && payload.role < 3) return NextResponse.json('没有权限')
+  if (existing.author_id !== payload.uid && payload.role < 3)
+    return NextResponse.json('没有权限')
 
   await prisma.comment.delete({ where: { id: input.commentId } })
   return NextResponse.json({})

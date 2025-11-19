@@ -1,7 +1,9 @@
 import { convert } from 'html-to-text'
 import type { PatchComment } from '~/types/api/patch'
 
-export const nestCourseComments = (flatComments: PatchComment[]): PatchComment[] => {
+export const nestCourseComments = (
+  flatComments: PatchComment[]
+): PatchComment[] => {
   const commentMap: { [key: number]: PatchComment } = {}
   flatComments.forEach((c) => {
     c.reply = []
@@ -22,4 +24,3 @@ export const nestCourseComments = (flatComments: PatchComment[]): PatchComment[]
   })
   return nested
 }
-

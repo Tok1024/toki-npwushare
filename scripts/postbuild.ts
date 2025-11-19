@@ -35,7 +35,9 @@ const copyFiles = async () => {
       await copyDirectory('.next/static', '.next/standalone/.next/static')
       console.log('Files copied successfully.')
     } else {
-      console.log('Detected non-Windows OS. Using cp command for copying files.')
+      console.log(
+        'Detected non-Windows OS. Using cp command for copying files.'
+      )
 
       const commands: string[] = [
         'cp -r public .next/standalone/',

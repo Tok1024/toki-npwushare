@@ -16,7 +16,12 @@ async function main() {
   // 2) course (使用复合唯一 department_id + slug)
   // 注意：schema 中对该复合键命名为 department_id_slug
   const course = await prisma.course.upsert({
-    where: { department_id_slug: { department_id: dept.id, slug: 'intro-to-programming' } },
+    where: {
+      department_id_slug: {
+        department_id: dept.id,
+        slug: 'intro-to-programming'
+      }
+    },
     update: {},
     create: {
       department_id: dept.id,
@@ -35,7 +40,9 @@ async function main() {
   })
 
   // 4) teacher（如果已存在同名教师则复用）
-  let teacher = await prisma.teacher.findFirst({ where: { name: '张老师', department_id: dept.id } })
+  let teacher = await prisma.teacher.findFirst({
+    where: { name: '张老师', department_id: dept.id }
+  })
   if (!teacher) {
     teacher = await prisma.teacher.create({
       data: {
@@ -95,7 +102,11 @@ async function main() {
     }
   })
 
-  console.log('seed finished:', { dept: dept.slug, course: course.slug, user: user.email })
+  console.log('seed finished:', {
+    dept: dept.slug,
+    course: course.slug,
+    user: user.email
+  })
 }
 
 main()

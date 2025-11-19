@@ -9,7 +9,15 @@ import { kunErrorHandler } from '~/utils/kunErrorHandler'
 import { cn } from '~/utils/cn'
 import type { PatchComment } from '~/types/api/patch'
 
-export const CommentLikeButton = ({ comment, dept, slug }: { comment: PatchComment; dept: string; slug: string }) => {
+export const CommentLikeButton = ({
+  comment,
+  dept,
+  slug
+}: {
+  comment: PatchComment
+  dept: string
+  slug: string
+}) => {
   const { user } = useUserStore((state) => state)
   const [liked, setLiked] = useState(comment.isLike)
   const [likeCount, setLikeCount] = useState(comment.likeCount)
@@ -19,7 +27,10 @@ export const CommentLikeButton = ({ comment, dept, slug }: { comment: PatchComme
     if (!user.uid) return toast.error('请登录以点赞')
     if (comment.user.id === user.uid) return toast.error('您不能给自己点赞')
     setLoading(true)
-    const res = await kunFetchPut<KunResponse<boolean>>(`/course/${dept}/${slug}/comment/like`, { commentId: comment.id })
+    const res = await kunFetchPut<KunResponse<boolean>>(
+      `/course/${dept}/${slug}/comment/like`,
+      { commentId: comment.id }
+    )
     setLoading(false)
     kunErrorHandler(res, (value) => {
       setLiked(value)
@@ -29,11 +40,17 @@ export const CommentLikeButton = ({ comment, dept, slug }: { comment: PatchComme
 
   return (
     <Tooltip key="like" color="default" content="点赞" placement="bottom">
-      <Button variant="ghost" size="sm" className="gap-2" disabled={loading} isLoading={loading} onPress={toggleLike}>
+      <Button
+        variant="ghost"
+        size="sm"
+        className="gap-2"
+        disabled={loading}
+        isLoading={loading}
+        onPress={toggleLike}
+      >
         <ThumbsUp className={cn('w-4 h-4', liked ? 'text-danger-500' : '')} />
         {likeCount}
       </Button>
     </Tooltip>
   )
 }
-

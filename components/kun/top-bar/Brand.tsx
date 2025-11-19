@@ -9,15 +9,13 @@ export const KunTopBarBrand = () => {
       <Link className="flex items-center" href="/">
         <Image
           src="/favicon.webp"
-          alt={kunMoyuMoe.titleShort}
+          alt="NWPUShare"
           width={32}
           height={32}
           priority
           className="shrink-0"
         />
-        <p className="ml-4 mr-2 font-bold text-inherit">
-          {kunMoyuMoe.creator.name}
-        </p>
+        <p className="ml-4 mr-2 font-bold text-inherit">NWPUShare</p>
       </Link>
     </NavbarBrand>
   )

@@ -20,13 +20,20 @@ export const UserActivity = ({ id }: UserActivityProps) => {
   ]
 
   return (
-    <Card className="w-full">
-      <CardBody>
+    <Card className="w-full border border-default-100 shadow-sm bg-white/50 backdrop-blur-sm">
+      <CardBody className="p-2">
         <Tabs
           aria-label="用户活动"
-          variant="underlined"
+          variant="light"
+          color="primary"
           fullWidth
           selectedKey={lastSegment}
+          classNames={{
+            tabList: 'gap-4',
+            cursor: 'w-full bg-blue-500',
+            tab: 'max-w-fit px-4 h-10',
+            tabContent: 'group-data-[selected=true]:text-blue-600 font-medium'
+          }}
         >
           {tabs.map(({ key, title, href }) => (
             <Tab key={key} as={Link} title={title} href={href} />

@@ -533,8 +533,8 @@ async function main() {
             type: resource.type,
             term: resource.term ?? null,
             teacher_id: teacherId,
-             teacher_name: resource.teacher ?? null,
-             summary: resource.summary ?? null,
+            teacher_name: resource.teacher ?? null,
+            summary: resource.summary ?? null,
             author_id: authorId,
             links: resource.links,
             status: 'published',
@@ -616,22 +616,23 @@ async function main() {
         }
       }
 
-      const [resourceCount, postCount, heartCount, difficultyAgg] = await Promise.all([
-        prisma.resource.count({
-          where: { course_id: course.id, status: 'published' }
-        }),
-        prisma.post.count({
-          where: { course_id: course.id, status: 'published' }
-        }),
-        prisma.course_feedback.count({
-          where: { course_id: course.id, liked: true }
-        }),
-        prisma.course_feedback.aggregate({
-          _avg: { difficulty: true },
-          _count: { difficulty: true },
-          where: { course_id: course.id, difficulty: { not: null } }
-        })
-      ])
+      const [resourceCount, postCount, heartCount, difficultyAgg] =
+        await Promise.all([
+          prisma.resource.count({
+            where: { course_id: course.id, status: 'published' }
+          }),
+          prisma.post.count({
+            where: { course_id: course.id, status: 'published' }
+          }),
+          prisma.course_feedback.count({
+            where: { course_id: course.id, liked: true }
+          }),
+          prisma.course_feedback.aggregate({
+            _avg: { difficulty: true },
+            _count: { difficulty: true },
+            where: { course_id: course.id, difficulty: { not: null } }
+          })
+        ])
 
       await prisma.course.update({
         where: { id: course.id },

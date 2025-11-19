@@ -9,4 +9,3 @@ export const CommentContent = ({ comment }: { comment: PatchComment }) => {
     />
   )
 }
-

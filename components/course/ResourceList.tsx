@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
@@ -14,12 +14,20 @@ type Item = {
 
 type ApiResp = { total: number; page: number; pageSize: number; list: Item[] }
 
-export const ResourceList = ({ dept, slug }: { dept: string; slug: string }) => {
+export const ResourceList = ({
+  dept,
+  slug
+}: {
+  dept: string
+  slug: string
+}) => {
   const [items, setItems] = useState<Item[]>([])
 
   useEffect(() => {
     const run = async () => {
-      const res = await kunFetchGet<ApiResp>(`/course/${dept}/${slug}/resources`)
+      const res = await kunFetchGet<ApiResp>(
+        `/course/${dept}/${slug}/resources`
+      )
       if (typeof res === 'string') return
       setItems(res.list)
     }
@@ -42,11 +50,12 @@ export const ResourceList = ({ dept, slug }: { dept: string; slug: string }) => 
               <div className="text-tiny text-default-500">{r.type}</div>
               <div className="font-medium line-clamp-2">{r.title}</div>
             </div>
-            <div className="text-tiny text-default-400">{new Date(r.created).toLocaleDateString()}</div>
+            <div className="text-tiny text-default-400">
+              {new Date(r.created).toLocaleDateString()}
+            </div>
           </CardBody>
         </Card>
       ))}
     </div>
   )
 }
-

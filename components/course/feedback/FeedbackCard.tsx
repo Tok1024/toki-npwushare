@@ -14,7 +14,12 @@ interface Props {
   onDelete: (feedbackId: number) => void
 }
 
-export const FeedbackCard = ({ feedback, canEdit, onEdit, onDelete }: Props) => {
+export const FeedbackCard = ({
+  feedback,
+  canEdit,
+  onEdit,
+  onDelete
+}: Props) => {
   const createdLabel = dayjs(feedback.created).format('YYYY-MM-DD HH:mm')
   const likedLabel = feedback.liked ? '已标记喜欢' : '未点赞'
 
@@ -25,7 +30,9 @@ export const FeedbackCard = ({ feedback, canEdit, onEdit, onDelete }: Props) => 
           <div className="flex items-center gap-3">
             <Avatar size="sm" src={feedback.user?.avatar ?? undefined} />
             <div>
-              <p className="text-sm font-medium">{feedback.user?.name ?? '匿名同学'}</p>
+              <p className="text-sm font-medium">
+                {feedback.user?.name ?? '匿名同学'}
+              </p>
               <p className="text-tiny text-default-400">{createdLabel}</p>
             </div>
           </div>
@@ -55,8 +62,12 @@ export const FeedbackCard = ({ feedback, canEdit, onEdit, onDelete }: Props) => 
         </div>
 
         <div className="flex flex-wrap items-center gap-4 text-small text-default-600">
-          <span className={`flex items-center gap-1 ${feedback.liked ? 'text-danger' : ''}`}>
-            <Heart className={`size-4 ${feedback.liked ? 'fill-danger' : ''}`} />
+          <span
+            className={`flex items-center gap-1 ${feedback.liked ? 'text-danger' : ''}`}
+          >
+            <Heart
+              className={`size-4 ${feedback.liked ? 'fill-danger' : ''}`}
+            />
             {likedLabel}
           </span>
           {typeof feedback.difficulty === 'number' && (

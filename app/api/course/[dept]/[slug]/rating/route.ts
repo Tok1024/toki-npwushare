@@ -16,7 +16,9 @@ const deptSlugSchema = z.object({ dept: z.string(), slug: z.string() })
 const feedbackIdSchema = z.object({ feedbackId: z.coerce.number().min(1) })
 
 const getCourse = async (dept: string, slug: string) => {
-  const department = await prisma.department.findUnique({ where: { slug: dept } })
+  const department = await prisma.department.findUnique({
+    where: { slug: dept }
+  })
   if (!department) return null
   const course = await prisma.course.findUnique({
     where: { department_id_slug: { department_id: department.id, slug } }
@@ -84,7 +86,7 @@ export const GET = async (
 
   const mapped = feedbacks.map(mapFeedback(dept, slug))
   const mine = payload
-    ? mapped.find((item) => item.user?.id === payload.uid) ?? null
+    ? (mapped.find((item) => item.user?.id === payload.uid) ?? null)
     : null
 
   return NextResponse.json({

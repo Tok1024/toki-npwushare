@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useCallback, useEffect, useState, useTransition } from 'react'
 import { Button } from '@heroui/button'
@@ -11,7 +11,10 @@ import { KunNull } from '~/components/kun/Null'
 import { KunLoading } from '~/components/kun/Loading'
 import { useDisclosure } from '@heroui/react'
 import { useUserStore } from '~/store/userStore'
-import type { CourseFeedbackEntry, CourseFeedbackResponse } from '~/types/course'
+import type {
+  CourseFeedbackEntry,
+  CourseFeedbackResponse
+} from '~/types/course'
 import { FeedbackCard } from './FeedbackCard'
 import { FeedbackModal } from './FeedbackModal'
 

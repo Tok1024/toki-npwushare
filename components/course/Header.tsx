@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useState } from 'react'
 import { Card, CardBody } from '@heroui/card'
@@ -30,7 +30,8 @@ export const CourseHeader = ({ dept, slug, course, teachers }: Props) => {
             {course.heart_count > 0 && <span>红心 {course.heart_count}</span>}
             {course.difficulty_votes > 0 && (
               <span>
-                难度 {course.difficulty_avg?.toFixed(1)} ({course.difficulty_votes} 票)
+                难度 {course.difficulty_avg?.toFixed(1)} (
+                {course.difficulty_votes} 票)
               </span>
             )}
           </div>
@@ -49,10 +50,7 @@ export const CourseHeader = ({ dept, slug, course, teachers }: Props) => {
         onSelectionChange={(v) => setSelected(String(v))}
       >
         <Tab key="introduction" title="课程信息" className="p-0 min-w-20">
-          <CourseIntroTab
-            course={course}
-            teachers={teachers as any}
-          />
+          <CourseIntroTab course={course} teachers={teachers as any} />
         </Tab>
         <Tab key="resources" title="课程资源" className="p-0 min-w-20">
           <CourseResourceTab dept={dept} slug={slug} courseId={course.id} />

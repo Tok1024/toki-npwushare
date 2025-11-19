@@ -13,20 +13,20 @@ export const PatchCard = ({ patch }: Props) => {
       isPressable
       as={Link}
       href={`/${patch.uniqueId}`}
-      className="w-full border border-default-100 dark:border-default-200"
+      className="w-full border border-default-100 shadow-sm hover:shadow-md transition-all bg-white/50 backdrop-blur-sm group"
     >
-      <CardBody>
-        <div className="relative w-full pb-[56.25%]">
+      <CardBody className="p-3">
+        <div className="relative w-full pb-[56.25%] overflow-hidden rounded-lg">
           <Image
             removeWrapper
             src={patch.banner.replace(/\.avif$/, '-mini.avif')}
             alt={patch.name}
-            className="absolute inset-0 object-cover rounded-lg size-full"
-            radius="lg"
+            className="absolute inset-0 object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+            radius="none"
           />
         </div>
-        <div className="mt-3 space-y-3">
-          <h2 className="text-lg font-semibold transition-colors line-clamp-2 hover:text-primary-500">
+        <div className="mt-3 space-y-2 px-1 pb-1">
+          <h2 className="text-lg font-bold text-slate-800 line-clamp-2 group-hover:text-blue-600 transition-colors">
             {patch.name}
           </h2>
           <KunCardStats patch={patch} isMobile={true} />

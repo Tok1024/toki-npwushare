@@ -32,7 +32,7 @@ export const CourseCard = ({ c }: { c: SimpleCourse }) => {
             variant="flat"
             classNames={{
               base: 'bg-blue-50 text-blue-600 h-6',
-              content: 'font-medium text-xs px-2',
+              content: 'font-medium text-xs px-2'
             }}
           >
             {c.deptSlug}

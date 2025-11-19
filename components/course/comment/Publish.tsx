@@ -29,11 +29,14 @@ export const PublishComment = ({
   const submit = async () => {
     if (!content.trim()) return
     setLoading(true)
-    const res = await kunFetchPost<KunResponse<PatchComment>>(`/course/${dept}/${slug}/comment`, {
-      courseId,
-      parentId: parentId ?? null,
-      content
-    })
+    const res = await kunFetchPost<KunResponse<PatchComment>>(
+      `/course/${dept}/${slug}/comment`,
+      {
+        courseId,
+        parentId: parentId ?? null,
+        content
+      }
+    )
     setLoading(false)
     if (typeof res === 'string') return toast.error(res)
     toast.success('评论发布成功')
@@ -59,7 +62,9 @@ export const PublishComment = ({
   return (
     <div className="space-y-2">
       {receiverUsername && (
-        <div className="text-small text-default-500">回复：{receiverUsername}</div>
+        <div className="text-small text-default-500">
+          回复：{receiverUsername}
+        </div>
       )}
       <Textarea
         value={content}
@@ -75,4 +80,3 @@ export const PublishComment = ({
     </div>
   )
 }
-

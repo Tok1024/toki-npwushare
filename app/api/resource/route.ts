@@ -49,7 +49,7 @@ export const getCourseResources = async (
       take: limit,
       skip: offset,
       where: {
-        status: 'published',
+        status: 'published'
       },
       orderBy,
       include: {

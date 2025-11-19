@@ -18,8 +18,7 @@ import type { UserState } from '~/store/userStore'
 type LoginFormData = z.infer<typeof loginSchema>
 
 export const LoginForm = () => {
-  const shouldBypassCaptcha =
-    process.env.NEXT_PUBLIC_DISABLE_CAPTCHA === 'true'
+  const shouldBypassCaptcha = process.env.NEXT_PUBLIC_DISABLE_CAPTCHA === 'true'
   const bypassCaptchaCode = 'bypass-captcha-code'
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [isPending, startTransition] = useTransition()

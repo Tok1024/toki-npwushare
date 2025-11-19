@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
@@ -38,11 +38,12 @@ export const PostList = ({ dept, slug }: { dept: string; slug: string }) => {
         >
           <CardBody className="flex items-center justify-between">
             <div className="font-medium line-clamp-2">{p.title}</div>
-            <div className="text-tiny text-default-400">{new Date(p.created).toLocaleDateString()}</div>
+            <div className="text-tiny text-default-400">
+              {new Date(p.created).toLocaleDateString()}
+            </div>
           </CardBody>
         </Card>
       ))}
     </div>
   )
 }
-

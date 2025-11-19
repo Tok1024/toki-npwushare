@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect, useState } from 'react'
 import { Button } from '@heroui/button'
@@ -7,22 +7,38 @@ import { ChevronRight } from 'lucide-react'
 import { CourseCard, type SimpleCourse } from './CourseCard'
 import { kunFetchGet } from '~/utils/kunFetch'
 
-type ApiResp = { total: number; page: number; pageSize: number; list: SimpleCourse[] }
+type ApiResp = {
+  total: number
+  page: number
+  pageSize: number
+  list: SimpleCourse[]
+}
 
 export const HomeCourseSection = () => {
   const [courses, setCourses] = useState<SimpleCourse[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const run = async () => {
+      setLoading(true)
+      setError(null)
       try {
         const res = await kunFetchGet<ApiResp | string>('/course/list', {
           page: 1,
           pageSize: 8
         })
-        if (typeof res === 'string') return
+        if (typeof res === 'string') {
+          setError('Unexpected response')
+          return
+        }
         setCourses(res.list.slice(0, 8))
-      } catch (error) {
-        console.error('Failed to fetch course list', error)
+      } catch (err: any) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to fetch course list', err)
+        setError(err?.message || '网络请求失败')
+      } finally {
+        setLoading(false)
       }
     }
     run()
@@ -43,8 +59,14 @@ export const HomeCourseSection = () => {
         </Button>
       </div>
 
-      {courses.length === 0 ? (
-        <p className="text-default-400 text-sm">暂无课程，欢迎前往上传页面创建。</p>
+      {loading ? (
+        <p className="text-default-400 text-sm">正在加载课程…</p>
+      ) : error ? (
+        <p className="text-rose-500 text-sm">加载课程失败：{error}</p>
+      ) : courses.length === 0 ? (
+        <p className="text-default-400 text-sm">
+          暂无课程，欢迎前往上传页面创建。
+        </p>
       ) : (
         <div className="grid gap-2 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
           {courses.map((course) => (

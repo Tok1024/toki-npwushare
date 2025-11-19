@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
@@ -32,12 +32,14 @@ export const HomeLatestResourceSection = () => {
           cache: 'no-store'
         })
         if (!response.ok) {
+          // eslint-disable-next-line no-console
           console.error('Failed to fetch resource list', response.status)
           return
         }
         const res: ApiResp = await response.json()
         setItems(res.list.slice(0, 6))
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Failed to fetch resource list', error)
       }
     }

@@ -16,7 +16,9 @@ export const CourseIntroTab = ({
             开设学院：{course?.department?.name ?? '—'}
           </div>
           {course?.code && (
-            <div className="text-small text-default-500">课程代码：{course.code}</div>
+            <div className="text-small text-default-500">
+              课程代码：{course.code}
+            </div>
           )}
           {teachers?.length > 0 && (
             <div className="text-small text-default-500">

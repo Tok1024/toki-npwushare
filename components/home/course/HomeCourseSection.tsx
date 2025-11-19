@@ -47,7 +47,7 @@ export const HomeCourseSection = () => {
   return (
     <section className="space-y-6">
       <div className="flex items-center space-x-4">
-        <h2 className="text-lg font-bold sm:text-2xl">最新课程</h2>
+        <h2 className="text-lg font-bold sm:text-2xl">最热课程</h2>
         <Button
           variant="light"
           as={Link}

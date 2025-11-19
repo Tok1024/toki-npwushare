@@ -79,7 +79,7 @@ const users: SeedUser[] = [
   { email: 'carol@example.com', name: 'carol', role: 1 }
 ]
 
-const departments: SeedDepartment[] = [
+const baseDepartments: SeedDepartment[] = [
   {
     slug: 'cs',
     name: '计算机科学与技术学院',
@@ -411,6 +411,300 @@ const departments: SeedDepartment[] = [
     ]
   }
 ]
+
+const makeSimpleCourses = (
+  deptSlug: string,
+  deptName: string,
+  teacherNames: string[]
+): SeedCourse[] => {
+  const courses: SeedCourse[] = []
+  const count = 5
+
+  for (let i = 0; i < count; i += 1) {
+    const teacherName = teacherNames[i % teacherNames.length]
+    const index = i + 1
+    courses.push({
+      slug: `${deptSlug}-course-${index}`,
+      name: `${deptName} 测试课程 ${index}`,
+      code: undefined,
+      description: `这是 ${deptName} 的第 ${index} 门示例课程，用于填充测试数据，方便在课程列表与详情页观察布局效果。`,
+      instructor: teacherName,
+      tags: ['测试数据', `${deptSlug}院`],
+      teachers: [{ name: teacherName, year: '2024-Fall' }],
+      resources: [
+        {
+          title: `课程 ${index} 讲义`,
+          type: 'slides',
+          term: '2024-Fall',
+          teacher: teacherName,
+          authorEmail: 'seed@example.com',
+          summary: '自动生成的示例讲义链接，用于测试资源列表与卡片布局。',
+          links: [
+            `https://example.com/${deptSlug}/course-${index}/slides`,
+            `https://backup.example.com/${deptSlug}/course-${index}/slides`
+          ]
+        },
+        {
+          title: `课程 ${index} 作业与答案`,
+          type: 'assignment',
+          term: '2024-Fall',
+          teacher: teacherName,
+          authorEmail: 'alice@example.com',
+          summary: '包含若干自动生成的作业题目与参考答案，用于测试多资源展示。',
+          links: [
+            `https://example.com/${deptSlug}/course-${index}/assignment`
+          ]
+        },
+        {
+          title: `课程 ${index} 往年试卷汇总`,
+          type: 'exam',
+          term: '2023-Fall',
+          teacher: teacherName,
+          authorEmail: 'bob@example.com',
+          links: [`https://example.com/${deptSlug}/course-${index}/exam-pack`]
+        }
+      ],
+      posts: [
+        {
+          title: `如何通过 ${deptName} 测试课程 ${index}`,
+          content:
+            '这是一条自动生成的课程经验贴：\n\n- 建议提前浏览课程讲义\n- 按章节整理高频题型\n- 期末前一周集中查漏补缺\n\n本内容主要用于测试帖子列表与详情页的排版。',
+          term: '2024-Fall',
+          teacher: teacherName,
+          authorEmail: 'bob@example.com'
+        }
+      ],
+      feedbacks: [
+        {
+          userEmail: 'seed@example.com',
+          liked: true,
+          difficulty: 2 + (index % 3),
+          comment:
+            '自动生成的反馈：整体难度适中，作业量合理，适合作为压力测试课程数据。'
+        },
+        {
+          userEmail: 'carol@example.com',
+          liked: index % 2 === 0,
+          difficulty: 3,
+          comment:
+            '这是第二条自动生成的反馈，用于观察课程反馈区域在数据量较大时的表现。'
+        }
+      ],
+      courseComments: [
+        {
+          userEmail: 'alice@example.com',
+          content:
+            '自动生成的课程评论：用来测试评论列表在课程详情页的显示效果。'
+        }
+      ]
+    })
+  }
+
+  return courses
+}
+
+const nwpuDepartments: SeedDepartment[] = [
+  {
+    slug: '1',
+    name: '航空学院',
+    teachers: [
+      { name: '航空-张老师', title: '教授' },
+      { name: '航空-李老师', title: '副教授' }
+    ],
+    courses: makeSimpleCourses('1', '航空学院', ['航空-张老师', '航空-李老师'])
+  },
+  {
+    slug: '2',
+    name: '航天学院',
+    teachers: [
+      { name: '航天-王老师', title: '教授' },
+      { name: '航天-赵老师', title: '讲师' }
+    ],
+    courses: makeSimpleCourses('2', '航天学院', ['航天-王老师', '航天-赵老师'])
+  },
+  {
+    slug: '3',
+    name: '航海学院',
+    teachers: [
+      { name: '航海-孙老师', title: '教授' },
+      { name: '航海-周老师', title: '副教授' }
+    ],
+    courses: makeSimpleCourses('3', '航海学院', ['航海-孙老师', '航海-周老师'])
+  },
+  {
+    slug: '4',
+    name: '材料学院',
+    teachers: [
+      { name: '材料-陈老师', title: '教授' },
+      { name: '材料-刘老师', title: '副教授' }
+    ],
+    courses: makeSimpleCourses('4', '材料学院', ['材料-陈老师', '材料-刘老师'])
+  },
+  {
+    slug: '5',
+    name: '机电学院',
+    teachers: [
+      { name: '机电-高老师', title: '教授' },
+      { name: '机电-黄老师', title: '讲师' }
+    ],
+    courses: makeSimpleCourses('5', '机电学院', ['机电-高老师', '机电-黄老师'])
+  },
+  {
+    slug: '6',
+    name: '力学与土木建筑学院',
+    teachers: [
+      { name: '土木-朱老师', title: '教授' },
+      { name: '土木-吴老师', title: '副教授' }
+    ],
+    courses: makeSimpleCourses('6', '力学与土木建筑学院', [
+      '土木-朱老师',
+      '土木-吴老师'
+    ])
+  },
+  {
+    slug: '7',
+    name: '动力与能源学院',
+    teachers: [
+      { name: '动力-何老师', title: '教授' },
+      { name: '动力-郭老师', title: '副教授' }
+    ],
+    courses: makeSimpleCourses('7', '动力与能源学院', [
+      '动力-何老师',
+      '动力-郭老师'
+    ])
+  },
+  {
+    slug: '8',
+    name: '电子信息学院',
+    teachers: [
+      { name: '电子-邓老师', title: '教授' },
+      { name: '电子-罗老师', title: '讲师' }
+    ],
+    courses: makeSimpleCourses('8', '电子信息学院', [
+      '电子-邓老师',
+      '电子-罗老师'
+    ])
+  },
+  {
+    slug: '9',
+    name: '自动化学院',
+    teachers: [
+      { name: '自化-冯老师', title: '教授' },
+      { name: '自化-潘老师', title: '副教授' }
+    ],
+    courses: makeSimpleCourses('9', '自动化学院', [
+      '自化-冯老师',
+      '自化-潘老师'
+    ])
+  },
+  {
+    slug: '10',
+    name: '计算机学院',
+    teachers: [
+      { name: '计科-张老师', title: '教授' },
+      { name: '计科-李老师', title: '副教授' }
+    ],
+    courses: makeSimpleCourses('10', '计算机学院', [
+      '计科-张老师',
+      '计科-李老师'
+    ])
+  },
+  {
+    slug: '11',
+    name: '理学院',
+    teachers: [
+      { name: '理学-王老师', title: '教授' },
+      { name: '理学-周老师', title: '副教授' }
+    ],
+    courses: makeSimpleCourses('11', '理学院', ['理学-王老师', '理学-周老师'])
+  },
+  {
+    slug: '12',
+    name: '管理学院',
+    teachers: [
+      { name: '管理-杨老师', title: '教授' },
+      { name: '管理-郑老师', title: '副教授' }
+    ],
+    courses: makeSimpleCourses('12', '管理学院', [
+      '管理-杨老师',
+      '管理-郑老师'
+    ])
+  },
+  {
+    slug: '13',
+    name: '人文与经法学院',
+    teachers: [
+      { name: '人文-谢老师', title: '教授' },
+      { name: '人文-胡老师', title: '副教授' }
+    ],
+    courses: makeSimpleCourses('13', '人文与经法学院', [
+      '人文-谢老师',
+      '人文-胡老师'
+    ])
+  },
+  {
+    slug: '14',
+    name: '软件与微电子学院',
+    teachers: [
+      { name: '软件-吕老师', title: '教授' },
+      { name: '软件-段老师', title: '讲师' }
+    ],
+    courses: makeSimpleCourses('14', '软件与微电子学院', [
+      '软件-吕老师',
+      '软件-段老师'
+    ])
+  },
+  {
+    slug: '15',
+    name: '生命学院',
+    teachers: [
+      { name: '生命-曹老师', title: '教授' },
+      { name: '生命-蒋老师', title: '副教授' }
+    ],
+    courses: makeSimpleCourses('15', '生命学院', [
+      '生命-曹老师',
+      '生命-蒋老师'
+    ])
+  },
+  {
+    slug: 'wgy',
+    name: '外国语学院',
+    teachers: [
+      { name: '外语-田老师', title: '教授' },
+      { name: '外语-龚老师', title: '副教授' }
+    ],
+    courses: makeSimpleCourses('wgy', '外国语学院', [
+      '外语-田老师',
+      '外语-龚老师'
+    ])
+  },
+  {
+    slug: 'hc',
+    name: '教育实验学院',
+    teachers: [
+      { name: '书院-荣誉导师', title: '教授' },
+      { name: '书院-班主任', title: '讲师' }
+    ],
+    courses: makeSimpleCourses('hc', '教育实验学院', [
+      '书院-荣誉导师',
+      '书院-班主任'
+    ])
+  },
+  {
+    slug: 'intl',
+    name: '国际教育学院',
+    teachers: [
+      { name: '国际-刘老师', title: '教授' },
+      { name: '国际-韩老师', title: '副教授' }
+    ],
+    courses: makeSimpleCourses('intl', '国际教育学院', [
+      '国际-刘老师',
+      '国际-韩老师'
+    ])
+  }
+]
+
+const departments: SeedDepartment[] = [...baseDepartments, ...nwpuDepartments]
 
 async function ensureUsers() {
   const map = new Map<string, { id: number }>()

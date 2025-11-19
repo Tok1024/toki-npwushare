@@ -9,7 +9,9 @@ const QuerySchema = z.object({
   page: z.coerce.number().int().min(1).optional(),
   pageSize: z.coerce.number().int().min(1).max(100).optional(),
   dept: z.string().optional(),
-  keyword: z.string().optional()
+  keyword: z.string().optional(),
+  sort: z.enum(['latest', 'popular']).optional(),
+  hasResource: z.coerce.boolean().optional()
 })
 
 export const GET = async (req: NextRequest) => {
@@ -20,6 +22,8 @@ export const GET = async (req: NextRequest) => {
 
   const page = parsed.page ?? 1
   const pageSize = parsed.pageSize ?? 20
+  const sort = parsed.sort ?? 'popular'
+  const hasResource = parsed.hasResource ?? '0'
 
   const department = parsed.dept
     ? await prisma.department.findUnique({ where: { slug: parsed.dept } })
@@ -30,18 +34,21 @@ export const GET = async (req: NextRequest) => {
     ...(parsed.keyword
       ? {
           OR: [
-            { name: { contains: parsed.keyword, mode: 'insensitive' } },
-            { slug: { contains: parsed.keyword, mode: 'insensitive' } }
+            { name: { contains: parsed.keyword, mode: 'insensitive' as const } },
+            { slug: { contains: parsed.keyword, mode: 'insensitive' as const} }
           ]
         }
-      : {})
+      : {}),
+    ...(hasResource ? {resource_count: {gt: 0}}: {})
   }
+  // 用as const把字符串收窄为字面量, 符合prisma的类型推断
+  const orderBy = sort === 'popular' ? {heart_count: 'desc' as const} : {created: 'desc' as const}
 
   const [total, list] = await Promise.all([
     prisma.course.count({ where }),
     prisma.course.findMany({
       where,
-      orderBy: { created: 'desc' },
+      orderBy,
       include: { department: true },
       skip: (page - 1) * pageSize,
       take: pageSize

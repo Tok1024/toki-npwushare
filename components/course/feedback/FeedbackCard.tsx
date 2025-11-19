@@ -3,6 +3,7 @@
 import { Card, CardBody } from '@heroui/card'
 import { Avatar } from '@heroui/avatar'
 import { Button } from '@heroui/button'
+import { Chip } from '@heroui/chip'
 import { Heart, PenSquare, Trash2 } from 'lucide-react'
 import dayjs from 'dayjs'
 import type { CourseFeedbackEntry } from '~/types/course'
@@ -21,16 +22,19 @@ export const FeedbackCard = ({
   onDelete
 }: Props) => {
   const createdLabel = dayjs(feedback.created).format('YYYY-MM-DD HH:mm')
-  const likedLabel = feedback.liked ? '已标记喜欢' : '未点赞'
 
   return (
-    <Card>
+    <Card className="border border-default-100 bg-white/90 shadow-sm">
       <CardBody className="space-y-3">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <Avatar size="sm" src={feedback.user?.avatar ?? undefined} />
+            <Avatar
+              size="sm"
+              src={feedback.user?.avatar ?? undefined}
+              name={feedback.user?.name ?? '匿名同学'}
+            />
             <div>
-              <p className="text-sm font-medium">
+              <p className="text-sm font-medium text-default-900">
                 {feedback.user?.name ?? '匿名同学'}
               </p>
               <p className="text-tiny text-default-400">{createdLabel}</p>
@@ -39,44 +43,65 @@ export const FeedbackCard = ({
           {canEdit && (
             <div className="flex gap-2">
               <Button
-                isIconOnly
-                variant="light"
                 size="sm"
-                aria-label="编辑反馈"
+                variant="light"
+                className="text-xs"
                 onPress={() => onEdit(feedback)}
+                startContent={<PenSquare className="size-3.5" />}
               >
-                <PenSquare className="size-4" />
+                编辑
               </Button>
               <Button
-                isIconOnly
+                size="sm"
                 color="danger"
                 variant="light"
-                size="sm"
-                aria-label="删除反馈"
+                className="text-xs"
                 onPress={() => onDelete(feedback.id)}
+                startContent={<Trash2 className="size-3.5" />}
               >
-                <Trash2 className="size-4" />
+                删除
               </Button>
             </div>
           )}
         </div>
 
-        <div className="flex flex-wrap items-center gap-4 text-small text-default-600">
-          <span
-            className={`flex items-center gap-1 ${feedback.liked ? 'text-danger' : ''}`}
+        <div className="flex flex-wrap items-center gap-2 text-small">
+          <Chip
+            size="sm"
+            variant="flat"
+            classNames={{
+              base: feedback.liked
+                ? 'bg-rose-50 text-rose-600 border-transparent'
+                : 'bg-default-50 text-default-500 border-transparent',
+              content: 'text-xs'
+            }}
+            startContent={
+              <Heart
+                className={`size-3.5 ${
+                  feedback.liked ? 'fill-rose-500 text-rose-500' : ''
+                }`}
+              />
+            }
           >
-            <Heart
-              className={`size-4 ${feedback.liked ? 'fill-danger' : ''}`}
-            />
-            {likedLabel}
-          </span>
+            {feedback.liked ? '喜欢这门课' : '未标记喜欢'}
+          </Chip>
+
           {typeof feedback.difficulty === 'number' && (
-            <span>难度 {feedback.difficulty} / 5</span>
+            <Chip
+              size="sm"
+              variant="flat"
+              classNames={{
+                base: 'bg-amber-50 text-amber-700 border-transparent',
+                content: 'text-xs'
+              }}
+            >
+              难度 {feedback.difficulty} / 5
+            </Chip>
           )}
         </div>
 
         {feedback.comment && (
-          <p className="text-sm whitespace-pre-wrap break-words text-default-600">
+          <p className="text-sm leading-relaxed whitespace-pre-wrap break-words text-default-700">
             {feedback.comment}
           </p>
         )}

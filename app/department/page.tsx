@@ -24,13 +24,13 @@ export default async function DepartmentPage() {
   })
 
   return (
-    <div className="mx-auto max-w-5xl space-y-6 py-10">
+    <div className="container mx-auto space-y-8 py-10">
       <KunHeader
         name="学院目录"
         description="按学院浏览课程，快速定位你所在院系的资料与经验分享。"
       />
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
         {departments.map((dept) => (
           <Card
             key={dept.slug}

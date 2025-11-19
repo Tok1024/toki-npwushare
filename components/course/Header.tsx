@@ -2,7 +2,9 @@
 
 import { useState } from 'react'
 import { Card, CardBody } from '@heroui/card'
+import { Chip } from '@heroui/chip'
 import { Tabs, Tab } from '@heroui/tabs'
+import { BookOpen, FileText, Heart, BarChart3 } from 'lucide-react'
 import { CourseResourceTab } from './tabs/CourseResourceTab'
 import { CourseIntroTab } from './tabs/CourseIntroTab'
 import { CourseComments } from './comment/Comments'
@@ -18,34 +20,94 @@ interface Props {
 export const CourseHeader = ({ dept, slug, course, teachers }: Props) => {
   const [selected, setSelected] = useState<string>('introduction')
 
+  const departmentName = course?.department?.name ?? dept.toUpperCase()
+
   return (
     <div className="space-y-6">
-      <Card>
-        <CardBody className="space-y-2">
-          <div className="text-small text-default-500">{dept}</div>
-          <h1 className="text-2xl font-bold">{course.name}</h1>
-          <div className="text-small text-default-500 flex flex-wrap gap-2">
-            <span>资源 {course.resource_count}</span>
-            <span>帖子 {course.post_count}</span>
-            {course.heart_count > 0 && <span>红心 {course.heart_count}</span>}
-            {course.difficulty_votes > 0 && (
-              <span>
-                难度 {course.difficulty_avg?.toFixed(1)} (
-                {course.difficulty_votes} 票)
-              </span>
+      <Card className="border-none shadow-medium bg-white/80 backdrop-blur-md">
+        <CardBody className="flex flex-col gap-6 p-6 sm:p-8">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+            <div className="space-y-3 flex-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <Chip
+                  size="sm"
+                  variant="flat"
+                  color="primary"
+                  classNames={{
+                    base: "bg-primary-50 border border-primary-100",
+                    content: "font-semibold text-primary-600"
+                  }}
+                >
+                  {departmentName}
+                </Chip>
+                {course?.code && (
+                  <span className="text-xs font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                    {course.code}
+                  </span>
+                )}
+              </div>
+
+              <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900">
+                {course.name}
+              </h1>
+            </div>
+
+            {teachers?.length > 0 && (
+              <div className="flex flex-wrap gap-2 md:justify-end max-w-xs">
+                {teachers.map((t) => (
+                  <Chip key={t.id} size="sm" variant="flat" className="bg-slate-100 text-slate-600 border border-slate-200">
+                    {t.name}
+                  </Chip>
+                ))}
+              </div>
             )}
           </div>
-          {teachers?.length > 0 && (
-            <div className="text-small text-default-500">
-              参与教师：{teachers.map((t) => t.name).join('、')}
-            </div>
+
+          {course?.description && (
+            <p className="text-base text-slate-600 leading-relaxed max-w-4xl">
+              {course.description}
+            </p>
           )}
+
+          <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-slate-100">
+            <div className="flex items-center gap-2 text-sm text-slate-600">
+              <FileText className="w-4 h-4 text-slate-400" />
+              <span><strong className="text-slate-900 font-semibold">{course.resource_count}</strong> 份资源</span>
+            </div>
+
+            <div className="flex items-center gap-2 text-sm text-slate-600">
+              <BookOpen className="w-4 h-4 text-slate-400" />
+              <span><strong className="text-slate-900 font-semibold">{course.post_count}</strong> 篇帖子</span>
+            </div>
+
+            {course.heart_count > 0 && (
+              <div className="flex items-center gap-2 text-sm text-rose-600">
+                <Heart className="w-4 h-4 fill-rose-500 text-rose-500" />
+                <span className="font-semibold">{course.heart_count}</span>
+              </div>
+            )}
+
+            {course.difficulty_votes > 0 && (
+              <div className="flex items-center gap-2 text-sm text-amber-600">
+                <BarChart3 className="w-4 h-4 text-amber-500" />
+                <span className="font-semibold">{course.difficulty_avg?.toFixed(1)}</span>
+                <span className="text-slate-400 text-xs">({course.difficulty_votes} 票)</span>
+              </div>
+            )}
+          </div>
         </CardBody>
       </Card>
 
       <Tabs
-        className="w-full my-2 overflow-hidden shadow-medium rounded-large"
-        fullWidth
+        aria-label="课程详情"
+        variant="underlined"
+        classNames={{
+          base: "w-full mt-8",
+          tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
+          cursor: "w-full bg-primary",
+          tab: "max-w-fit px-0 h-12",
+          tabContent: "group-data-[selected=true]:text-primary font-medium text-base text-slate-500"
+        }}
         selectedKey={selected}
         onSelectionChange={(v) => setSelected(String(v))}
       >

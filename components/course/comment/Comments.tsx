@@ -30,18 +30,33 @@ export const CourseComments = ({
   const [comments, setComments] = useState<PatchComment[]>([])
   const [replyTo, setReplyTo] = useState<number | null>(null)
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
+  const [loading, setLoading] = useState(true)
   const user = useUserStore((state) => state.user)
 
   useEffect(() => {
-    if (!user.uid) return
+    if (!user.uid) {
+      setLoading(false)
+      return
+    }
+    let cancelled = false
     const run = async () => {
+      setLoading(true)
       const res = await kunFetchGet<PatchComment[]>(
         `/course/${dept}/${slug}/comment`
       )
-      if (typeof res === 'string') return
-      setComments(res)
+      if (typeof res === 'string') {
+        if (!cancelled) setLoading(false)
+        return
+      }
+      if (!cancelled) {
+        setComments(res)
+        setLoading(false)
+      }
     }
     run()
+    return () => {
+      cancelled = true
+    }
   }, [dept, slug, user.uid])
 
   const sortComments = (list: PatchComment[]): PatchComment[] => {
@@ -73,16 +88,47 @@ export const CourseComments = ({
 
   if (!user.uid) return <KunNull message="请登陆后查看评论" />
 
+  const renderLoading = () => (
+    <div className="space-y-4">
+      {Array.from({ length: 3 }).map((_, idx) => (
+        <Card
+          key={`comment-skeleton-${idx}`}
+          className="border-none bg-white/80 shadow-sm"
+        >
+          <CardBody className="space-y-4 animate-pulse">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-full bg-default-100" />
+              <div className="flex-1 space-y-2">
+                <div className="h-3 w-24 rounded bg-default-100" />
+                <div className="h-3 w-16 rounded bg-default-100" />
+              </div>
+            </div>
+            <div className="space-y-2">
+              <div className="h-3 w-full rounded bg-default-100" />
+              <div className="h-3 w-5/6 rounded bg-default-100" />
+            </div>
+          </CardBody>
+        </Card>
+      ))}
+    </div>
+  )
+
   const renderComments = (list: PatchComment[], depth = 0) =>
     list.map((comment) => (
       <div
         key={comment.id}
-        className={cn(depth <= 3 && depth !== 0 ? 'ml-4' : 'ml-0', 'space-y-4')}
+        className={cn(
+          depth > 0 ? 'ml-4 sm:ml-8 border-l-2 border-default-100 pl-4' : '',
+          'space-y-3'
+        )}
       >
-        <Card id={`comment-${comment.id}`}>
-          <CardBody>
-            <div className="space-y-2">
-              <div className="flex items-start justify-between">
+        <Card
+          id={`comment-${comment.id}`}
+          className="border-none shadow-sm bg-white/80 hover:shadow-md transition-shadow"
+        >
+          <CardBody className="p-4">
+            <div className="space-y-3">
+              <div className="flex items-start justify-between gap-3">
                 <KunUser
                   user={comment.user}
                   userProps={{
@@ -91,7 +137,13 @@ export const CourseComments = ({
                     avatarProps: {
                       showFallback: true,
                       name: comment.user.name,
-                      src: comment.user.avatar
+                      src: comment.user.avatar,
+                      size: 'sm',
+                      className: 'ring-2 ring-default-100'
+                    },
+                    classNames: {
+                      name: 'text-sm font-semibold text-default-700',
+                      description: 'text-xs text-default-400'
                     }
                   }}
                 />
@@ -104,33 +156,42 @@ export const CourseComments = ({
                 />
               </div>
 
-              <CommentContent comment={comment} />
+              <div className="pl-10 sm:pl-12">
+                <CommentContent comment={comment} />
 
-              <div className="flex gap-2 mt-2">
-                <CommentLikeButton comment={comment} dept={dept} slug={slug} />
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  className="gap-2"
-                  onPress={() =>
-                    setReplyTo(replyTo === comment.id ? null : comment.id)
-                  }
-                >
-                  <MessageCircle className="size-4" /> 回复
-                </Button>
+                <div className="mt-3 flex gap-4">
+                  <CommentLikeButton
+                    comment={comment}
+                    dept={dept}
+                    slug={slug}
+                  />
+                  <Button
+                    variant="light"
+                    size="sm"
+                    className="gap-1.5 text-default-500 hover:text-primary data-[hover=true]:bg-transparent px-0 min-w-0 h-auto"
+                    onPress={() =>
+                      setReplyTo(replyTo === comment.id ? null : comment.id)
+                    }
+                  >
+                    <MessageCircle className="size-4" />
+                    <span className="text-xs font-medium">回复</span>
+                  </Button>
+                </div>
               </div>
             </div>
           </CardBody>
         </Card>
 
         {replyTo === comment.id && (
-          <div className="mt-2 ml-8">
+          <div className="mt-3 ml-4 sm:ml-12 animate-in fade-in slide-in-from-top-2 duration-200">
             <PublishComment
               courseId={courseId}
               dept={dept}
               slug={slug}
               parentId={comment.id}
-              receiverUsername={comment.quotedUsername}
+              receiverUsername={
+                comment.quotedUsername ?? comment.user.name ?? null
+              }
               onSuccess={() => setReplyTo(null)}
               setNewComment={setNewComment}
             />
@@ -138,7 +199,9 @@ export const CourseComments = ({
         )}
 
         {comment.reply && comment.reply.length > 0 && (
-          <>{renderComments(comment.reply, depth + 1)}</>
+          <div className="mt-3 space-y-3">
+            {renderComments(comment.reply, depth + 1)}
+          </div>
         )}
       </div>
     ))
@@ -146,25 +209,50 @@ export const CourseComments = ({
   const sorted = sortComments(comments)
 
   return (
-    <div className="space-y-4">
-      <PublishComment
-        courseId={courseId}
-        dept={dept}
-        slug={slug}
-        receiverUsername={null}
-        setNewComment={setNewComment}
-      />
-      {!!sorted.length && (
-        <Card>
-          <CardBody className="flex flex-row items-center justify-start gap-2">
-            <Button variant="flat" className="gap-2" onPress={toggleSortOrder}>
+    <div className="space-y-5 min-h-[420px]">
+      <section className="rounded-2xl border border-default-200 bg-white/80 px-5 py-4 shadow-sm">
+        <div className="mb-3">
+          <h3 className="text-lg font-semibold text-default-700">发表讨论</h3>
+          <p className="text-sm text-default-400">
+            分享你的作业经验、老师风格或学习 tips
+          </p>
+        </div>
+        <PublishComment
+          courseId={courseId}
+          dept={dept}
+          slug={slug}
+          receiverUsername={null}
+          setNewComment={setNewComment}
+        />
+      </section>
+
+      {loading ? (
+        renderLoading()
+      ) : sorted.length ? (
+        <>
+          <div className="flex flex-wrap items-center justify-between gap-3 px-1">
+            <h3 className="text-lg font-semibold text-default-700">
+              全部评论{' '}
+              <span className="text-sm font-normal text-default-400">
+                ({comments.length})
+              </span>
+            </h3>
+            <Button
+              variant="light"
+              size="sm"
+              className="gap-2 text-default-500 font-medium"
+              onPress={toggleSortOrder}
+            >
               <ArrowUpDown className="size-4" />
               {sortOrder === 'asc' ? '最早优先' : '最新优先'}
             </Button>
-          </CardBody>
-        </Card>
+          </div>
+
+          <div className="space-y-6">{renderComments(sorted)}</div>
+        </>
+      ) : (
+        <KunNull message="还没有讨论，写下第一条吧" />
       )}
-      {renderComments(sorted)}
     </div>
   )
 }

@@ -80,16 +80,23 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(input)
   }
 
-  if (
-    !req.headers ||
-    (!req.headers.get('x-forwarded-for') &&
-      !req.headers.get('x-real-ip') &&
-      !req.headers.get('CF-Connecting-IP'))
-  ) {
-    return NextResponse.json('读取请求头失败')
-  }
+  // 开发环境使用默认 IP
+  let ip = '127.0.0.1'
 
-  const ip = getRemoteIp(req.headers)
+  if (process.env.NODE_ENV === 'production') {
+    if (
+      !req.headers ||
+      (!req.headers.get('x-forwarded-for') &&
+        !req.headers.get('x-real-ip') &&
+        !req.headers.get('CF-Connecting-IP'))
+    ) {
+      return NextResponse.json('读取请求头失败')
+    }
+    ip = getRemoteIp(req.headers)
+  } else {
+    // 开发环境尝试获取 IP，失败则使用默认值
+    ip = getRemoteIp(req.headers) || '127.0.0.1'
+  }
 
   const response = await register(input, ip)
   return NextResponse.json(response)

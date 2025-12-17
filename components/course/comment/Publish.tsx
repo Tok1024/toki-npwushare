@@ -64,7 +64,10 @@ export const PublishComment = ({
       {receiverUsername && (
         <div className="flex items-center gap-2 text-sm text-default-500 bg-default-100/50 px-3 py-1.5 rounded-medium w-fit">
           <span className="w-1 h-4 bg-primary rounded-full"></span>
-          回复 <span className="font-semibold text-default-700">@{receiverUsername}</span>
+          回复{' '}
+          <span className="font-semibold text-default-700">
+            @{receiverUsername}
+          </span>
         </div>
       )}
       <div className="relative group">
@@ -74,8 +77,9 @@ export const PublishComment = ({
           minRows={3}
           placeholder="写下你的想法..."
           classNames={{
-            input: "text-base",
-            inputWrapper: "bg-white shadow-sm border-default-200 group-hover:border-default-300 transition-colors"
+            input: 'text-base',
+            inputWrapper:
+              'bg-white shadow-sm border-default-200 group-hover:border-default-300 transition-colors'
           }}
           variant="bordered"
         />

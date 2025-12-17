@@ -34,8 +34,8 @@ export const CourseHeader = ({ dept, slug, course, teachers }: Props) => {
                   variant="flat"
                   color="primary"
                   classNames={{
-                    base: "bg-primary-50 border border-primary-100",
-                    content: "font-semibold text-primary-600"
+                    base: 'bg-primary-50 border border-primary-100',
+                    content: 'font-semibold text-primary-600'
                   }}
                 >
                   {departmentName}
@@ -55,7 +55,12 @@ export const CourseHeader = ({ dept, slug, course, teachers }: Props) => {
             {teachers?.length > 0 && (
               <div className="flex flex-wrap gap-2 md:justify-end max-w-xs">
                 {teachers.map((t) => (
-                  <Chip key={t.id} size="sm" variant="flat" className="bg-slate-100 text-slate-600 border border-slate-200">
+                  <Chip
+                    key={t.id}
+                    size="sm"
+                    variant="flat"
+                    className="bg-slate-100 text-slate-600 border border-slate-200"
+                  >
                     {t.name}
                   </Chip>
                 ))}
@@ -72,12 +77,22 @@ export const CourseHeader = ({ dept, slug, course, teachers }: Props) => {
           <div className="flex flex-wrap items-center gap-4 pt-4 border-t border-slate-100">
             <div className="flex items-center gap-2 text-sm text-slate-600">
               <FileText className="w-4 h-4 text-slate-400" />
-              <span><strong className="text-slate-900 font-semibold">{course.resource_count}</strong> 份资源</span>
+              <span>
+                <strong className="text-slate-900 font-semibold">
+                  {course.resource_count}
+                </strong>{' '}
+                份资源
+              </span>
             </div>
 
             <div className="flex items-center gap-2 text-sm text-slate-600">
               <BookOpen className="w-4 h-4 text-slate-400" />
-              <span><strong className="text-slate-900 font-semibold">{course.post_count}</strong> 篇帖子</span>
+              <span>
+                <strong className="text-slate-900 font-semibold">
+                  {course.post_count}
+                </strong>{' '}
+                篇帖子
+              </span>
             </div>
 
             {course.heart_count > 0 && (
@@ -90,8 +105,12 @@ export const CourseHeader = ({ dept, slug, course, teachers }: Props) => {
             {course.difficulty_votes > 0 && (
               <div className="flex items-center gap-2 text-sm text-amber-600">
                 <BarChart3 className="w-4 h-4 text-amber-500" />
-                <span className="font-semibold">{course.difficulty_avg?.toFixed(1)}</span>
-                <span className="text-slate-400 text-xs">({course.difficulty_votes} 票)</span>
+                <span className="font-semibold">
+                  {course.difficulty_avg?.toFixed(1)}
+                </span>
+                <span className="text-slate-400 text-xs">
+                  ({course.difficulty_votes} 票)
+                </span>
               </div>
             )}
           </div>
@@ -102,11 +121,13 @@ export const CourseHeader = ({ dept, slug, course, teachers }: Props) => {
         aria-label="课程详情"
         variant="underlined"
         classNames={{
-          base: "w-full mt-8",
-          tabList: "gap-6 w-full relative rounded-none p-0 border-b border-divider",
-          cursor: "w-full bg-primary",
-          tab: "max-w-fit px-0 h-12",
-          tabContent: "group-data-[selected=true]:text-primary font-medium text-base text-slate-500"
+          base: 'w-full mt-8',
+          tabList:
+            'gap-6 w-full relative rounded-none p-0 border-b border-divider',
+          cursor: 'w-full bg-primary',
+          tab: 'max-w-fit px-0 h-12',
+          tabContent:
+            'group-data-[selected=true]:text-primary font-medium text-base text-slate-500'
         }}
         selectedKey={selected}
         onSelectionChange={(v) => setSelected(String(v))}

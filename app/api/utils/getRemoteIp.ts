@@ -11,5 +11,8 @@ export const getRemoteIp = (headers: Headers): string => {
   const xRealIp = headers.get('x-real-ip')
   const cfConnectingIp = headers.get('CF-Connecting-IP')
 
-  return cfConnectingIp || ipForwarded() || xRealIp || ''
+  // 开发环境返回默认 IP，生产环境返回空字符串
+  const defaultIp = process.env.NODE_ENV === 'development' ? '127.0.0.1' : ''
+
+  return cfConnectingIp || ipForwarded() || xRealIp || defaultIp
 }

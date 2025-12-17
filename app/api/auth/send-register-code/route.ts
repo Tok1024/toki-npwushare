@@ -57,8 +57,11 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(input)
   }
 
-  if (!req.headers || !req.headers.get('x-forwarded-for')) {
-    return NextResponse.json('读取请求头失败')
+  // 开发环境不检查 IP headers
+  if (process.env.NODE_ENV === 'production') {
+    if (!req.headers || !req.headers.get('x-forwarded-for')) {
+      return NextResponse.json('读取请求头失败')
+    }
   }
 
   const response = await sendRegisterCode(input, req.headers)

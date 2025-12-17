@@ -34,15 +34,20 @@ export const GET = async (req: NextRequest) => {
     ...(parsed.keyword
       ? {
           OR: [
-            { name: { contains: parsed.keyword, mode: 'insensitive' as const } },
-            { slug: { contains: parsed.keyword, mode: 'insensitive' as const} }
+            {
+              name: { contains: parsed.keyword, mode: 'insensitive' as const }
+            },
+            { slug: { contains: parsed.keyword, mode: 'insensitive' as const } }
           ]
         }
       : {}),
-    ...(hasResource ? {resource_count: {gt: 0}}: {})
+    ...(hasResource ? { resource_count: { gt: 0 } } : {})
   }
   // 用as const把字符串收窄为字面量, 符合prisma的类型推断
-  const orderBy = sort === 'popular' ? {heart_count: 'desc' as const} : {created: 'desc' as const}
+  const orderBy =
+    sort === 'popular'
+      ? { heart_count: 'desc' as const }
+      : { created: 'desc' as const }
 
   const [total, list] = await Promise.all([
     prisma.course.count({ where }),

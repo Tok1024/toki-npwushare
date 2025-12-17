@@ -129,7 +129,11 @@ export const CourseResourceTab = ({
 
                   {resource.author && (
                     <p className="pt-1 text-[11px] text-default-500 sm:text-xs">
-                      由 <span className="font-medium">{resource.author.name}</span> 上传
+                      由{' '}
+                      <span className="font-medium">
+                        {resource.author.name}
+                      </span>{' '}
+                      上传
                     </p>
                   )}
                 </div>

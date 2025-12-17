@@ -451,9 +451,7 @@ const makeSimpleCourses = (
           teacher: teacherName,
           authorEmail: 'alice@example.com',
           summary: '包含若干自动生成的作业题目与参考答案，用于测试多资源展示。',
-          links: [
-            `https://example.com/${deptSlug}/course-${index}/assignment`
-          ]
+          links: [`https://example.com/${deptSlug}/course-${index}/assignment`]
         },
         {
           title: `课程 ${index} 往年试卷汇总`,
@@ -625,10 +623,7 @@ const nwpuDepartments: SeedDepartment[] = [
       { name: '管理-杨老师', title: '教授' },
       { name: '管理-郑老师', title: '副教授' }
     ],
-    courses: makeSimpleCourses('12', '管理学院', [
-      '管理-杨老师',
-      '管理-郑老师'
-    ])
+    courses: makeSimpleCourses('12', '管理学院', ['管理-杨老师', '管理-郑老师'])
   },
   {
     slug: '13',
@@ -661,10 +656,7 @@ const nwpuDepartments: SeedDepartment[] = [
       { name: '生命-曹老师', title: '教授' },
       { name: '生命-蒋老师', title: '副教授' }
     ],
-    courses: makeSimpleCourses('15', '生命学院', [
-      '生命-曹老师',
-      '生命-蒋老师'
-    ])
+    courses: makeSimpleCourses('15', '生命学院', ['生命-曹老师', '生命-蒋老师'])
   },
   {
     slug: 'wgy',

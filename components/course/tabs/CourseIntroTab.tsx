@@ -25,9 +25,7 @@ export const CourseIntroTab = ({
         <div className="grid gap-4 text-small text-default-600 sm:grid-cols-2">
           <div className="space-y-1">
             <p className="text-xs font-medium text-default-500">开设学院</p>
-            <p className="text-sm">
-              {course?.department?.name ?? '—'}
-            </p>
+            <p className="text-sm">{course?.department?.name ?? '—'}</p>
           </div>
 
           {course?.code && (

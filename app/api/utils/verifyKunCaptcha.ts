@@ -29,6 +29,13 @@ export const verifyKunCaptcha = async (
 }
 
 export const checkKunCaptchaExist = async (sessionId: string) => {
+  if (
+    process.env.NEXT_PUBLIC_DISABLE_CAPTCHA === 'true' &&
+    sessionId === 'bypass-captcha-code'
+  ) {
+    return 'bypass-captcha-code'
+  }
+
   const captcha = await getKv(`captcha:verify:${sessionId}`)
   if (captcha) {
     await delKv(`captcha:verify:${sessionId}`)

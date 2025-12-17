@@ -12,6 +12,8 @@ export const sendVerificationCodeEmail = async (
   type: 'register' | 'forgot' | 'reset'
 ) => {
   const ip = getRemoteIp(headers)
+  const isEmailDisabled = process.env.KUN_DISABLE_EMAIL === 'true'
+  const devCode = process.env.KUN_VERIFICATION_CODE || 'dev-1234567'
 
   const limitEmail = await getKv(`limit:email:${email}`)
   const limitIP = await getKv(`limit:ip:${ip}`)
@@ -19,10 +21,15 @@ export const sendVerificationCodeEmail = async (
     return '您发送邮件的频率太快了, 请 60 秒后重试'
   }
 
-  const code = generateRandomString(7)
+  const code = isEmailDisabled ? devCode : generateRandomString(7)
   await setKv(email, code, 10 * 60)
   await setKv(`limit:email:${email}`, code, 60)
   await setKv(`limit:ip:${ip}`, code, 60)
+
+  if (isEmailDisabled) {
+    console.log(`[dev-email-code] ${email} -> ${code}`)
+    return
+  }
 
   const transporter = createTransport(
     SMPTransport({
@@ -48,5 +55,10 @@ export const sendVerificationCodeEmail = async (
     html: createKunVerificationEmailTemplate(type, code)
   }
 
-  await transporter.sendMail(mailOptions)
+  try {
+    await transporter.sendMail(mailOptions)
+  } catch (error) {
+    console.error('Send email error:', error)
+    return '邮件发送失败, 请检查后台日志或联系管理员'
+  }
 }

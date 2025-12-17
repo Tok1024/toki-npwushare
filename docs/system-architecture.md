@@ -60,20 +60,20 @@
 
 ### 2.1 应用入口：`app/`
 
-- `app/layout.tsx`  
+- `app/layout.tsx`
   - 全局布局（头部导航、主题 Provider 等）。
-- `app/page.tsx`  
+- `app/page.tsx`
   - 首页（Hero 区 + 简介 + 推荐课程/资源）。
-- `app/course/page.tsx`  
+- `app/course/page.tsx`
   - 课程索引：搜索 + 列表。
-- `app/course/[dept]/[slug]/page.tsx`  
+- `app/course/[dept]/[slug]/page.tsx`
   - 课程详情页 Server Component。
   - 调用 `/api/course/[dept]/[slug]` 聚合课程 + 教师信息。
-- `app/edit/create/page.tsx`  
+- `app/edit/create/page.tsx`
   - 资源上传入口（选择学院/课程 + 填写资源信息）。
-- `app/login/**`、`app/register/**`  
+- `app/login/**`、`app/register/**`
   - 登录注册页面，调用 `app/api/auth/**`。
-- `app/api/**`  
+- `app/api/**`
   - 所有后端接口，按业务域分目录（详见第 4 节）。
 
 ### 2.2 UI 组件：`components/`
@@ -95,7 +95,7 @@
   - 课程相关模型：department / course / teacher / course_teacher / resource / post / comment / course_feedback / resource_rating / resource_interaction / badge / user_badge 等。
 - `prisma/schema/user.prisma`
   - 用户模型及与旧 patch 业务的关联（后续会逐步精简）。
-- 其他 `patch-*.prisma`  
+- 其他 `patch-*.prisma`
   - 旧 TouchGal 补丁站相关模型，当前仍存在但主要被归档/渐退。
 - `prisma/index.ts`
   - 导出单例 `prisma` 客户端，避免热重载重复实例化。
@@ -140,15 +140,15 @@
 
 ### 2.7 文档与改造辅助
 
-- `project.md`  
+- `project.md`
   - 项目说明 + 快速上手 + BetterAuth 计划。
-- `docs/improvement-guide.md`  
+- `docs/improvement-guide.md`
   - 自主迭代路线图（前后端分阶段任务）。
-- `improve/schema.prisma`  
+- `improve/schema.prisma`
   - 为教程/lab 准备的「教学版 schema」，描述了一个精简的课程平台模型（与主项目 schema 部分重合）。
-- `11-11.md`  
+- `11-11.md`
   - 2025-11-11 项目现状与 TODO。
-- `11-19-codex.md`  
+- `11-19-codex.md`
   - 针对后端学习路线与 TODO 的详细说明。
 
 ---
@@ -494,4 +494,4 @@ Server vs Client 组件：
 5. **鉴权升级**：
    - 在对系统足够熟悉后，再考虑按 `project.md` 集成 BetterAuth。
 
-当你对「这份架构说明 + 11-19-codex.md」都很熟的时候，基本就已经具备了 **维护和扩展这个项目后端/全栈的能力**。之后遇到任何模块，只要能在这张地图上定位到它的位置，就可以比较从容地展开工作了。***
+当你对「这份架构说明 + 11-19-codex.md」都很熟的时候，基本就已经具备了 **维护和扩展这个项目后端/全栈的能力**。之后遇到任何模块，只要能在这张地图上定位到它的位置，就可以比较从容地展开工作了。\*\*\*

@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
   await deleteKunToken(payload.uid)
   const cookie = await cookies()
-  cookie.delete('kun-galgame-patch-moe-token')
+  cookie.delete('toki-nwpushare-access-token')
 
   return NextResponse.json({ message: '退出登录成功' })
 }

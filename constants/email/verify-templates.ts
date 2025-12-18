@@ -1,17 +1,17 @@
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 
 export const createKunVerificationEmailTemplate = (
   type: 'register' | 'forgot' | 'reset',
   code: string
 ) => {
   const titles = {
-    register: `欢迎注册 ${kunMoyuMoe.titleShort}`,
+    register: `欢迎注册 ${nwpushare.titleShort}`,
     forgot: `忘记密码`,
     reset: `更改邮箱验证`
   }
 
   const messages = {
-    register: `感谢您注册 ${kunMoyuMoe.titleShort}, 请使用下面的验证码以完成您的注册`,
+    register: `感谢您注册 ${nwpushare.titleShort}, 请使用下面的验证码以完成您的注册`,
     forgot: '我们收到了您重置密码的请求, 请使用下面的验证码以继续',
     reset: '您正在更改您的邮箱地址, 请使用下面的验证码以让我们确认您的新邮箱'
   }
@@ -24,7 +24,7 @@ export const createKunVerificationEmailTemplate = (
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>${kunMoyuMoe.titleShort} 邮箱验证码</title>
+    <title>${nwpushare.titleShort} 邮箱验证码</title>
     <!--[if mso]>
       <style>
         table {

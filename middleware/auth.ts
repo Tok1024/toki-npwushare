@@ -15,7 +15,7 @@ const redirectToLogin = (request: NextRequest) => {
 
 const getToken = (request: NextRequest) => {
   const cookies = parseCookies(request.headers.get('cookie') ?? '')
-  return cookies['kun-galgame-patch-moe-token']
+  return cookies['toki-nwpushare-access-token']
 }
 
 export const kunAuthMiddleware = async (request: NextRequest) => {

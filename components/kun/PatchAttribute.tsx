@@ -20,21 +20,27 @@ export const KunPatchAttribute = ({
   platforms = [],
   size = 'md'
 }: Props) => {
+  const hasContent = types.length > 0 || languages.length > 0 || platforms.length > 0
+
+  if (!hasContent) {
+    return null
+  }
+
   return (
     <div className="flex flex-wrap gap-2">
-      {types.map((type) => (
+      {types.filter(Boolean).map((type) => (
         <Chip key={type} variant="flat" color="primary" size={size}>
-          {SUPPORTED_TYPE_MAP[type]}
+          {SUPPORTED_TYPE_MAP[type] || type}
         </Chip>
       ))}
-      {languages?.map((lang) => (
+      {languages?.filter(Boolean).map((lang) => (
         <Chip key={lang} variant="flat" color="secondary" size={size}>
-          {SUPPORTED_LANGUAGE_MAP[lang]}
+          {SUPPORTED_LANGUAGE_MAP[lang] || lang}
         </Chip>
       ))}
-      {platforms?.map((platform) => (
+      {platforms?.filter(Boolean).map((platform) => (
         <Chip key={platform} variant="flat" color="success" size={size}>
-          {SUPPORTED_PLATFORM_MAP[platform]}
+          {SUPPORTED_PLATFORM_MAP[platform] || platform}
         </Chip>
       ))}
     </div>

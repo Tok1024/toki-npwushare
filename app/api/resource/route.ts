@@ -72,7 +72,11 @@ export const getCourseResources = async (
         }
       }
     }),
-    prisma.resource.count()
+    prisma.resource.count({
+      where: {
+        status: 'published'
+      }
+    })
   ])
 
   return {

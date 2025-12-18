@@ -3,13 +3,11 @@ import { NextRequest, NextResponse } from 'next/server'
 import { kunParseGetQuery } from '~/app/api/utils/parseQuery'
 import { prisma } from '~/prisma/index'
 import { adminPaginationSchema } from '~/validations/admin'
-import { getNSFWHeader } from '~/app/api/utils/getNSFWHeader'
 import { verifyHeaderCookie } from '~/middleware/_verifyHeaderCookie'
 import type { AdminGalgame } from '~/types/api/admin'
 
 export const getGalgame = async (
-  input: z.infer<typeof adminPaginationSchema>,
-  nsfwEnable: Record<string, string | undefined>
+  input: z.infer<typeof adminPaginationSchema>
 ) => {
   const { page, limit, search } = input
   const offset = (page - 1) * limit
@@ -19,10 +17,9 @@ export const getGalgame = async (
         name: {
           contains: search,
           mode: 'insensitive' as const
-        },
-        ...nsfwEnable
+        }
       }
-    : nsfwEnable
+    : {}
 
   const [data, total] = await Promise.all([
     prisma.patch.findMany({
@@ -60,7 +57,6 @@ export async function GET(req: NextRequest) {
   if (typeof input === 'string') {
     return NextResponse.json(input)
   }
-  const nsfwEnable = getNSFWHeader(req)
   const payload = await verifyHeaderCookie(req)
   if (!payload) {
     return NextResponse.json('用户未登录')
@@ -69,6 +65,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json('本页面仅管理员可访问')
   }
 
-  const res = await getGalgame(input, nsfwEnable)
+  const res = await getGalgame(input)
   return NextResponse.json(res)
 }

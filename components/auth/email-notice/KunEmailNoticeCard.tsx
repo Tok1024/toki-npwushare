@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import {
   Alert,
   Button,
@@ -18,8 +18,8 @@ import toast from 'react-hot-toast'
 
 export const KunEmailNoticeCard = () => {
   const searchParams = useSearchParams()
-  const email = searchParams.get('email') || kunMoyuMoe.domain.main
-  const code = searchParams.get('code') || kunMoyuMoe.domain.main
+  const email = searchParams.get('email') || nwpushare.domain.main
+  const code = searchParams.get('code') || nwpushare.domain.main
 
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)

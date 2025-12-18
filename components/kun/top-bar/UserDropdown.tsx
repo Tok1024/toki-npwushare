@@ -34,7 +34,6 @@ import toast from 'react-hot-toast'
 import { useMounted } from '~/hooks/useMounted'
 import { showKunSooner } from '~/components/kun/Sooner'
 import { kunErrorHandler } from '~/utils/kunErrorHandler'
-import { NSFWSwitcher } from './NSFWSwitcher'
 import type { UserState } from '~/store/userStore'
 
 export const UserDropdown = () => {
@@ -83,8 +82,8 @@ export const UserDropdown = () => {
     kunErrorHandler(res, (value) => {
       showKunSooner(
         value
-          ? `签到成功! 您今天获得了 ${value.randomMoemoepoints} 萌萌点`
-          : '您的运气不好...今天没有获得萌萌点...'
+          ? `签到成功! 您今天获得了 ${value.randomMoemoepoints} 贡献值`
+          : '您的运气不好...今天没有获得贡献值...'
       )
       setUser({
         ...user,
@@ -124,13 +123,13 @@ export const UserDropdown = () => {
           </DropdownItem>
           <DropdownItem
             isReadOnly
-            textValue="萌萌点"
+            textValue="贡献值"
             key="moemoepoint"
             className="cursor-default data-[hover=true]:bg-background"
             startContent={<Lollipop className="size-4" />}
             endContent={user.moemoepoint}
           >
-            萌萌点
+            贡献值
           </DropdownItem>
           <DropdownItem
             key="profile"
@@ -152,14 +151,6 @@ export const UserDropdown = () => {
             startContent={<CircleHelp className="size-4" />}
           >
             帮助与反馈
-          </DropdownItem>
-          <DropdownItem
-            isReadOnly
-            textValue="NSFW 切换"
-            key="nsfw_toggle"
-            startContent={<ArrowLeftRight className="size-4" />}
-          >
-            <NSFWSwitcher />
           </DropdownItem>
           <DropdownItem
             key="logout"
@@ -198,7 +189,7 @@ export const UserDropdown = () => {
               </ModalHeader>
               <ModalBody>
                 <p>
-                  登出将会清除您的登录状态, 但是不会清除您的编辑草稿 (Galgame,
+                  登出将会清除您的登录状态, 但是不会清除您的编辑草稿 (课程资源,
                   回复等), 您可以稍后继续登录
                 </p>
               </ModalBody>

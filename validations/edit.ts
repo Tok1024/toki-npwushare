@@ -15,8 +15,7 @@ export const patchCreateSchema = z.object({
   tag: z
     .string()
     .max(2333, { message: '别名字符串总长度不可超过 3000 个字符' }),
-  released: z.string(),
-  contentLimit: z.string().max(10)
+  released: z.string()
 })
 
 export const patchUpdateSchema = z.object({
@@ -42,7 +41,6 @@ export const patchUpdateSchema = z.object({
       .min(1, { message: '单个别名至少一个字符' })
       .max(500, { message: '单个别名至多 500 个字符' })
   ),
-  contentLimit: z.string().max(10),
   released: z.string().optional()
 })
 

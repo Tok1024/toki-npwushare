@@ -1,5 +1,5 @@
 import { NavbarBrand } from '@heroui/navbar'
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import Image from 'next/image'
 import Link from 'next/link'
 

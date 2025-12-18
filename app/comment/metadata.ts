@@ -1,21 +1,21 @@
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import type { Metadata } from 'next'
 
 export const kunMetadata: Metadata = {
-  title: 'Galgame 评论',
-  description: `最新发布的 Galgame 评论列表, 包括对下载的看法, 对 Galgame 的评分, 对 Galgame 的吐槽等等`,
+  title: '课程评论',
+  description: `最新发布的课程评论列表, 包括对课程的看法, 对资源的评分, 对学习经验的分享等等`,
   openGraph: {
-    title: 'Galgame 评论',
-    description: `最新发布的 Galgame 评论列表, 包括对下载的看法, 对 Galgame 的评分, 对 Galgame 的吐槽等等`,
+    title: '课程评论',
+    description: `最新发布的课程评论列表, 包括对课程的看法, 对资源的评分, 对学习经验的分享等等`,
     type: 'website',
-    images: kunMoyuMoe.images
+    images: nwpushare.images
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Galgame 评论',
-    description: `最新发布的 Galgame 评论列表, 包括对下载的看法, 对 Galgame 的评分, 对 Galgame 的吐槽等等`
+    title: '课程评论',
+    description: `最新发布的课程评论列表, 包括对课程的看法, 对资源的评分, 对学习经验的分享等等`
   },
   alternates: {
-    canonical: `${kunMoyuMoe.domain.main}/comment`
+    canonical: `${nwpushare.domain.main}/comment`
   }
 }

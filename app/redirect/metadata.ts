@@ -1,4 +1,4 @@
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import type { Metadata } from 'next'
 
 export const kunMetadata: Metadata = {
@@ -8,7 +8,7 @@ export const kunMetadata: Metadata = {
     title: '友情链接',
     description: `外链跳转页面, 解析外链以保证安全`,
     type: 'website',
-    images: kunMoyuMoe.images
+    images: nwpushare.images
   },
   twitter: {
     card: 'summary_large_image',
@@ -16,6 +16,6 @@ export const kunMetadata: Metadata = {
     description: `外链跳转页面, 解析外链以保证安全`
   },
   alternates: {
-    canonical: `${kunMoyuMoe.domain.main}/jump`
+    canonical: `${nwpushare.domain.main}/jump`
   }
 }

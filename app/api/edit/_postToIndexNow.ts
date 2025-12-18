@@ -1,4 +1,4 @@
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 
 interface IndexNow {
   host: string
@@ -9,15 +9,15 @@ interface IndexNow {
 
 export const postToIndexNow = async (url: string) => {
   const requestData: IndexNow = {
-    host: kunMoyuMoe.domain.main,
+    host: nwpushare.domain.main,
     key: process.env.KUN_VISUAL_NOVEL_INDEX_NOW_KEY || '',
-    keyLocation: `${kunMoyuMoe.domain.main}/${process.env.KUN_VISUAL_NOVEL_INDEX_NOW_KEY}.txt`,
+    keyLocation: `${nwpushare.domain.main}/${process.env.KUN_VISUAL_NOVEL_INDEX_NOW_KEY}.txt`,
     urlList: [url]
   }
 
   await fetch('https://www.bing.com/indexnow', {
     method: 'POST',
-    headers: { 'User-Agent': kunMoyuMoe.titleShort },
+    headers: { 'User-Agent': nwpushare.titleShort },
     body: JSON.stringify(requestData)
   })
 }

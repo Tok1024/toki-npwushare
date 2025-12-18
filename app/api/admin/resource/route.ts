@@ -6,7 +6,6 @@ import {
   kunParsePutBody
 } from '~/app/api/utils/parseQuery'
 import { adminPaginationSchema } from '~/validations/admin'
-import { getNSFWHeader } from '~/app/api/utils/getNSFWHeader'
 import { getPatchResource } from './get'
 import { verifyHeaderCookie } from '~/middleware/_verifyHeaderCookie'
 import { patchResourceUpdateSchema } from '~/validations/patch'
@@ -25,7 +24,6 @@ export const GET = async (req: NextRequest) => {
   if (typeof input === 'string') {
     return NextResponse.json(input)
   }
-  const nsfwEnable = getNSFWHeader(req)
   const payload = await verifyHeaderCookie(req)
   if (!payload) {
     return NextResponse.json('用户未登录')
@@ -34,7 +32,7 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json('本页面仅管理员可访问')
   }
 
-  const res = await getPatchResource(input, nsfwEnable)
+  const res = await getPatchResource(input)
   return NextResponse.json(res)
 }
 

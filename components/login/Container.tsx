@@ -1,6 +1,6 @@
 import { Card, CardBody, CardHeader } from '@heroui/card'
 import Image from 'next/image'
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 
 interface Props {
   title: string
@@ -16,12 +16,12 @@ export const LoginContainer = ({ title, children }: Props) => {
             <Image
               src="/favicon.webp"
               priority={true}
-              alt={kunMoyuMoe.titleShort}
+              alt={nwpushare.titleShort}
               width={36}
               height={36}
               className="rounded-full"
             />
-            <span>{kunMoyuMoe.titleShort}</span>
+            <span>{nwpushare.titleShort}</span>
           </div>
 
           <h1 className="text-3xl font-bold">{title}</h1>

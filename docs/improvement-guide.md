@@ -1,4 +1,4 @@
-# Toki Learning Hub 自主迭代路线图（Step-by-step）
+# NWPUShare 自主迭代路线图（Step-by-step）
 
 > 目标：帮助你（全栈初学者）循序渐进地完善课程资源网站。每个阶段都附带明确的任务、涉及的文件以及验收方式，照着做就能稳步前进。
 

@@ -1,4 +1,4 @@
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import { touchgalTemplate } from './templates/touchgal'
 import { announcementTemplate } from './templates/announcement'
 
@@ -11,7 +11,7 @@ export interface EmailTemplate {
 export const emailTemplates: EmailTemplate[] = [
   {
     id: 'touchgal',
-    name: `${kunMoyuMoe.titleShort} 全体消息`,
+    name: `${nwpushare.titleShort} 全体消息`,
     template: touchgalTemplate(
       '{{title}}',
       '{{content}}',
@@ -21,7 +21,7 @@ export const emailTemplates: EmailTemplate[] = [
   },
   {
     id: 'announcement',
-    name: `${kunMoyuMoe.titleShort} 重要公告`,
+    name: `${nwpushare.titleShort} 重要公告`,
     template: announcementTemplate(
       '{{title}}',
       '{{content}}',

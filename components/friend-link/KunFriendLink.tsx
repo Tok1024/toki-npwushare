@@ -2,7 +2,7 @@
 
 import { Card, CardBody, CardFooter, Image, Link } from '@heroui/react'
 import { motion } from 'framer-motion'
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import { kunFriends } from '~/config/friend'
 
 export const KunFriendLink = () => {
@@ -68,7 +68,7 @@ export const KunFriendLink = () => {
             <Link
               isExternal
               showAnchorIcon
-              href={kunMoyuMoe.domain.discord_group}
+              href={nwpushare.domain.discord_group}
               rel="noopener noreferrer"
             >
               Discord 服务器

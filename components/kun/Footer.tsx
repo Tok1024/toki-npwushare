@@ -1,6 +1,6 @@
 'use client'
 
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import Link from 'next/link'
 import Image from 'next/image'
 
@@ -12,11 +12,11 @@ export const KunFooter = () => {
           <Link href="/" className="flex items-center space-x-2">
             <Image
               src="/favicon.webp"
-              alt={kunMoyuMoe.titleShort}
+              alt={nwpushare.titleShort}
               width={30}
               height={30}
             />
-            <span>© 2025 {kunMoyuMoe.titleShort}</span>
+            <span>© 2025 {nwpushare.titleShort}</span>
           </Link>
 
           <div className="flex space-x-8">
@@ -27,12 +27,12 @@ export const KunFooter = () => {
               课程导航
             </Link>
 
-            <Link href="/friend-link" className="flex items-center">
+            {/* <Link href="/friend-link" className="flex items-center">
               友情链接
-            </Link>
+            </Link> */}
 
             <Link
-              href="https://github.com/toki-learning-hub"
+              href="https://github.com/toki-nwpushare"
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center"
@@ -43,14 +43,14 @@ export const KunFooter = () => {
 
           <div className="flex space-x-8">
             <span className="flex items-center">联系我们</span>
-            <Link
-              href={kunMoyuMoe.domain.discord_group}
+            {/* <Link
+              href={nwpushare.domain.discord_group}
               className="flex items-center"
               target="_blank"
               rel="noopener noreferrer"
             >
               Discord
-            </Link>
+            </Link> */}
           </div>
         </div>
       </div>

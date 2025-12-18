@@ -1,24 +1,24 @@
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import type { Metadata } from 'next'
 
 export const kunMetadata: Metadata = {
-  title: '更改 Galgame',
+  title: '编辑课程资源',
   description:
-    '更改已经发布的 Galgame 信息, 介绍, 标签, 会社, 别名等, 然后提出 pull request',
+    '更改已经发布的课程信息, 介绍, 标签, 资料链接等, 然后提出 pull request',
   openGraph: {
-    title: '更改 Galgame',
+    title: '编辑课程资源',
     description:
-      '更改已经发布的 Galgame 信息, 介绍, 标签, 会社, 别名等, 然后提出 pull request',
+      '更改已经发布的课程信息, 介绍, 标签, 资料链接等, 然后提出 pull request',
     type: 'website',
-    images: kunMoyuMoe.images
+    images: nwpushare.images
   },
   twitter: {
     card: 'summary_large_image',
-    title: '更改 Galgame',
+    title: '编辑课程资源',
     description:
-      '更改已经发布的 Galgame 信息, 介绍, 标签, 会社, 别名等, 然后提出 pull request'
+      '更改已经发布的课程信息, 介绍, 标签, 资料链接等, 然后提出 pull request'
   },
   alternates: {
-    canonical: `${kunMoyuMoe.domain.main}/edit/rewrite`
+    canonical: `${nwpushare.domain.main}/edit/rewrite`
   }
 }

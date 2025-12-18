@@ -8,7 +8,7 @@ import { KunCarousel } from '../carousel/KunCarousel'
 import { getKunPosts } from '../carousel/mdx'
 import { Discord } from '~/components/kun/icons/Discord'
 import { KunHomeNavigationItems } from '../NavigationItems'
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import { homeNavigationItems } from '~/constants/home'
 
 export const HomeHero = () => {
@@ -44,7 +44,7 @@ export const HomeHero = () => {
                 }}
                 variant="flat"
               >
-                欢迎来到 {kunMoyuMoe.titleShort}
+                欢迎来到 {nwpushare.titleShort}
               </Chip>
             </div>
 

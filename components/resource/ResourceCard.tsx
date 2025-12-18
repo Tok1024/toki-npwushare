@@ -17,70 +17,76 @@ export const ResourceCard = ({ resource }: Props) => {
       isPressable
       as={Link}
       href={`/${resource.uniqueId}`}
-      className="w-full border border-default-100 shadow-sm hover:shadow-md transition-all bg-white/50 backdrop-blur-sm group"
+      className="w-full border-none shadow-sm hover:shadow-lg transition-all bg-gradient-to-br from-white to-gray-50/80 group"
     >
-      <CardBody className="p-4 gap-3">
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-blue-50 text-blue-500 group-hover:bg-blue-100 transition-colors">
-              <FileText className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="font-bold text-slate-800 line-clamp-1 group-hover:text-blue-600 transition-colors">
-                {resource.patchName}
-              </h2>
-              <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
-                <KunUser
-                  user={resource.user}
-                  userProps={{
-                    name: resource.user.name,
-                    description: '',
-                    avatarProps: {
-                      size: 'sm',
-                      className: 'w-4 h-4',
-                      src: resource.user.avatar,
-                      name: resource.user.name.charAt(0).toUpperCase()
-                    }
-                  }}
-                />
-                <span>•</span>
-                <span>{formatDistanceToNow(resource.created)}</span>
-              </div>
-            </div>
+      <CardBody className="p-5 gap-4">
+        <div className="flex items-start gap-4">
+          <div className="flex-shrink-0 p-3 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-md group-hover:shadow-lg group-hover:scale-105 transition-all">
+            <FileText className="w-6 h-6" />
           </div>
 
-          <Chip
-            size="sm"
-            variant="flat"
-            className="bg-slate-100 text-slate-600"
-          >
-            {resource.size}
-          </Chip>
+          <div className="flex-1 min-w-0">
+            <h2 className="font-semibold text-lg text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors mb-2">
+              {resource.patchName}
+            </h2>
+
+            {resource.name && (
+              <p className="text-sm text-gray-600 line-clamp-2 mb-3">
+                {resource.name}
+              </p>
+            )}
+
+            <div className="flex items-center gap-2 text-xs text-gray-500">
+              <KunUser
+                user={resource.user}
+                userProps={{
+                  name: resource.user.name,
+                  description: '',
+                  avatarProps: {
+                    size: 'sm',
+                    className: 'w-5 h-5',
+                    src: resource.user.avatar,
+                    name: resource.user.name.charAt(0).toUpperCase()
+                  }
+                }}
+              />
+              <span className="text-gray-300">•</span>
+              <span>{formatDistanceToNow(resource.created)}</span>
+              {resource.size && (
+                <>
+                  <span className="text-gray-300">•</span>
+                  <span className="font-medium text-gray-600">{resource.size}</span>
+                </>
+              )}
+            </div>
+          </div>
         </div>
 
-        {resource.name && (
-          <p className="text-sm text-slate-600 line-clamp-2 pl-[3.25rem]">
-            {resource.name}
-          </p>
+        {(resource.type.length > 0 || resource.language.length > 0 || resource.platform.length > 0) && (
+          <div className="pt-1">
+            <KunPatchAttribute
+              types={resource.type}
+              languages={resource.language}
+              platforms={resource.platform}
+              size="sm"
+            />
+          </div>
         )}
 
-        <div className="pl-[3.25rem]">
-          <KunPatchAttribute
-            types={resource.type}
-            languages={resource.language}
-            platforms={resource.platform}
-            size="sm"
-          />
-        </div>
-
-        <div className="flex items-center gap-4 text-xs text-slate-400 pl-[3.25rem] mt-1">
-          <div className="flex items-center gap-1 hover:text-rose-500 transition-colors">
-            <Heart className="w-3.5 h-3.5" />
-            {resource.likeCount}
+        <div className="flex items-center justify-between pt-3">
+          <div className="flex items-center gap-5">
+            <div className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-rose-500 transition-colors cursor-pointer">
+              <Heart className="w-4 h-4" />
+              <span className="font-medium">{resource.likeCount}</span>
+            </div>
+            <div className="flex items-center gap-1.5 text-xs text-gray-500 hover:text-blue-500 transition-colors cursor-pointer">
+              <Download className="w-4 h-4" />
+              <span className="font-medium">{resource.download}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-1 hover:text-blue-500 transition-colors">
-            <Download className="w-3.5 h-3.5" />
-            {resource.download}
+
+          <div className="text-xs text-blue-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+            查看详情 →
           </div>
         </div>
       </CardBody>

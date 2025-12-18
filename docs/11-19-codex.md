@@ -198,11 +198,11 @@
   - 调用 `kunAuthMiddleware`。
 - `middleware/auth.ts:1`：
   - 用 `parseCookies` 从请求头里拿 cookie。
-  - 判断是否存在 `kun-galgame-patch-moe-token`：
+  - 判断是否存在 `toki-nwpushare-access-token`：
     - 有：放行。
     - 无：重定向到 `/login`。
 - `middleware/_verifyHeaderCookie.ts:1`：
-  - 从 cookie 中取出 `kun-galgame-patch-moe-token`。
+  - 从 cookie 中取出 `toki-nwpushare-access-token`。
   - 调用 `verifyKunToken` → JWT + Redis 校验。
 
 ### 3.3 数据层：Prisma + Redis + S3
@@ -262,7 +262,7 @@
 2. `generateKunToken`：
    - `jwt.sign` 生成 token。
    - `setKv('access:token:uid', token, 30 * 24 * 60 * 60)` 写入 Redis。
-   - 返回 token，路由里通过 `cookies().set('kun-galgame-patch-moe-token', token, ...)` 写 cookie。
+   - 返回 token，路由里通过 `cookies().set('toki-nwpushare-access-token', token, ...)` 写 cookie。
 3. 之后任意需要登录的接口：
    - 通过 `verifyHeaderCookie(req)` 解析 cookie → 调用 `verifyKunToken(token)`：
      - 用 `jwt.verify` 解出 payload。
@@ -280,7 +280,7 @@
    - 新增 `app/api/auth/[...betterauth]/route.ts`。
    - 中间件从手动解析 cookie 改为调用 BetterAuth 的 `verifyRequest`。
 2. 统一 cookie 与 Redis key 命名：
-   - 将 `kun-galgame-patch-moe-token` → 更通用的 `toki-auth-token`（示例）。
+   - 将 `toki-nwpushare-access-token` → 更通用的 `toki-auth-token`（示例）。
    - 将 Redis 前缀 `kun:touchgal` → 如 `toki:learning-hub`。
 
 > 这部分改造比较重，不建议你作为第一次实战就上；可以作为「中后期」的重构目标。
@@ -531,7 +531,7 @@
 
 ### 5.1 命名与语义不统一
 
-- Cookie 名仍为 `kun-galgame-patch-moe-token`。
+- Cookie 名仍为 `toki-nwpushare-access-token`。
 - Redis key 前缀为 `kun:touchgal`（见 `lib/redis.ts`）。
 - S3 存储路径中仍包含 `touchgal/galgame` 等字样（`lib/s3.ts`）。
 - 课程评论类型仍复用 `PatchComment`（`types/api/patch`），而不是课程专用类型。
@@ -678,7 +678,7 @@
 
 ### 阶段 5：清理命名与 Legacy（长期任务）
 
-目标：让项目从命名上彻底告别「Galgame / Patch」语境，变成真正的「Toki Learning Hub」。
+目标：让项目从命名上彻底告别「Galgame / Patch」语境，变成真正的「NWPUShare」。
 
 任务：
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import { Button, Card, CardBody, CardFooter, Snippet } from '@heroui/react'
 import { ExternalLink, ShieldAlert } from 'lucide-react'
 import { CountdownTimer } from './CountdownTimer'
@@ -15,7 +15,7 @@ export const KunRedirectCard = () => {
   const userConfig = useUserStore((state) => state.user)
 
   const [isCountdownComplete, setIsCountdownComplete] = useState(false)
-  const url = searchParams.get('url') || kunMoyuMoe.domain.main
+  const url = searchParams.get('url') || nwpushare.domain.main
 
   const handleRedirect = () => {
     window.location.href = url
@@ -26,7 +26,7 @@ export const KunRedirectCard = () => {
       <CardBody className="gap-4">
         <div className="flex items-center gap-2 text-warning-500">
           <ShieldAlert className="w-5 h-5" />
-          <p className="text-lg">您即将离开 {kunMoyuMoe.titleShort}</p>
+          <p className="text-lg">您即将离开 {nwpushare.titleShort}</p>
         </div>
 
         <p className="text-default-500">您将会被跳转到:</p>

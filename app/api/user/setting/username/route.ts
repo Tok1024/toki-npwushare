@@ -10,7 +10,7 @@ const updateUsername = async (username: string, uid: number) => {
     return '用户未找到'
   }
   if (user.moemoepoint < 30) {
-    return '更改用户名最少需要 30 萌萌点, 您的萌萌点不足'
+    return '更改用户名最少需要 30 贡献值, 您的贡献值不足'
   }
 
   const normalizedName = username.toLowerCase()

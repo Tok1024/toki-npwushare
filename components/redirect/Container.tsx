@@ -3,7 +3,7 @@
 import { Suspense } from 'react'
 import { Alert, Image, Link } from '@heroui/react'
 import { KunRedirectCard } from './KunRedirectCard'
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 
 export const KunRedirectContainer = () => {
   return (
@@ -30,7 +30,7 @@ export const KunRedirectContainer = () => {
         <div className="w-full max-w-2xl rounded-large">
           <Link isExternal href="https://www.sailingnet.pro/">
             <Image
-              alt={kunMoyuMoe.title}
+              alt={nwpushare.title}
               src="https://cloud.touchgaloss.com/2024/09/6e194add9120240905110255.webp"
             />
           </Link>

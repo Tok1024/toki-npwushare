@@ -21,7 +21,8 @@ export const updateUserAvatar = async (uid: number, avatar: ArrayBuffer) => {
     return res
   }
 
-  const imageLink = `${process.env.KUN_VISUAL_NOVEL_IMAGE_BED_URL}/user/avatar/user_${uid}/avatar-mini.avif`
+  // 本地存储路径，Next.js 会自动从 public 目录提供静态文件
+  const imageLink = `/avatars/user_${uid}/avatar-mini.avif`
 
   await prisma.user.update({
     where: { id: uid },

@@ -1,4 +1,4 @@
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import { generateNullMetadata } from '~/utils/noIndex'
 import type { Metadata, Viewport } from 'next'
 
@@ -20,20 +20,20 @@ export const generateKunMetadata = (): Metadata => {
   }
 
   return {
-    metadataBase: new URL(kunMoyuMoe.domain.main),
+    metadataBase: new URL(nwpushare.domain.main),
     title: {
-      default: kunMoyuMoe.title,
-      template: kunMoyuMoe.template
+      default: nwpushare.title,
+      template: nwpushare.template
     },
-    description: kunMoyuMoe.description,
-    keywords: kunMoyuMoe.keywords,
-    authors: kunMoyuMoe.author,
+    description: nwpushare.description,
+    keywords: nwpushare.keywords,
+    authors: nwpushare.author,
     icons: {
       apple: '/apple-touch-icon.avif',
       icon: '/favicon.ico'
     },
-    creator: kunMoyuMoe.creator.name,
-    publisher: kunMoyuMoe.publisher.name,
+    creator: nwpushare.creator.name,
+    publisher: nwpushare.publisher.name,
     formatDetection: {
       email: false,
       address: false,
@@ -42,18 +42,18 @@ export const generateKunMetadata = (): Metadata => {
     openGraph: {
       type: 'website',
       locale: 'zh_CN',
-      url: kunMoyuMoe.domain.main,
-      title: kunMoyuMoe.title,
-      description: kunMoyuMoe.description,
-      siteName: kunMoyuMoe.title,
-      images: kunMoyuMoe.images
+      url: nwpushare.domain.main,
+      title: nwpushare.title,
+      description: nwpushare.description,
+      siteName: nwpushare.title,
+      images: nwpushare.images
     },
     twitter: {
       card: 'summary_large_image',
-      title: kunMoyuMoe.title,
-      description: kunMoyuMoe.description,
-      creator: kunMoyuMoe.creator.mention,
-      images: kunMoyuMoe.og.image
+      title: nwpushare.title,
+      description: nwpushare.description,
+      creator: nwpushare.creator.mention,
+      images: nwpushare.og.image
     },
     robots: {
       index: true,
@@ -67,9 +67,9 @@ export const generateKunMetadata = (): Metadata => {
       }
     },
     alternates: {
-      canonical: kunMoyuMoe.canonical,
+      canonical: nwpushare.canonical,
       languages: {
-        'zh-Hans': kunMoyuMoe.domain.main
+        'zh-Hans': nwpushare.domain.main
       }
     }
   }

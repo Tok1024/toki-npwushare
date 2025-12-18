@@ -1,4 +1,4 @@
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import type { Metadata } from 'next'
 import type { KunBlog } from '~/lib/mdx/types'
 
@@ -30,7 +30,7 @@ export const generateKunMetadataTemplate = (blog: KunBlog): Metadata => {
       images: [frontmatter.banner]
     },
     alternates: {
-      canonical: `${kunMoyuMoe.domain.main}/doc/${slug}`
+      canonical: `${nwpushare.domain.main}/doc/${slug}`
     }
   }
 }

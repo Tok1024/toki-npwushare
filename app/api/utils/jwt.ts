@@ -1,12 +1,7 @@
 import jwt from 'jsonwebtoken'
 import { delKv, getKv, setKv } from '~/lib/redis'
 
-export interface KunGalgameStatelessPayload {
-  require2FA: boolean
-  id: number
-}
-
-export interface KunGalgamePayload {
+export interface NwpuSharePayload {
   iss: string
   aud: string
   uid: number
@@ -20,7 +15,7 @@ export const generateKunToken = async (
   role: number,
   expire: string
 ) => {
-  const payload: KunGalgamePayload = {
+  const payload: NwpuSharePayload = {
     iss: process.env.JWT_ISS!,
     aud: process.env.JWT_AUD!,
     uid,
@@ -36,22 +31,12 @@ export const generateKunToken = async (
   return token
 }
 
-export const generateKunStatelessToken = (
-  payload: Record<string, string | number | boolean>,
-  expire: number
-) => {
-  const token = jwt.sign(payload, process.env.JWT_SECRET!, {
-    expiresIn: expire
-  })
-  return token
-}
-
 export const verifyKunToken = async (refreshToken: string) => {
   try {
     const payload = jwt.verify(
       refreshToken,
       process.env.JWT_SECRET!
-    ) as KunGalgamePayload
+    ) as NwpuSharePayload
     const redisToken = await getKv(`access:token:${payload.uid}`)
 
     if (!redisToken) {

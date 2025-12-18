@@ -1,27 +1,27 @@
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import type { Metadata } from 'next'
 
 export const kunMetadata: Metadata = {
-  title: `注册 - ${kunMoyuMoe.titleShort}`,
-  description: `注册成为 ${kunMoyuMoe.titleShort} 网站用户, 无门槛下载任何 Galgame 资源。希望明天对您来说又是美好的一天！`,
+  title: `注册 - ${nwpushare.titleShort}`,
+  description: `注册成为 ${nwpushare.titleShort} 网站用户, 无门槛访问所有学习资源。希望明天对您来说又是美好的一天！`,
   keywords: [
     '注册',
-    'Galgame 网站注册',
+    '学习资源网站注册',
     '创建账户',
-    'Galgame 资源下载',
+    '课程资料下载',
     '免费注册'
   ],
   openGraph: {
-    title: `注册 - ${kunMoyuMoe.titleShort}`,
-    description: `注册成为 ${kunMoyuMoe.titleShort} 网站用户, 无门槛下载任何 Galgame 资源。希望明天对您来说又是美好的一天！`,
-    url: `${kunMoyuMoe.domain.main}/register`,
-    siteName: kunMoyuMoe.title,
+    title: `注册 - ${nwpushare.titleShort}`,
+    description: `注册成为 ${nwpushare.titleShort} 网站用户, 无门槛访问所有学习资源。希望明天对您来说又是美好的一天！`,
+    url: `${nwpushare.domain.main}/register`,
+    siteName: nwpushare.title,
     images: [
       {
-        url: kunMoyuMoe.og.image,
+        url: nwpushare.og.image,
         width: 1920,
         height: 1080,
-        alt: `${kunMoyuMoe.titleShort} 注册页面`
+        alt: `${nwpushare.titleShort} 注册页面`
       }
     ],
     locale: 'zh_CN',
@@ -31,9 +31,9 @@ export const kunMetadata: Metadata = {
     google: 'google-site-verification-code'
   },
   alternates: {
-    canonical: `${kunMoyuMoe.domain.main}/register`,
+    canonical: `${nwpushare.domain.main}/register`,
     languages: {
-      'zh-Hans': `${kunMoyuMoe.domain.main}/register`
+      'zh-Hans': `${nwpushare.domain.main}/register`
     }
   }
 }

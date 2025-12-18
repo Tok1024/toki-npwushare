@@ -4,9 +4,8 @@ import type { NextRequest } from 'next/server'
 
 export const verifyHeaderCookie = async (req: NextRequest) => {
   const token = parseCookies(req.headers.get('cookie') ?? '')[
-    'kun-galgame-patch-moe-token'
+    'toki-nwpushare-access-token'
   ]
   const payload = await verifyKunToken(token ?? '')
-
   return payload
 }

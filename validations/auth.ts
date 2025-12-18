@@ -63,11 +63,3 @@ export const captchaSchema = z.object({
     .min(1, { message: '验证图片中最少有一只白毛小只可爱软萌妹子' })
     .max(3, { message: '验证图片中最多有三只白毛小只可爱软萌妹子' })
 })
-
-export const verifyLogin2FASchema = z.object({
-  token: z
-    .string()
-    .min(6, { message: '2FA 验证码必须为 6 位数字' })
-    .max(6, { message: '2FA 验证码必须为 6 位数字' }),
-  isBackupCode: z.boolean().optional().default(false)
-})

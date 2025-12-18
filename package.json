@@ -1,7 +1,7 @@
 {
-  "name": "kun-touchgal-next",
+  "name": "nwpushare",
   "version": "1.0.7",
-  "description": "TouchGAL是立足于分享快乐的一站式Galgame文化社区, 为Gal爱好者提供一片净土!",
+  "description": "NWPUShare - 校园学习资源共享站。汇集课程资料、学习笔记、考试经验，为学生提供一站式学习资源平台。",
   "private": true,
   "type": "module",
   "scripts": {
@@ -17,15 +17,15 @@
     "prisma:push": "prisma db push",
     "prisma:generate": "prisma generate",
     "start": "pm2 start ecosystem.config.cjs",
-    "stop": "pm2 delete kun-touchgal-next",
+    "stop": "pm2 delete nwpushare",
     "deploy:install": "esno scripts/deployInstall.ts",
     "deploy:build": "esno scripts/deployBuild.ts",
     "seed:courses": "esno scripts/seedCourses.ts"
   },
   "author": {
-    "name": "KUN1007",
-    "email": "kun@kungal.com",
-    "url": "https://github.com/KUN1007"
+    "name": "NWPUShare Team",
+    "email": "admin@nwpushare.com",
+    "url": "https://github.com/toki"
   },
   "license": "AGPL-3.0-only",
   "browserslist": [
@@ -106,6 +106,7 @@
     "remark-gfm": "^4.0.1",
     "remark-parse": "^11.0.0",
     "remark-rehype": "^11.1.2",
+    "resend": "^6.6.0",
     "sharp": "^0.34.3",
     "sugar-high": "^0.9.3",
     "swr": "^2.3.6",

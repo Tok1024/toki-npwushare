@@ -3,7 +3,7 @@
 import { NavbarMenu, NavbarMenuItem } from '@heroui/navbar'
 import Link from 'next/link'
 import Image from 'next/image'
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import { kunMobileNavItem } from '~/constants/top-bar'
 
 export const KunMobileMenu = () => {
@@ -13,13 +13,13 @@ export const KunMobileMenu = () => {
         <Link className="flex items-center" href="/">
           <Image
             src="/favicon.webp"
-            alt={kunMoyuMoe.titleShort}
+            alt={nwpushare.titleShort}
             width={50}
             height={50}
             priority
           />
           <p className="ml-4 mr-2 text-3xl font-bold">
-            {kunMoyuMoe.creator.name}
+            {nwpushare.creator.name}
           </p>
         </Link>
       </NavbarMenuItem>

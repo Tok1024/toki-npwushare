@@ -1,6 +1,6 @@
 'use client'
 
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -136,7 +136,7 @@ export const RegisterForm = () => {
           <span>我同意</span>
         </Checkbox>
         <Link className="ml-1" href="/doc/notice/privacy">
-          {kunMoyuMoe.titleShort} 用户协议
+          {nwpushare.titleShort} 用户协议
         </Link>
       </div>
 

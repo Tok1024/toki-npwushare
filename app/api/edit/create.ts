@@ -4,7 +4,7 @@ import { prisma } from '~/prisma/index'
 import { uploadPatchBanner } from './_upload'
 import { patchCreateSchema } from '~/validations/edit'
 import { handleBatchPatchTags } from './batchTag'
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import { postToIndexNow } from './_postToIndexNow'
 import { ensurePatchCompaniesFromVNDB } from './fetchCompanies'
 
@@ -15,16 +15,7 @@ export const createGalgame = async (
   },
   uid: number
 ) => {
-  const {
-    name,
-    vndbId,
-    alias,
-    banner,
-    tag,
-    introduction,
-    released,
-    contentLimit
-  } = input
+  const { name, vndbId, alias, banner, tag, introduction, released } = input
 
   const bannerArrayBuffer = banner as ArrayBuffer
   const galgameUniqueId = crypto.randomBytes(4).toString('hex')
@@ -39,8 +30,7 @@ export const createGalgame = async (
           introduction,
           user_id: uid,
           banner: '',
-          released,
-          content_limit: contentLimit
+          released
         }
       })
 
@@ -102,10 +92,8 @@ export const createGalgame = async (
     await handleBatchPatchTags(res.patchId, tag, uid)
   }
 
-  if (contentLimit === 'sfw') {
-    const newPatchUrl = `${kunMoyuMoe.domain.main}/${galgameUniqueId}`
-    await postToIndexNow(newPatchUrl)
-  }
+  const newPatchUrl = `${nwpushare.domain.main}/${galgameUniqueId}`
+  await postToIndexNow(newPatchUrl)
 
   return { uniqueId: galgameUniqueId }
 }

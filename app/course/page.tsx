@@ -1,12 +1,12 @@
 import Link from 'next/link'
 import { prisma } from '~/prisma'
 import { KunHeader } from '~/components/kun/Header'
-import { CourseCard } from '~/components/home/course/CourseCard'
+import { CourseContainer } from '~/components/home/course/CourseContainer'
 import { Button } from '@heroui/button'
 import { Card, CardBody } from '@heroui/card'
 
 interface Props {
-  searchParams?: Promise<{ q?: string; sort?: string }>
+  searchParams?: Promise<{ q?: string; sort?: string; page?: string }>
 }
 
 type CourseSort = 'latest' | 'popular' | 'difficulty'
@@ -20,6 +20,9 @@ export default async function CourseIndexPage({ searchParams }: Props) {
   const sort: CourseSort = //把排序方式写进路径参数里
     rawSort === 'popular' || rawSort === 'difficulty' ? rawSort : 'latest'
   const hasResource = params.hasResource === '1'
+  const page = Number(params.page) || 1
+  const limit = 9
+  const offset = (page - 1) * limit
 
   const orderBy =
     sort === 'popular'
@@ -28,33 +31,54 @@ export default async function CourseIndexPage({ searchParams }: Props) {
         ? { difficulty_avg: 'desc' as const }
         : { created: 'desc' as const }
 
-  const courses = await prisma.course.findMany({
-    where: keyword
+  const where = {
+    ...(keyword
       ? {
           OR: [
             { name: { contains: keyword, mode: 'insensitive' } },
             { department: { name: { contains: keyword, mode: 'insensitive' } } }
           ]
         }
-      : undefined,
-    include: { department: true },
-    orderBy
-  })
+      : {}),
+    ...(hasResource ? { resource_count: { gt: 0 } } : {})
+  }
+
+  const [courses, total] = await Promise.all([
+    prisma.course.findMany({
+      where,
+      include: { department: true },
+      orderBy,
+      take: limit,
+      skip: offset
+    }),
+    prisma.course.count({ where })
+  ])
 
   // 修改url参数
   const buildSortHref = (nextSort: CourseSort) => {
     const sp = new URLSearchParams()
     if (keyword) sp.set('q', keyword)
     if (nextSort !== 'latest') sp.set('sort', nextSort)
+    if (hasResource) sp.set('hasResource', '1')
     const qs = sp.toString()
     return qs ? `/course?${qs}` : '/course'
   }
 
-  const buildHasResourceHref = (hasResource: boolean) => {
+  const buildHasResourceHref = (nextHasResource: boolean) => {
+    const sp = new URLSearchParams()
+    if (keyword) sp.set('q', keyword)
+    if (sort !== 'latest') sp.set('sort', sort)
+    if (nextHasResource) sp.set('hasResource', '1')
+    const qs = sp.toString()
+    return qs ? `/course?${qs}` : '/course'
+  }
+
+  const buildPageHref = (nextPage: number) => {
     const sp = new URLSearchParams()
     if (keyword) sp.set('q', keyword)
     if (sort !== 'latest') sp.set('sort', sort)
     if (hasResource) sp.set('hasResource', '1')
+    if (nextPage > 1) sp.set('page', String(nextPage))
     const qs = sp.toString()
     return qs ? `/course?${qs}` : '/course'
   }
@@ -83,7 +107,7 @@ export default async function CourseIndexPage({ searchParams }: Props) {
             </form>
             <div className="flex items-center justify-between gap-2 sm:justify-end">
               <div className="inline-flex rounded-full bg-default-50 px-2 py-1 text-[11px] text-default-500 sm:text-xs">
-                共 {courses.length} 门课程
+                共 {total} 门课程
               </div>
               <div className="inline-flex rounded-full bg-default-50 p-1 text-[11px] text-default-600 sm:text-xs">
                 <Button
@@ -128,30 +152,26 @@ export default async function CourseIndexPage({ searchParams }: Props) {
         </CardBody>
       </Card>
 
-      <div className="grid gap-2 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {courses.map((course) => (
-          <CourseCard
-            key={course.id}
-            c={{
-              id: course.id,
-              name: course.name,
-              slug: course.slug,
-              deptSlug: course.department.slug,
-              tags: course.tags,
-              heartCount: course.heart_count,
-              difficultyAvg: course.difficulty_avg,
-              difficultyVotes: course.difficulty_votes,
-              resourceCount: course.resource_count,
-              postCount: course.post_count
-            }}
-          />
-        ))}
-        {courses.length === 0 && (
-          <p className="py-10 text-center text-default-400 col-span-full">
-            未找到匹配的课程，可以尝试其它关键词。
-          </p>
-        )}
-      </div>
+      <CourseContainer
+        courses={courses.map((course) => ({
+          id: course.id,
+          name: course.name,
+          slug: course.slug,
+          deptSlug: course.department.slug,
+          tags: course.tags,
+          heartCount: course.heart_count,
+          difficultyAvg: course.difficulty_avg,
+          difficultyVotes: course.difficulty_votes,
+          resourceCount: course.resource_count,
+          postCount: course.post_count
+        }))}
+        total={total}
+        page={page}
+        limit={limit}
+        keyword={keyword}
+        sort={sort}
+        hasResource={hasResource}
+      />
     </div>
   )
 }

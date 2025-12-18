@@ -1,6 +1,6 @@
 import { isPatchPath, isTagPath, isUserPath, isDocPath } from './matcher'
 import { keyLabelMap } from './constants'
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import type { KunBreadcrumbItem } from './constants'
 
 type NextParams = Record<string, string | Array<string> | undefined>
@@ -99,7 +99,7 @@ export const createBreadcrumbItem = (
   }
 
   const pageTitle = document.title
-    .replace(` - ${kunMoyuMoe.titleShort}`, '')
+    .replace(` - ${nwpushare.titleShort}`, '')
     .replace(/\|.*$/, '')
 
   const hasIgnorePath = pathToIgnore.some((p) => p === pathname)

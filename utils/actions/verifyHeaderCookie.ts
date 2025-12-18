@@ -5,7 +5,7 @@ import { verifyKunToken } from '~/app/api/utils/jwt'
 
 export const verifyHeaderCookie = async () => {
   const cookieStore = await cookies()
-  const token = cookieStore.get('kun-galgame-patch-moe-token')
+  const token = cookieStore.get('toki-nwpushare-access-token')
   const payload = await verifyKunToken(token?.value ?? '')
 
   return payload

@@ -30,18 +30,18 @@ export const CardContainer = ({ initialResources, initialTotal }: Props) => {
   const fetchData = async () => {
     setLoading(true)
 
-    const { resources } = await kunFetchGet<{
+    const { resources, total: newTotal } = await kunFetchGet<{
       resources: PatchResource[]
       total: number
     }>('/resource', {
       sortField,
       sortOrder,
       page,
-      limit: 50
+      limit: 10
     })
 
     setResources(resources)
-    setTotal(total)
+    setTotal(newTotal)
     setLoading(false)
   }
 
@@ -66,7 +66,7 @@ export const CardContainer = ({ initialResources, initialTotal }: Props) => {
         setSortOrder={setSortOrder}
       />
       {loading ? (
-        <KunLoading hint="正在获取补丁资源数据..." />
+        <KunLoading hint="正在获取资源数据..." />
       ) : (
         <div className="grid grid-cols-1 gap-3 sm:gap-6 md:grid-cols-2">
           {resources.map((resource) => (
@@ -75,10 +75,10 @@ export const CardContainer = ({ initialResources, initialTotal }: Props) => {
         </div>
       )}
 
-      {total > 50 && (
+      {total > 10 && (
         <div className="flex justify-center">
           <KunPagination
-            total={Math.ceil(total / 50)}
+            total={Math.ceil(total / 10)}
             page={page}
             onPageChange={setPage}
             isLoading={loading}

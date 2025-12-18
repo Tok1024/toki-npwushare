@@ -1,4 +1,4 @@
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import type { Metadata } from 'next'
 
 export const kunMetadata: Metadata = {
@@ -10,7 +10,7 @@ export const kunMetadata: Metadata = {
     description:
       '您可以在此处任何更改您的个人信息, 头像, 签名, 用户名, 更改密码, 更改邮箱',
     type: 'website',
-    images: kunMoyuMoe.images
+    images: nwpushare.images
   },
   twitter: {
     card: 'summary_large_image',
@@ -19,6 +19,6 @@ export const kunMetadata: Metadata = {
       '您可以在此处任何更改您的个人信息, 头像, 签名, 用户名, 更改密码, 更改邮箱'
   },
   alternates: {
-    canonical: `${kunMoyuMoe.domain.main}/settings/user`
+    canonical: `${nwpushare.domain.main}/settings/user`
   }
 }

@@ -1,6 +1,6 @@
 import sharp from 'sharp'
-
-import { uploadImageToS3 } from '~/lib/s3'
+import { mkdir, writeFile } from 'fs/promises'
+import { join } from 'path'
 import { checkBufferSize } from '~/app/api/utils/checkBufferSize'
 
 export const uploadUserAvatar = async (image: ArrayBuffer, uid: number) => {
@@ -23,8 +23,10 @@ export const uploadUserAvatar = async (image: ArrayBuffer, uid: number) => {
     return '图片体积过大'
   }
 
-  const bucketName = `user/avatar/user_${uid}`
+  // 保存到 public/avatars/user_{uid}/ 目录
+  const avatarDir = join(process.cwd(), 'public', 'avatars', `user_${uid}`)
+  await mkdir(avatarDir, { recursive: true })
 
-  await uploadImageToS3(`${bucketName}/avatar.avif`, avatar)
-  await uploadImageToS3(`${bucketName}/avatar-mini.avif`, miniAvatar)
+  await writeFile(join(avatarDir, 'avatar.avif'), avatar)
+  await writeFile(join(avatarDir, 'avatar-mini.avif'), miniAvatar)
 }

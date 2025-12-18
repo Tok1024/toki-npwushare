@@ -1,9 +1,9 @@
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import type { Metadata } from 'next'
 
 export const kunMetadata: Metadata = {
-  title: `登录 - ${kunMoyuMoe.titleShort}`,
-  description: `登录 ${kunMoyuMoe.titleShort} 网站, 随心所欲的收藏, 点赞, 下载任何 Galgame 资源。欢迎您回家! 辛苦了!`,
+  title: `登录 - ${nwpushare.titleShort}`,
+  description: `登录 ${nwpushare.titleShort} 网站, 随心所欲的收藏, 点赞, 下载任何 Galgame 资源。欢迎您回家! 辛苦了!`,
   keywords: [
     '登录',
     'Galgame 网站登录',
@@ -12,16 +12,16 @@ export const kunMetadata: Metadata = {
     '用户认证'
   ],
   openGraph: {
-    title: `登录 - ${kunMoyuMoe.titleShort}`,
-    description: `登录 ${kunMoyuMoe.titleShort} 网站, 随心所欲的收藏, 点赞, 下载任何 Galgame 资源。欢迎您回家! 辛苦了!`,
-    url: `${kunMoyuMoe.domain.main}/login`,
-    siteName: kunMoyuMoe.title,
+    title: `登录 - ${nwpushare.titleShort}`,
+    description: `登录 ${nwpushare.titleShort} 网站, 随心所欲的收藏, 点赞, 下载任何 Galgame 资源。欢迎您回家! 辛苦了!`,
+    url: `${nwpushare.domain.main}/login`,
+    siteName: nwpushare.title,
     images: [
       {
-        url: kunMoyuMoe.og.image,
+        url: nwpushare.og.image,
         width: 1920,
         height: 1080,
-        alt: `登录 - ${kunMoyuMoe.titleShort}`
+        alt: `登录 - ${nwpushare.titleShort}`
       }
     ],
     locale: 'zh_CN',
@@ -31,9 +31,9 @@ export const kunMetadata: Metadata = {
     google: 'google-site-verification-code'
   },
   alternates: {
-    canonical: `${kunMoyuMoe.domain.main}/login`,
+    canonical: `${nwpushare.domain.main}/login`,
     languages: {
-      'zh-Hans': `${kunMoyuMoe.domain.main}/login`
+      'zh-Hans': `${nwpushare.domain.main}/login`
     }
   }
 }

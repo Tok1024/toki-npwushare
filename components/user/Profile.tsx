@@ -1,4 +1,4 @@
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import { Card, CardBody, CardHeader } from '@heroui/card'
 import { Avatar } from '@heroui/avatar'
 import { Chip } from '@heroui/chip'
@@ -42,12 +42,12 @@ export const UserProfile = ({ user }: { user: UserInfo }) => {
             <div className="flex items-center gap-2">
               <LinkIcon className="size-4 text-default-400" />
               <a
-                href={`${kunMoyuMoe.domain.main}/user/${user.id}`}
+                href={`${nwpushare.domain.main}/user/${user.id}`}
                 className="text-small text-primary hover:underline"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {`${kunMoyuMoe.domain.main}/user/${user.id}`}
+                {`${nwpushare.domain.main}/user/${user.id}`}
               </a>
             </div>
             <div className="flex items-center gap-2">
@@ -61,13 +61,13 @@ export const UserProfile = ({ user }: { user: UserInfo }) => {
           <div className="flex flex-col gap-4">
             <div>
               <div className="flex justify-between mb-2">
-                <span className="text-small">萌萌点</span>
+                <span className="text-small">贡献值</span>
                 <span className="text-small text-default-500">
                   {user.moemoepoint}
                 </span>
               </div>
               <Progress
-                aria-label="萌萌点"
+                aria-label="贡献值"
                 value={user.moemoepoint % 100}
                 color="primary"
                 className="h-2"

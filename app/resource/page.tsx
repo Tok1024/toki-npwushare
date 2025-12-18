@@ -21,7 +21,7 @@ export default async function Kun({ searchParams }: Props) {
     sortField: 'created',
     sortOrder: 'desc',
     page: currentPage,
-    limit: 50
+    limit: 10
   })
   if (typeof response === 'string') {
     return <ErrorComponent error={response} />

@@ -4,19 +4,17 @@ import { kunParseGetQuery } from '~/app/api/utils/parseQuery'
 import { prisma } from '~/prisma/index'
 import { getUserInfoSchema } from '~/validations/user'
 import { GalgameCardSelectField } from '~/constants/api/select'
-import { getNSFWHeader } from '~/app/api/utils/getNSFWHeader'
 import { verifyHeaderCookie } from '~/middleware/_verifyHeaderCookie'
 
 export const getUserFavorite = async (
-  input: z.infer<typeof getUserInfoSchema>,
-  nsfwEnable: Record<string, string | undefined>
+  input: z.infer<typeof getUserInfoSchema>
 ) => {
   const { uid, page, limit } = input
   const offset = (page - 1) * limit
 
   // const [data, total] = await Promise.all([
   //   prisma.user_patch_favorite_relation.findMany({
-  //     where: { user_id: uid, patch: nsfwEnable },
+  //     where: { user_id: uid },
   //     include: {
   //       patch: {
   //         select: GalgameCardSelectField
@@ -27,7 +25,7 @@ export const getUserFavorite = async (
   //     skip: offset
   //   }),
   //   prisma.user_patch_favorite_relation.count({
-  //     where: { user_id: uid, patch: nsfwEnable }
+  //     where: { user_id: uid }
   //   })
   // ])
 
@@ -49,8 +47,7 @@ export const GET = async (req: NextRequest) => {
   if (!payload) {
     return NextResponse.json('用户登陆失效')
   }
-  const nsfwEnable = getNSFWHeader(req)
 
-  const response = await getUserFavorite(input, nsfwEnable)
+  const response = await getUserFavorite(input)
   return NextResponse.json(response)
 }

@@ -1,8 +1,7 @@
 import crypto from 'crypto'
 import { setKv } from '~/lib/redis'
-import { createTransport } from 'nodemailer'
-import SMPTransport from 'nodemailer-smtp-transport'
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { Resend } from 'resend'
+import { nwpushare } from '~/config/nwpushare'
 import { emailTemplates } from '~/constants/email/group-templates'
 
 const CACHE_KEY = 'auth:mail:notice'
@@ -10,9 +9,9 @@ const CACHE_KEY = 'auth:mail:notice'
 const getEmailSubject = (selectedTemplate: string) => {
   const currentTemplate = emailTemplates.find((t) => t.id === selectedTemplate)
   if (!currentTemplate) {
-    return kunMoyuMoe.titleShort
+    return nwpushare.titleShort
   }
-  return `${kunMoyuMoe.titleShort} - ${currentTemplate.name}`
+  return `${nwpushare.titleShort} - ${currentTemplate.name}`
 }
 
 const getPreviewContent = (
@@ -54,29 +53,24 @@ export const sendEmailHTML = async (
     validateEmailCode
   )
 
-  const transporter = createTransport(
-    SMPTransport({
-      pool: {
-        pool: true
-      },
-      host: process.env.KUN_VISUAL_NOVEL_EMAIL_HOST,
-      port: Number(process.env.KUN_VISUAL_NOVEL_EMAIL_PORT) || 587,
-      secure: false,
-      requireTLS: true,
-      auth: {
-        user: process.env.KUN_VISUAL_NOVEL_EMAIL_ACCOUNT,
-        pass: process.env.KUN_VISUAL_NOVEL_EMAIL_PASSWORD
-      }
+  const resend = new Resend(process.env.RESEND_API_KEY)
+
+  try {
+    const result = await resend.emails.send({
+      from:
+        process.env.RESEND_FROM_EMAIL ||
+        `${nwpushare.titleShort} <noreply@resend.dev>`,
+      to: email,
+      subject: getEmailSubject(templateId),
+      html: content
     })
-  )
-
-  const mailOptions = {
-    from: `${process.env.KUN_VISUAL_NOVEL_EMAIL_FROM}<${process.env.KUN_VISUAL_NOVEL_EMAIL_ACCOUNT}>`,
-    sender: process.env.KUN_VISUAL_NOVEL_EMAIL_ACCOUNT,
-    to: email,
-    subject: getEmailSubject(templateId),
-    html: content
+    console.log('[Resend] Admin email sent successfully:', {
+      id: result.data?.id,
+      to: email,
+      template: templateId
+    })
+  } catch (error) {
+    console.error('[Resend] Admin email error:', error)
+    throw new Error('邮件发送失败')
   }
-
-  await transporter.sendMail(mailOptions)
 }

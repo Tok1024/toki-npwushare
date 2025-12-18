@@ -37,23 +37,16 @@ export const LoginForm = () => {
   const handleCaptchaSuccess = async (code: string) => {
     startTransition(async () => {
       onClose()
-      const res = await kunFetchPost<
-        KunResponse<(UserState | KunUser) & { require2FA: boolean }>
-      >('/auth/login', {
+      const res = await kunFetchPost<KunResponse<UserState>>('/auth/login', {
         ...watch(),
         captcha: code
       })
 
       kunErrorHandler(res, (value) => {
-        if (value.require2FA) {
-          router.push('/login/2fa')
-        } else {
-          const state = value as UserState
-          setUser(state)
-          reset()
-          toast.success('登录成功!')
-          router.push(`/user/${state.uid}/resource`)
-        }
+        setUser(value)
+        reset()
+        toast.success('登录成功!')
+        router.push(`/user/${value.uid}/resource`)
       })
     })
   }

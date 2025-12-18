@@ -2,7 +2,7 @@
 
 ## 当前定位
 
-- 仓库已由 TouchGal 迁移为 **Toki Learning Hub**：面向课程资料/经验分享/讨论的学习平台。
+- 仓库已由 TouchGal 迁移为 **NWPUShare**：面向课程资料/经验分享/讨论的学习平台。
 - Next.js App Router + Prisma + PostgreSQL + Redis；客户端复用 HeroUI/Tailwind。
 - 关键目录：`app/`（页面、API Route）、`components/`（课程、资源、评论、反馈组件）、`prisma/schema`（课程实体拆分）、`scripts/`（seed/部署脚本）。
 
@@ -64,7 +64,7 @@
   - API：`/api/course/**`（详情、资源、帖子、评论、反馈、列表）。
   - 前端：`components/course/*`（Header/Tabs/ResourceList/Comments/Ratings），`components/home/*`（课程列表）。
 - **登录/鉴权**
-  - 现用自研 JWT + Redis；BetterAuth 尚未接入。
+  - 现用自研 JWT + Redis；。
   - 登录表单在 `components/login/Login.tsx`，暂时关闭 captcha/密码格式校验，仅校验数据库哈希。
 
 ## 工作流 & 代码风格

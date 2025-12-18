@@ -5,17 +5,12 @@ import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
-  DropdownTrigger,
-  Switch
+  DropdownTrigger
 } from '@heroui/react'
-import { Eye, EyeOff, Settings } from 'lucide-react'
-import { useSettingStore } from '~/store/settingStore'
+import { Settings } from 'lucide-react'
 import { ThemeSwitcher } from './ThemeSwitcher'
 
 export const SettingsDropdown = () => {
-  const settings = useSettingStore((state) => state.data)
-  const setData = useSettingStore((state) => state.setData)
-
   return (
     <Dropdown>
       <DropdownTrigger>
@@ -24,19 +19,6 @@ export const SettingsDropdown = () => {
         </Button>
       </DropdownTrigger>
       <DropdownMenu aria-label="Settings" className="min-w-[240px]">
-        <DropdownItem
-          key="nsfw"
-          className="h-12"
-          startContent={
-            settings.kunNsfwEnable ? (
-              <Eye className="w-4 h-4" />
-            ) : (
-              <EyeOff className="w-4 h-4" />
-            )
-          }
-        >
-          显示 NSFW 内容
-        </DropdownItem>
         <DropdownItem key="theme" textValue="主题切换" className="h-12">
           <ThemeSwitcher />
         </DropdownItem>

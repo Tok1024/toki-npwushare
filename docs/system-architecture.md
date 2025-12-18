@@ -1,4 +1,4 @@
-# Toki Learning Hub 系统架构说明（2025-11-19）
+# NWPUShare 系统架构说明（2025-11-19）
 
 > 目标：给已经会跑项目、懂一点 Next.js/Prisma 的你，一份**完整的「系统地图」**——从目录结构、技术栈到关键数据模型与请求链路，让你知道「代码都长在哪、谁跟谁说话、以后要改去哪动」。
 
@@ -14,7 +14,7 @@
 
 关键定位：
 
-- 品牌：**Toki Learning Hub**（从 TouchGal 迁移而来）。
+- 品牌：**NWPUShare**（从 TouchGal 迁移而来）。
 - 功能：面向「课程资料 / 经验分享 / 讨论」的学习社区。
 - 核心能力：
   - 课程索引与详情：按学院/课程浏览。
@@ -126,7 +126,7 @@
   - `matcher`：`/admin/:path*`、`/user/:path*`、`/comment/:path*`、`/edit/:path*` 需要登录。
 - `middleware/auth.ts`
   - `kunAuthMiddleware`：
-    - 检查 cookie 中是否有 `kun-galgame-patch-moe-token`。
+    - 检查 cookie 中是否有 `toki-nwpushare-access-token`。
     - 没有则重定向到 `/login`。
 - `middleware/_verifyHeaderCookie.ts`
   - 在 API 中使用，根据 cookie 验证 JWT，有效则返回 payload。
@@ -250,7 +250,7 @@ Next.js App Router 下的 API 写法：
 
 - 登录：`app/api/auth/login/route.ts`
   - 解析并校验登录表单（`loginSchema`）。
-  - 验证密码 → 生成 JWT → 写 cookie：`kun-galgame-patch-moe-token`。
+  - 验证密码 → 生成 JWT → 写 cookie：`toki-nwpushare-access-token`。
   - 使用 Redis 存储 access token，用于后续校验。
 - 注册：`app/api/auth/register/route.ts`
   - 校验用户名/邮箱唯一性。
@@ -293,7 +293,7 @@ Next.js App Router 下的 API 写法：
    - 查库找到用户，验证密码。
    - 生成 JWT：`generateKunToken(uid, name, role, '30d')`。
    - 写入 Redis：`access:token:${uid}` → token。
-   - 写 cookie：`kun-galgame-patch-moe-token`（httpOnly）。
+   - 写 cookie：`toki-nwpushare-access-token`（httpOnly）。
 3. 后续接口需要登录时：
    - 中间件 `kunAuthMiddleware` 根据 cookie 判断是否放行受保护页面。
    - API 内使用 `verifyHeaderCookie(req)` 调用 `verifyKunToken(token)`：
@@ -404,7 +404,7 @@ Server vs Client 组件：
    - `kunParsePostBody` + `loginSchema` 再次校验。
    - Prisma 查 `user` 表，验证密码。
    - 调用 `generateKunToken` 生成 JWT，写 Redis。
-   - 通过 `cookies()` 写入 `kun-galgame-patch-moe-token`。
+   - 通过 `cookies()` 写入 `toki-nwpushare-access-token`。
 4. 前端收到响应：
    - 使用 `useUserStore` 更新全局用户状态。
    - 跳转到用户中心 `/user/[uid]/resource`。
@@ -445,7 +445,7 @@ Server vs Client 组件：
 
 ### 7.1 命名遗留
 
-- Cookie 名：`kun-galgame-patch-moe-token`。
+- Cookie 名：`toki-nwpushare-access-token`。
 - Redis 前缀：`kun:touchgal`。
 - S3 key 前缀：`touchgal/galgame/...`。
 - 类型名/文件名中 `patch`、`galgame`，例如：

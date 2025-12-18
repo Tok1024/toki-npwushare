@@ -5,6 +5,7 @@
 ### 1. 环境要求
 
 确保已安装：
+
 - **Node.js** 18+ (推荐 20+)
 - **pnpm** (包管理器)
 - **PostgreSQL** (数据库)
@@ -31,6 +32,7 @@ cp .env.development .env
 ```
 
 **最小配置（必须设置）：**
+
 ```env
 KUN_DATABASE_URL="postgresql://postgres:password@localhost:5432/nwpushare?schema=public"
 REDIS_HOST='127.0.0.1'
@@ -81,6 +83,7 @@ pnpm dev
 ### 7. 测试登录
 
 使用示例账号登录：
+
 - **邮箱/用户名：** seed@example.com 或 seed-user
 - **密码：** 123
 
@@ -113,6 +116,7 @@ pnpm dev
 7. ✅ **预期结果：** 注册成功，自动登录
 
 **如何查看验证码：**
+
 - 打开终端查看 `pnpm dev` 的输出
 - 找到类似这样的日志：
   ```
@@ -140,11 +144,13 @@ pnpm dev
 ### 问题 1: 数据库连接失败
 
 **错误信息：**
+
 ```
 Error: P1001: Can't reach database server at localhost:5432
 ```
 
 **解决方案：**
+
 ```bash
 # 检查 PostgreSQL 是否运行
 brew services list | grep postgresql
@@ -159,11 +165,13 @@ createdb nwpushare
 ### 问题 2: Redis 连接失败
 
 **错误信息：**
+
 ```
 Error: Redis connection refused
 ```
 
 **解决方案：**
+
 ```bash
 # 检查 Redis 是否运行
 brew services list | grep redis
@@ -179,12 +187,14 @@ redis-cli ping
 ### 问题 3: JWT 错误
 
 **错误信息：**
+
 ```
 Error: secretOrPrivateKey must have a value
 ```
 
 **解决方案：**
 在 `.env` 文件中确保设置了：
+
 ```env
 JWT_SECRET='your-super-secret-jwt-key'
 JWT_ISS='nwpushare'
@@ -196,6 +206,7 @@ JWT_AUD='nwpushare_admin'
 **原因：** Cookie 或 JWT 配置问题
 
 **解决方案：**
+
 1. 清除浏览器 Cookie
 2. 确保 `.env` 中配置了 JWT 相关变量
 3. 确保使用 `http://127.0.0.1:3000` 访问（不要用 `localhost`）
@@ -206,6 +217,7 @@ JWT_AUD='nwpushare_admin'
 **原因：** 开发环境验证码打印在控制台
 
 **解决方案：**
+
 1. 确保 `.env` 中设置了 `KUN_DISABLE_EMAIL=true`
 2. 查看运行 `pnpm dev` 的终端输出
 3. 找到 `[dev-email-code]` 开头的日志
@@ -217,6 +229,7 @@ JWT_AUD='nwpushare_admin'
 
 **解决方案：**
 在 `.env` 文件中添加：
+
 ```env
 NEXT_PUBLIC_DISABLE_CAPTCHA=true
 ```

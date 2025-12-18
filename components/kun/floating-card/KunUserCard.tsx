@@ -33,7 +33,7 @@ export const KunUserCard = ({ uid }: UserCardProps) => {
           <div className="flex items-center justify-between">
             <User
               name={user.name}
-              description={user.bio || '这只笨萝莉还没有签名'}
+              description={user.bio || '这个人还没有签名'}
               avatarProps={{
                 src: user.avatar,
                 isBordered: true,
@@ -53,10 +53,10 @@ export const KunUserCard = ({ uid }: UserCardProps) => {
 
           <div className="grid grid-cols-3 gap-3 mt-4">
             <KunUserStatCard value={user._count.follower} label="关注者" />
-            <KunUserStatCard value={user._count.patch} label="Galgame 数" />
+            <KunUserStatCard value={user._count.patch} label="课程数" />
             <KunUserStatCard
               value={user._count.patch_resource}
-              label="补丁数"
+              label="资源数"
             />
           </div>
         </>

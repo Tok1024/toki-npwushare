@@ -3,20 +3,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import { kunParseGetQuery } from '~/app/api/utils/parseQuery'
 import { prisma } from '~/prisma/index'
 import { getUserInfoSchema } from '~/validations/user'
-import { getNSFWHeader } from '~/app/api/utils/getNSFWHeader'
 import { verifyHeaderCookie } from '~/middleware/_verifyHeaderCookie'
 import type { UserResource } from '~/types/api/user'
 
 export const getUserPatchResource = async (
-  input: z.infer<typeof getUserInfoSchema>,
-  nsfwEnable: Record<string, string | undefined>
+  input: z.infer<typeof getUserInfoSchema>
 ) => {
   const { uid, page, limit } = input
   const offset = (page - 1) * limit
 
   const [data, total] = await Promise.all([
     prisma.patch_resource.findMany({
-      where: { user_id: uid, patch: nsfwEnable },
+      where: { user_id: uid },
       include: {
         patch: true
       },
@@ -25,7 +23,7 @@ export const getUserPatchResource = async (
       take: limit
     }),
     prisma.patch_resource.count({
-      where: { user_id: uid, patch: nsfwEnable }
+      where: { user_id: uid }
     })
   ])
 
@@ -54,8 +52,7 @@ export async function GET(req: NextRequest) {
   if (!payload) {
     return NextResponse.json('用户登陆失效')
   }
-  const nsfwEnable = getNSFWHeader(req)
 
-  const response = await getUserPatchResource(input, nsfwEnable)
+  const response = await getUserPatchResource(input)
   return NextResponse.json(response)
 }

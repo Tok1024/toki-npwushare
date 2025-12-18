@@ -1,4 +1,4 @@
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 
 const iconImage = `${process.env.NEXT_PUBLIC_KUN_PATCH_ADDRESS_DEV}/favicon.webp`
 
@@ -77,7 +77,7 @@ export const announcementTemplate = (
           </div>
         </div>
         <div class="footer">
-          <p style="margin: 0;">此消息为系统自动发布, 请勿回复此消息, 如果有任何问题, 请联系 <a href="${kunMoyuMoe.domain.main}" target="_blank">${kunMoyuMoe.titleShort}</a> </p>
+          <p style="margin: 0;">此消息为系统自动发布, 请勿回复此消息, 如果有任何问题, 请联系 <a href="${nwpushare.domain.main}" target="_blank">${nwpushare.titleShort}</a> </p>
           <p style="margin: 0;">要取消邮件通知, 请点击 <a href="${domain}/auth/email-notice?email=${email}&code=${validateEmailCode}" target="_blank">退订邮件</a> </p>
         </div>
       </div>

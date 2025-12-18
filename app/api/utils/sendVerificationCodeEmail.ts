@@ -1,9 +1,8 @@
-import { createTransport } from 'nodemailer'
-import SMPTransport from 'nodemailer-smtp-transport'
+import { Resend } from 'resend'
 import { getRemoteIp } from './getRemoteIp'
 import { getKv, setKv } from '~/lib/redis'
 import { generateRandomString } from '~/utils/random'
-import { kunMoyuMoe } from '~/config/moyu-moe'
+import { nwpushare } from '~/config/nwpushare'
 import { createKunVerificationEmailTemplate } from '~/constants/email/verify-templates'
 
 export const sendVerificationCodeEmail = async (
@@ -31,34 +30,31 @@ export const sendVerificationCodeEmail = async (
     return
   }
 
-  const transporter = createTransport(
-    SMPTransport({
-      pool: {
-        pool: true
-      },
-      host: process.env.KUN_VISUAL_NOVEL_EMAIL_HOST,
-      port: Number(process.env.KUN_VISUAL_NOVEL_EMAIL_PORT) || 587,
-      secure: false,
-      requireTLS: true,
-      auth: {
-        user: process.env.KUN_VISUAL_NOVEL_EMAIL_ACCOUNT,
-        pass: process.env.KUN_VISUAL_NOVEL_EMAIL_PASSWORD
-      }
-    })
-  )
-
-  const mailOptions = {
-    from: `${process.env.KUN_VISUAL_NOVEL_EMAIL_FROM}<${process.env.KUN_VISUAL_NOVEL_EMAIL_ACCOUNT}>`,
-    sender: process.env.KUN_VISUAL_NOVEL_EMAIL_ACCOUNT,
-    to: email,
-    subject: `${kunMoyuMoe.titleShort} - 验证码`,
-    html: createKunVerificationEmailTemplate(type, code)
-  }
+  const resend = new Resend(process.env.RESEND_API_KEY)
 
   try {
-    await transporter.sendMail(mailOptions)
+    const result = await resend.emails.send({
+      from:
+        process.env.RESEND_FROM_EMAIL ||
+        `${nwpushare.titleShort} <noreply@resend.dev>`,
+      to: email,
+      subject: `${nwpushare.titleShort} - 验证码`,
+      html: createKunVerificationEmailTemplate(type, code)
+    })
+    console.log('[Resend] Email sent successfully:', {
+      id: result.data?.id,
+      to: email,
+      type
+    })
   } catch (error) {
-    console.error('Send email error:', error)
+    console.error('[Resend] Send email error:', {
+      error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      email,
+      type,
+      hasApiKey: !!process.env.RESEND_API_KEY,
+      fromEmail: process.env.RESEND_FROM_EMAIL
+    })
     return '邮件发送失败, 请检查后台日志或联系管理员'
   }
 }

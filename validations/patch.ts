@@ -9,9 +9,19 @@ import {
 } from '~/constants/resource'
 
 // Galgame rating constants (archived feature)
-const KUN_GALGAME_RATING_RECOMMEND_CONST = ['highly_recommended', 'recommended', 'neutral', 'not_recommended']
+const KUN_GALGAME_RATING_RECOMMEND_CONST = [
+  'highly_recommended',
+  'recommended',
+  'neutral',
+  'not_recommended'
+]
 const KUN_GALGAME_RATING_SPOILER_CONST = ['none', 'minor', 'moderate', 'major']
-const KUN_GALGAME_RATING_PLAY_STATUS_CONST = ['playing', 'completed', 'abandoned', 'planning']
+const KUN_GALGAME_RATING_PLAY_STATUS_CONST = [
+  'playing',
+  'completed',
+  'abandoned',
+  'planning'
+]
 
 export const patchTagChangeSchema = z.object({
   patchId: z.coerce.number({ message: 'ID 必须为数字' }).min(1).max(9999999),

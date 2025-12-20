@@ -568,69 +568,23 @@ docker-compose exec redis redis-cli ping
 - 确认 `TOKI_NWPUSHARE_IMAGE_BED_HOST` 已配置
 - 确认 `next.config.ts` 中的 `images.remotePatterns` 正确
 
-### 5. Resend 邮件配置
-
-**错误信息：**
-```
-WARN[0000] The "RESEND_API_KEY" variable is not set. Defaulting to a blank string.
-WARN[0000] The "RESEND_FROM_EMAIL" variable is not set. Defaulting to a blank string.
-```
-
-**解决方法：**
-1. 在 Resend 官网 (https://resend.com) 注册账号并获取 API Key
-2. 在 `.env` 中配置：
-   ```bash
-   RESEND_API_KEY="re_xxxxxxxxxxxx"
-   # 开发测试可用: onboarding@resend.dev
-   # 生产需要在 Resend 中验证自己的域名
-   RESEND_FROM_EMAIL="NWPUShare <noreply@your-domain.com>"
-   ```
-3. 重启服务：`docker-compose restart app`
-
-### 6. Docker 权限拒绝
-
-**错误信息：**
-```
-permission denied while trying to connect to the Docker daemon socket
-```
-
-**原因：** 当前用户没有 Docker 权限
-
-**解决方法（选择其一）：**
-
-**方案 A：将用户加入 docker 组（推荐）**
-```bash
-# 1. 创建 docker 组（如果还没有）
-sudo groupadd docker
-
-# 2. 将当前用户加入 docker 组
-sudo usermod -aG docker $USER
-
-# 3. 应用新的组成员关系
-newgrp docker
-
-# 4. 验证（无需 sudo 运行）
-docker ps
-```
-
-**方案 B：使用 sudo 运行（临时方案）**
-```bash
-sudo docker-compose up -d
-```
-
-### 7. 邮件发送失败
+### 5. 邮件发送失败
 
 **检查日志：**
 ```bash
-docker-compose logs app | grep -i "resend\|email"
+docker-compose logs app | grep -i email
 ```
 
 **常见原因：**
-- `RESEND_API_KEY` 无效或过期
-- `RESEND_FROM_EMAIL` 格式错误
-- 域名未在 Resend 中验证
+- SMTP 配置错误
+- Gmail 需要开启"应用专用密码"
+- 防火墙阻止 SMTP 端口（587/465）
 
-### 8. 构建镜像失败
+**解决方法：**
+- 开发环境可设置 `KUN_DISABLE_EMAIL=true` 跳过邮件
+- 使用 Resend 等第三方服务替代 SMTP
+
+### 6. 构建镜像失败
 
 **清理缓存重试：**
 ```bash
@@ -642,7 +596,7 @@ docker-compose build --no-cache
 df -h
 ```
 
-### 9. 应用内存溢出
+### 7. 应用内存溢出
 
 **调整 PM2 配置：**
 

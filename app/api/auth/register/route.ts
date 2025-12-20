@@ -63,7 +63,7 @@ export const register = async (
     name: user.name,
     avatar: user.avatar,
     bio: user.bio,
-    point: user.moemoepoint,
+    point: user.point,
     role: user.role,
     dailyCheckIn: user.daily_check_in,
     dailyImageLimit: user.daily_image_count,

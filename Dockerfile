@@ -12,6 +12,9 @@ COPY package.json pnpm-lock.yaml* ./
 COPY prisma ./prisma/
 COPY prisma.config.ts ./
 
+# 为了能读取 prisma.config.ts，需要设置占位符数据库 URL
+ENV TOKI_DATABASE_URL="mysql://placeholder:placeholder@localhost:3306/placeholder"
+
 # 安装依赖
 RUN pnpm install --frozen-lockfile
 

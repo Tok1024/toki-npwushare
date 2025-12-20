@@ -10,6 +10,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 # 复制依赖文件
 COPY package.json pnpm-lock.yaml* ./
 COPY prisma ./prisma/
+COPY prisma.config.ts ./
 
 # 安装依赖
 RUN pnpm install --frozen-lockfile
@@ -34,6 +35,8 @@ ARG NEXT_PUBLIC_TOKI_NWPUSHARE_S3_STORAGE_URL
 # 设置环境变量
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
+# 设置数据库 URL（构建时的占位符）
+ENV TOKI_DATABASE_URL="mysql://placeholder:placeholder@localhost:3306/placeholder"
 
 # 生成Prisma客户端
 RUN pnpm prisma generate

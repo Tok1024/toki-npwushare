@@ -53,10 +53,10 @@ export const KunUserCard = ({ uid }: UserCardProps) => {
 
           <div className="grid grid-cols-3 gap-3 mt-4">
             <KunUserStatCard value={user._count.follower} label="关注者" />
-            <KunUserStatCard value={user._count.patch} label="课程数" />
+            <KunUserStatCard value={user._count.course_resource || 0} label="资源数" />
             <KunUserStatCard
-              value={user._count.patch_resource}
-              label="资源数"
+              value={user._count.comments || 0}
+              label="评论数"
             />
           </div>
         </>

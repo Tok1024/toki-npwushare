@@ -16,7 +16,7 @@ export const getOverviewData = async (days: number): Promise<OverviewData> => {
   const time = new Date()
   time.setDate(time.getDate() - days)
 
-  const [newUser, newActiveUser, newGalgame, newGalgameResource, newComment] =
+  const [newUser, newActiveUser, newCourse, newResource, newComment] =
     await Promise.all([
       prisma.user.count({
         where: {
@@ -32,21 +32,21 @@ export const getOverviewData = async (days: number): Promise<OverviewData> => {
           }
         }
       }),
-      prisma.patch.count({
+      prisma.course.count({
         where: {
           created: {
             gte: time
           }
         }
       }),
-      prisma.patch_resource.count({
+      prisma.resource.count({
         where: {
           created: {
             gte: time
           }
         }
       }),
-      prisma.patch_comment.count({
+      prisma.comment.count({
         where: {
           created: {
             gte: time
@@ -55,7 +55,7 @@ export const getOverviewData = async (days: number): Promise<OverviewData> => {
       })
     ])
 
-  return { newUser, newActiveUser, newGalgame, newGalgameResource, newComment }
+  return { newUser, newActiveUser, newCourse, newResource, newComment }
 }
 
 export const GET = async (req: NextRequest) => {

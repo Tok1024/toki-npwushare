@@ -13,11 +13,13 @@ import type { UseEditorReturn } from '@milkdown/react'
 interface Props {
   editorInfo: UseEditorReturn
   disableUserKey?: boolean
+  disableImageUpload?: boolean
 }
 
 export const KunMilkdownPluginsMenu = ({
   editorInfo,
-  disableUserKey = false
+  disableUserKey = false,
+  disableImageUpload = false
 }: Props) => {
   const { get } = editorInfo
   const call = <T,>(command: CmdKey<T>, payload?: T) => {
@@ -40,7 +42,7 @@ export const KunMilkdownPluginsMenu = ({
 
       <EmojiPicker editorInfo={editorInfo} />
 
-      <ImageUploadButton editorInfo={editorInfo} />
+      {!disableImageUpload && <ImageUploadButton editorInfo={editorInfo} />}
 
       {!disableUserKey && (
         <>

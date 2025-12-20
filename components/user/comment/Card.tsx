@@ -41,7 +41,7 @@ export const UserCommentCard = ({ comment }: Props) => {
               位置{' '}
               <Link
                 size="sm"
-                href={`/${comment.patchUniqueId}`}
+                href={`/course/${comment.patchUniqueId}`}
                 className="text-blue-500 hover:underline"
               >
                 {comment.patchName}

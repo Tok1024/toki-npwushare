@@ -10,8 +10,8 @@ interface IndexNow {
 export const postToIndexNow = async (url: string) => {
   const requestData: IndexNow = {
     host: nwpushare.domain.main,
-    key: process.env.KUN_VISUAL_NOVEL_INDEX_NOW_KEY || '',
-    keyLocation: `${nwpushare.domain.main}/${process.env.KUN_VISUAL_NOVEL_INDEX_NOW_KEY}.txt`,
+    key: process.env.TOKI_NWPUSHARE_INDEX_NOW_KEY || '',
+    keyLocation: `${nwpushare.domain.main}/${process.env.TOKI_NWPUSHARE_INDEX_NOW_KEY}.txt`,
     urlList: [url]
   }
 

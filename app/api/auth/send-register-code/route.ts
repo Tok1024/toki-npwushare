@@ -24,7 +24,7 @@ export const sendRegisterCode = async (
 
   const normalizedName = input.name.toLowerCase()
   const sameUsernameUser = await prisma.user.findFirst({
-    where: { name: { equals: normalizedName, mode: 'insensitive' } }
+    where: { name: { equals: normalizedName } }
   })
   if (sameUsernameUser) {
     return '您的用户名已经有人注册了, 请修改'

@@ -1,11 +1,11 @@
 import { nwpushare } from '~/config/nwpushare'
 
-const iconImage = `${process.env.NEXT_PUBLIC_KUN_PATCH_ADDRESS_DEV}/favicon.webp`
+const iconImage = `${process.env.NEXT_PUBLIC_NWPUSHARE_ADDRESS_DEV}/favicon.webp`
 
 const domain =
   process.env.NODE_ENV === 'development'
-    ? process.env.NEXT_PUBLIC_KUN_PATCH_ADDRESS_DEV
-    : process.env.NEXT_PUBLIC_KUN_PATCH_ADDRESS_PROD
+    ? process.env.NEXT_PUBLIC_NWPUSHARE_ADDRESS_DEV
+    : process.env.NEXT_PUBLIC_NWPUSHARE_ADDRESS_PROD
 
 export const announcementTemplate = (
   title: string,

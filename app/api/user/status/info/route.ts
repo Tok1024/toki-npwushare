@@ -18,20 +18,19 @@ export const getUserProfile = async (
     include: {
       _count: {
         select: {
-          patch_resource: true,
-          patch: true,
-          patch_comment: true,
-          send_message: true
+          course_resource: true,
+          comments: true,
+          send_message: true,
+          resource_interactions: true,
+          course_feedback: true,
+          course_favorites: true
         }
       },
       follower: true,
       following: true
     }
   })
-  const userFavoritePatchCount =
-    await prisma.user_patch_favorite_folder_relation.count({
-      where: { folder: { user_id: input.id } }
-    })
+
   if (!data) {
     return '未找到用户'
   }
@@ -48,14 +47,11 @@ export const getUserProfile = async (
     role: data.role,
     status: data.status,
     registerTime: String(data.register_time),
-    moemoepoint: data.moemoepoint,
+    point: data.point,
     follower: data.following.length,
     following: data.follower.length,
     isFollow: followerUserUid.includes(currentUserUid),
-    _count: {
-      ...data._count,
-      patch_favorite: userFavoritePatchCount
-    }
+    _count: data._count
   }
 
   return user

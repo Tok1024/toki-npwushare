@@ -26,7 +26,9 @@ export const sendVerificationCodeEmail = async (
   await setKv(`limit:ip:${ip}`, code, 60)
 
   if (isEmailDisabled) {
-    console.log(`[dev-email-code] ${email} -> ${code}`)
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[dev-email-code] ${email} -> ${code}`)
+    }
     return
   }
 
@@ -41,11 +43,13 @@ export const sendVerificationCodeEmail = async (
       subject: `${nwpushare.titleShort} - 验证码`,
       html: createKunVerificationEmailTemplate(type, code)
     })
-    console.log('[Resend] Email sent successfully:', {
-      id: result.data?.id,
-      to: email,
-      type
-    })
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[Resend] Email sent successfully:', {
+        id: result.data?.id,
+        to: email,
+        type
+      })
+    }
   } catch (error) {
     console.error('[Resend] Send email error:', {
       error,

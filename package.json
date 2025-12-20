@@ -20,7 +20,8 @@
     "stop": "pm2 delete nwpushare",
     "deploy:install": "esno scripts/deployInstall.ts",
     "deploy:build": "esno scripts/deployBuild.ts",
-    "seed:courses": "esno scripts/seedCourses.ts"
+    "seed:courses": "esno scripts/seedCourses.ts",
+    "grant:admin": "esno scripts/grantAdmin.ts"
   },
   "author": {
     "name": "NWPUShare Team",

@@ -3,10 +3,7 @@ export interface KunSiteDomain {
   imageBed: string
   storage: string
   kungal: string
-  telegram_group: string
-  discord_group: string
   archive: string
-  forum: string
   nav: string
 }
 

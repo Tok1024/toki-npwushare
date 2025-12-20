@@ -15,8 +15,8 @@ export const resourceTypes = [
     description: '自主翻译的课堂资料或补充讲义'
   },
   {
-    value: 'patch',
-    label: '工具/补丁',
+    value: 'tool',
+    label: '学习工具',
     description: '学习辅助工具、脚本、软件配置等'
   },
   {
@@ -35,9 +35,9 @@ export const resourceTypes = [
     description: '可直接安装使用的学习类应用或便捷工具'
   },
   {
-    value: 'tool',
-    label: '备考/排课工具',
-    description: '日程、排课、刷题等实用工具'
+    value: 'exam',
+    label: '备考资料',
+    description: '往年试卷、复习资料、题库等'
   },
   {
     value: 'notice',
@@ -58,8 +58,8 @@ export const SUPPORTED_TYPE = [
   'emulator',
   'row',
   'app',
-  'patch',
   'tool',
+  'exam',
   'notice',
   'other'
 ]
@@ -71,8 +71,8 @@ export const SUPPORTED_TYPE_MAP: Record<string, string> = {
   emulator: '实验环境',
   row: '原始资料',
   app: '独立应用',
-  patch: '工具/补丁',
   tool: '学习工具',
+  exam: '备考资料',
   notice: '课程通知',
   other: '其它'
 }
@@ -108,11 +108,11 @@ export const SUPPORTED_PLATFORM_MAP: Record<string, string> = {
   other: '其它'
 }
 
-export const SUPPORTED_RESOURCE_LINK = ['touchgal', 's3', 'user']
+export const SUPPORTED_RESOURCE_LINK = ['nwpushare', 's3', 'user']
 
 export const storageTypes = [
   {
-    value: 'touchgal',
+    value: 'nwpushare',
     label: '站内托管 (仅管理员)',
     description: '由管理员上传到受控空间的小型资料'
   },
@@ -129,7 +129,7 @@ export const storageTypes = [
 ]
 
 export const SUPPORTED_RESOURCE_LINK_MAP: Record<string, string> = {
-  touchgal: '站内托管',
+  nwpushare: '站内托管',
   s3: '对象存储下载',
   user: '自定义链接下载'
 }
@@ -142,9 +142,9 @@ export const ALLOWED_MIME_TYPES = [
 
 export const ALLOWED_EXTENSIONS = ['.zip', '.rar', '.7z']
 
-export const SUPPORTED_RESOURCE_SECTION = ['galgame', 'patch']
+export const SUPPORTED_RESOURCE_SECTION = ['course', 'supplement']
 
 export const RESOURCE_SECTION_MAP: Record<string, string> = {
-  galgame: '课程资料',
-  patch: '工具 / 附件'
+  course: '课程资料',
+  supplement: '补充资料'
 }

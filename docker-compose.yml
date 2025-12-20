@@ -1,21 +1,94 @@
 version: '3.8'
-services:
-  postgres:
-    image: postgres:15
-    restart: always
-    environment:
-      POSTGRES_USER: toki
-      POSTGRES_PASSWORD: tokipass
-      POSTGRES_DB: tokidb
-    ports:
-      - '5432:5432'
-    volumes:
-      - pgdata:/var/lib/postgresql/data
 
-  redis:
-    image: redis:7
+services:
+  # MySQL数据库
+  mysql:
+    image: mysql:8.0
+    container_name: nwpushare-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-nwpushare}
+      MYSQL_USER: ${MYSQL_USER:-nwpushare}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-nwpushare_password}
     ports:
-      - '6379:6379'
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpass}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    networks:
+      - nwpushare-network
+
+  # Redis缓存
+  redis:
+    image: redis:7-alpine
+    container_name: nwpushare-redis
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - nwpushare-network
+
+  # Next.js应用
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NEXT_PUBLIC_NWPUSHARE_ADDRESS_PROD=${NEXT_PUBLIC_NWPUSHARE_ADDRESS_PROD}
+        - NEXT_PUBLIC_TOKI_NWPUSHARE_S3_STORAGE_URL=${NEXT_PUBLIC_TOKI_NWPUSHARE_S3_STORAGE_URL}
+    container_name: nwpushare-app
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    environment:
+      - NODE_ENV=production
+      - TOKI_DATABASE_URL=mysql://${MYSQL_USER:-nwpushare}:${MYSQL_PASSWORD:-nwpushare_password}@mysql:3306/${MYSQL_DATABASE:-nwpushare}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_ISS=${JWT_ISS}
+      - JWT_AUD=${JWT_AUD}
+      - JWT_SECRET=${JWT_SECRET}
+      - NEXT_PUBLIC_NWPUSHARE_ADDRESS_PROD=${NEXT_PUBLIC_NWPUSHARE_ADDRESS_PROD}
+      - NEXT_PUBLIC_TOKI_NWPUSHARE_S3_STORAGE_URL=${NEXT_PUBLIC_TOKI_NWPUSHARE_S3_STORAGE_URL}
+      - TOKI_NWPUSHARE_EMAIL_FROM=${TOKI_NWPUSHARE_EMAIL_FROM}
+      - TOKI_NWPUSHARE_EMAIL_HOST=${TOKI_NWPUSHARE_EMAIL_HOST}
+      - TOKI_NWPUSHARE_EMAIL_PORT=${TOKI_NWPUSHARE_EMAIL_PORT}
+      - TOKI_NWPUSHARE_EMAIL_ACCOUNT=${TOKI_NWPUSHARE_EMAIL_ACCOUNT}
+      - TOKI_NWPUSHARE_EMAIL_PASSWORD=${TOKI_NWPUSHARE_EMAIL_PASSWORD}
+      - TOKI_NWPUSHARE_S3_STORAGE_ACCESS_KEY_ID=${TOKI_NWPUSHARE_S3_STORAGE_ACCESS_KEY_ID}
+      - TOKI_NWPUSHARE_S3_STORAGE_SECRET_ACCESS_KEY=${TOKI_NWPUSHARE_S3_STORAGE_SECRET_ACCESS_KEY}
+      - TOKI_NWPUSHARE_S3_STORAGE_BUCKET_NAME=${TOKI_NWPUSHARE_S3_STORAGE_BUCKET_NAME}
+      - TOKI_NWPUSHARE_S3_STORAGE_ENDPOINT=${TOKI_NWPUSHARE_S3_STORAGE_ENDPOINT}
+      - TOKI_NWPUSHARE_S3_STORAGE_REGION=${TOKI_NWPUSHARE_S3_STORAGE_REGION}
+      - TOKI_NWPUSHARE_IMAGE_BED_HOST=${TOKI_NWPUSHARE_IMAGE_BED_HOST}
+      - TOKI_NWPUSHARE_IMAGE_BED_URL=${TOKI_NWPUSHARE_IMAGE_BED_URL}
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - nwpushare-network
+
+networks:
+  nwpushare-network:
+    driver: bridge
 
 volumes:
-  pgdata:
+  mysql_data:
+  redis_data:

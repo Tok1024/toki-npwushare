@@ -1,15 +1,13 @@
 import { convert } from 'html-to-text'
-import type { PatchComment } from '~/types/api/patch'
+import type { Comment } from '~/types/api/comment'
 
-export const nestCourseComments = (
-  flatComments: PatchComment[]
-): PatchComment[] => {
-  const commentMap: { [key: number]: PatchComment } = {}
+export const nestCourseComments = (flatComments: Comment[]): Comment[] => {
+  const commentMap: { [key: number]: Comment } = {}
   flatComments.forEach((c) => {
     c.reply = []
     commentMap[c.id] = { ...c, quotedContent: null }
   })
-  const nested: PatchComment[] = []
+  const nested: Comment[] = []
   flatComments.forEach((c) => {
     if (c.parentId) {
       const parent = commentMap[c.parentId]

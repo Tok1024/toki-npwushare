@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { prisma } from '~/prisma'
+import { parseCourseTags } from '~/utils/parseJsonField'
 
 export const GET = async (
   _req: Request,
@@ -26,11 +27,17 @@ export const GET = async (
     return NextResponse.json('课程不存在')
   }
 
+  // Parse tags from JSON string (MySQL stores as TEXT)
+  const parsedCourse = {
+    ...course,
+    tags: parseCourseTags(course.tags)
+  }
+
   // 参与教师（历史授课记录）
   const teachers = await prisma.course_teacher.findMany({
     where: { course_id: course.id },
     include: { teacher: true }
   })
 
-  return NextResponse.json({ course, teachers: teachers.map((t) => t.teacher) })
+  return NextResponse.json({ course: parsedCourse, teachers: teachers.map((t) => t.teacher) })
 }

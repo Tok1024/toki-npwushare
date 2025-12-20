@@ -13,30 +13,39 @@ export const getUserPatchResource = async (
   const offset = (page - 1) * limit
 
   const [data, total] = await Promise.all([
-    prisma.patch_resource.findMany({
-      where: { user_id: uid },
+    prisma.resource.findMany({
+      where: { author_id: uid },
       include: {
-        patch: true
+        course: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            cover_url: true,
+            department: { select: { slug: true } }
+          }
+        }
       },
       orderBy: { created: 'desc' },
       skip: offset,
       take: limit
     }),
-    prisma.patch_resource.count({
-      where: { user_id: uid }
+    prisma.resource.count({
+      where: { author_id: uid }
     })
   ])
 
   const resources: UserResource[] = data.map((res) => ({
     id: res.id,
-    patchUniqueId: res.patch.unique_id,
-    patchId: res.patch.id,
-    patchName: res.patch.name,
-    patchBanner: res.patch.banner,
-    size: res.size,
-    type: res.type,
-    language: res.language,
-    platform: res.platform,
+    patchUniqueId: `course/${res.course.department.slug}/${res.course.slug}`,
+    patchId: res.course_id,
+    patchName: res.course.name,
+    patchBanner: res.course.cover_url || '',
+    size: String(res.size_bytes || 0),
+    type: [String(res.type)],
+    language: [],
+    platform: [],
+    status: res.status as any,
     created: String(res.created)
   }))
 

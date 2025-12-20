@@ -767,13 +767,13 @@ async function main() {
         },
         update: {
           name: courseSeed.name,
-          tags: courseSeed.tags
+          tags: courseSeed.tags ? JSON.stringify(courseSeed.tags) : null
         },
         create: {
           department_id: department.id,
           slug: courseSeed.slug,
           name: courseSeed.name,
-          tags: courseSeed.tags
+          tags: courseSeed.tags ? JSON.stringify(courseSeed.tags) : null
         }
       })
 
@@ -822,7 +822,7 @@ async function main() {
             teacher_name: resource.teacher ?? null,
             summary: resource.summary ?? null,
             author_id: authorId,
-            links: resource.links,
+            links: JSON.stringify(resource.links),  // 转换为JSON字符串
             status: 'published',
             visibility: 'public'
           }

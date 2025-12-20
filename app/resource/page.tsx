@@ -3,6 +3,7 @@ import { kunMetadata } from './metadata'
 import { Suspense } from 'react'
 import { kunGetActions } from './actions'
 import { ErrorComponent } from '~/components/error/ErrorComponent'
+import { prisma } from '~/prisma'
 import type { Metadata } from 'next'
 
 export const revalidate = 3
@@ -17,12 +18,18 @@ export default async function Kun({ searchParams }: Props) {
   const res = await searchParams
   const currentPage = res?.page ? res.page : 1
 
-  const response = await kunGetActions({
-    sortField: 'created',
-    sortOrder: 'desc',
-    page: currentPage,
-    limit: 10
-  })
+  const [response, departments] = await Promise.all([
+    kunGetActions({
+      sortField: 'created',
+      sortOrder: 'desc',
+      page: currentPage,
+      limit: 10
+    }),
+    prisma.department.findMany({
+      orderBy: { name: 'asc' }
+    })
+  ])
+
   if (typeof response === 'string') {
     return <ErrorComponent error={response} />
   }
@@ -32,6 +39,7 @@ export default async function Kun({ searchParams }: Props) {
       <CardContainer
         initialResources={response.resources}
         initialTotal={response.total}
+        departments={departments}
       />
     </Suspense>
   )

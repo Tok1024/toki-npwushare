@@ -15,7 +15,7 @@ export const kunViewport: Viewport = {
 }
 
 export const generateKunMetadata = (): Metadata => {
-  if (process.env.KUN_VISUAL_NOVEL_TEST_SITE_LABEL) {
+  if (process.env.TOKI_NWPUSHARE_TEST_SITE_LABEL) {
     return generateNullMetadata('测试站点')
   }
 
@@ -29,7 +29,7 @@ export const generateKunMetadata = (): Metadata => {
     keywords: nwpushare.keywords,
     authors: nwpushare.author,
     icons: {
-      apple: '/apple-touch-icon.avif',
+      apple: '/apple-icon.avif',
       icon: '/favicon.ico'
     },
     creator: nwpushare.creator.name,

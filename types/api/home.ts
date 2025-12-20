@@ -1,4 +1,4 @@
-import type { PatchComment } from './comment'
+import type { Comment } from './comment'
 import type { PatchResource } from './resource'
 
 export interface HomeCarousel {
@@ -11,4 +11,4 @@ export interface HomeCarousel {
 }
 
 export type HomeResource = PatchResource
-export type HomeComment = PatchComment
+export type HomeComment = Comment

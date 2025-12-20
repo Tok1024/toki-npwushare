@@ -3,6 +3,5 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("KUN_DATABASE_URL")
+  provider = "mysql"
 }

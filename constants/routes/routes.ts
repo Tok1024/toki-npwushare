@@ -1,36 +1,42 @@
-import { isPatchPath, isTagPath, isUserPath, isDocPath } from './matcher'
+import {
+  isCoursePath,
+  isDepartmentPath,
+  isUserPath,
+  isDocPath
+} from './matcher'
 import { keyLabelMap } from './constants'
 import { nwpushare } from '~/config/nwpushare'
 import type { KunBreadcrumbItem } from './constants'
 
 type NextParams = Record<string, string | Array<string> | undefined>
 
-// Some path's length is equal to galgame uniqueId (8 digits and chars)
 const pathToIgnore = ['/resource', '/register', '/redirect', '/settings']
 
-const createPatchBreadcrumb = (
+const createCourseBreadcrumb = (
   params: NextParams,
   defaultItem: KunBreadcrumbItem,
   pageTitle: string
 ) => {
+  const dept = params.dept as string
+  const slug = params.slug as string
   return {
     ...defaultItem,
-    key: `/${params.id}`,
+    key: `/course/${dept}/${slug}`,
     label: pageTitle,
-    href: `/${params.id}`
+    href: `/course/${dept}/${slug}`
   }
 }
 
-const createTagBreadcrumb = (
+const createDepartmentBreadcrumb = (
   params: NextParams,
   defaultItem: KunBreadcrumbItem,
   pageTitle: string
 ) => {
   return {
     ...defaultItem,
-    key: `/tag/${params.id}`,
+    key: `/department/${params.slug}`,
     label: pageTitle,
-    href: `/tag/${params.id}`
+    href: `/department/${params.slug}`
   }
 }
 
@@ -54,16 +60,16 @@ const createDocBreadcrumb = (
 ) => {
   return {
     ...defaultItem,
-    key: `/doc/${params.id}`,
+    key: `/doc/${params.slug}`,
     label: pageTitle,
-    href: `/doc/${params.id}`
+    href: `/doc/${params.slug}`
   }
 }
 
 export const getKunPathLabel = (pathname: string): string => {
   const hasIgnorePath = pathToIgnore.some((p) => p === pathname)
-  if (isPatchPath(pathname) && !hasIgnorePath) {
-    return pathname
+  if (hasIgnorePath) {
+    return keyLabelMap[pathname]
   }
   if (isDocPath(pathname)) {
     return pathname
@@ -107,24 +113,27 @@ export const createBreadcrumbItem = (
     return [defaultItem]
   }
 
-  if (isPatchPath(pathname)) {
-    const allGalgameRoute: KunBreadcrumbItem = {
-      key: 'galgame',
-      label: 'Galgame',
-      href: '/galgame'
+  if (isCoursePath(pathname)) {
+    const allCourseRoute: KunBreadcrumbItem = {
+      key: 'course',
+      label: '课程列表',
+      href: '/course'
     }
     return [
-      allGalgameRoute,
-      createPatchBreadcrumb(params, defaultItem, pageTitle)
+      allCourseRoute,
+      createCourseBreadcrumb(params, defaultItem, pageTitle)
     ]
   }
-  if (isTagPath(pathname)) {
-    const allTagRoute: KunBreadcrumbItem = {
-      key: 'tag',
-      label: '补丁标签',
-      href: '/tag'
+  if (isDepartmentPath(pathname)) {
+    const allDepartmentRoute: KunBreadcrumbItem = {
+      key: 'department',
+      label: '学院列表',
+      href: '/department'
     }
-    return [allTagRoute, createTagBreadcrumb(params, defaultItem, pageTitle)]
+    return [
+      allDepartmentRoute,
+      createDepartmentBreadcrumb(params, defaultItem, pageTitle)
+    ]
   }
   if (isUserPath(pathname)) {
     return [createUserBreadcrumb(params, defaultItem, pageTitle)]

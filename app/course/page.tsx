@@ -4,9 +4,11 @@ import { KunHeader } from '~/components/kun/Header'
 import { CourseContainer } from '~/components/home/course/CourseContainer'
 import { Button } from '@heroui/button'
 import { Card, CardBody } from '@heroui/card'
+import { Select, SelectItem } from '@heroui/select'
+import { parseCourseTags } from '~/utils/parseJsonField'
 
 interface Props {
-  searchParams?: Promise<{ q?: string; sort?: string; page?: string }>
+  searchParams?: Promise<{ q?: string; sort?: string; page?: string; dept?: string; hasResource?: string }>
 }
 
 type CourseSort = 'latest' | 'popular' | 'difficulty'
@@ -16,6 +18,7 @@ export const revalidate = 30
 export default async function CourseIndexPage({ searchParams }: Props) {
   const params = (await searchParams) ?? {}
   const keyword = params.q?.trim()
+  const deptFilter = params.dept?.trim()
   const rawSort = params.sort
   const sort: CourseSort = //把排序方式写进路径参数里
     rawSort === 'popular' || rawSort === 'difficulty' ? rawSort : 'latest'
@@ -35,15 +38,17 @@ export default async function CourseIndexPage({ searchParams }: Props) {
     ...(keyword
       ? {
           OR: [
-            { name: { contains: keyword, mode: 'insensitive' } },
-            { department: { name: { contains: keyword, mode: 'insensitive' } } }
+            { name: { contains: keyword } },
+            { department: { name: { contains: keyword } } }
+            // MySQL utf8mb4_unicode_ci is case-insensitive by default
           ]
         }
       : {}),
+    ...(deptFilter ? { department: { slug: deptFilter } } : {}),
     ...(hasResource ? { resource_count: { gt: 0 } } : {})
   }
 
-  const [courses, total] = await Promise.all([
+  const [courses, total, departments] = await Promise.all([
     prisma.course.findMany({
       where,
       include: { department: true },
@@ -51,24 +56,30 @@ export default async function CourseIndexPage({ searchParams }: Props) {
       take: limit,
       skip: offset
     }),
-    prisma.course.count({ where })
+    prisma.course.count({ where }),
+    prisma.department.findMany({
+      orderBy: { name: 'asc' }
+    })
   ])
 
   // 修改url参数
   const buildSortHref = (nextSort: CourseSort) => {
     const sp = new URLSearchParams()
     if (keyword) sp.set('q', keyword)
+    if (deptFilter) sp.set('dept', deptFilter)
     if (nextSort !== 'latest') sp.set('sort', nextSort)
     if (hasResource) sp.set('hasResource', '1')
     const qs = sp.toString()
     return qs ? `/course?${qs}` : '/course'
   }
 
-  const buildHasResourceHref = (nextHasResource: boolean) => {
+  const toggleHasResourceHref = () => {
     const sp = new URLSearchParams()
     if (keyword) sp.set('q', keyword)
+    if (deptFilter) sp.set('dept', deptFilter)
     if (sort !== 'latest') sp.set('sort', sort)
-    if (nextHasResource) sp.set('hasResource', '1')
+    if (!hasResource) sp.set('hasResource', '1')
+    else sp.delete('hasResource')
     const qs = sp.toString()
     return qs ? `/course?${qs}` : '/course'
   }
@@ -76,6 +87,7 @@ export default async function CourseIndexPage({ searchParams }: Props) {
   const buildPageHref = (nextPage: number) => {
     const sp = new URLSearchParams()
     if (keyword) sp.set('q', keyword)
+    if (deptFilter) sp.set('dept', deptFilter)
     if (sort !== 'latest') sp.set('sort', sort)
     if (hasResource) sp.set('hasResource', '1')
     if (nextPage > 1) sp.set('page', String(nextPage))
@@ -94,12 +106,24 @@ export default async function CourseIndexPage({ searchParams }: Props) {
         <CardBody className="space-y-3">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <form className="flex flex-1 gap-2" action="/course">
+              <select
+                name="dept"
+                defaultValue={deptFilter || ''}
+                className="rounded-large border border-default-200 bg-default-50/70 px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+              >
+                <option value="">全部学院</option>
+                {departments.map((dept) => (
+                  <option key={dept.slug} value={dept.slug}>
+                    {dept.name}
+                  </option>
+                ))}
+              </select>
               <input
                 type="text"
                 name="q"
-                placeholder="搜索课程或学院名称"
+                placeholder="搜索课程名称"
                 defaultValue={keyword || ''}
-                className="w-full rounded-large border border-default-200 bg-default-50/70 px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
+                className="flex-1 rounded-large border border-default-200 bg-default-50/70 px-4 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60"
               />
               <Button color="primary" type="submit">
                 搜索
@@ -139,7 +163,7 @@ export default async function CourseIndexPage({ searchParams }: Props) {
                 </Button>
                 <Button
                   as={Link}
-                  href={buildHasResourceHref(true)}
+                  href={toggleHasResourceHref()}
                   size="sm"
                   variant={hasResource ? 'solid' : 'light'}
                   className="h-7 px-2"
@@ -158,7 +182,7 @@ export default async function CourseIndexPage({ searchParams }: Props) {
           name: course.name,
           slug: course.slug,
           deptSlug: course.department.slug,
-          tags: course.tags,
+          tags: parseCourseTags(course.tags),
           heartCount: course.heart_count,
           difficultyAvg: course.difficulty_avg,
           difficultyVotes: course.difficulty_votes,

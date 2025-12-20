@@ -30,7 +30,9 @@ export const sendVerificationCodeEmail = async (
 
   // 开发环境：打印验证码
   if (isEmailDisabled) {
-    console.log(`[dev-email-code] ${email} -> ${code}`)
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[dev-email-code] ${email} -> ${code}`)
+    }
     return
   }
 

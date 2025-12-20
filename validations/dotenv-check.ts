@@ -17,11 +17,11 @@ if (!fs.existsSync(envPath)) {
 config({ path: envPath })
 
 export const envSchema = z.object({
-  KUN_DATABASE_URL: z.string().url(),
-  KUN_VISUAL_NOVEL_SITE_URL: z.string().url(),
+  TOKI_DATABASE_URL: z.string().url(),
+  TOKI_NWPUSHARE_SITE_URL: z.string().url(),
 
-  NEXT_PUBLIC_KUN_PATCH_ADDRESS_DEV: z.string(),
-  NEXT_PUBLIC_KUN_PATCH_ADDRESS_PROD: z.string(),
+  NEXT_PUBLIC_NWPUSHARE_ADDRESS_DEV: z.string(),
+  NEXT_PUBLIC_NWPUSHARE_ADDRESS_PROD: z.string(),
 
   REDIS_HOST: z.string(),
   REDIS_PORT: z.string(),
@@ -32,28 +32,28 @@ export const envSchema = z.object({
 
   NODE_ENV: z.enum(['development', 'test', 'production']),
 
-  KUN_VISUAL_NOVEL_EMAIL_FROM: z.string(),
-  KUN_VISUAL_NOVEL_EMAIL_HOST: z.string(),
-  KUN_VISUAL_NOVEL_EMAIL_PORT: z.string(),
-  KUN_VISUAL_NOVEL_EMAIL_ACCOUNT: z.string(),
-  KUN_VISUAL_NOVEL_EMAIL_PASSWORD: z.string(),
+  TOKI_NWPUSHARE_EMAIL_FROM: z.string(),
+  TOKI_NWPUSHARE_EMAIL_HOST: z.string(),
+  TOKI_NWPUSHARE_EMAIL_PORT: z.string(),
+  TOKI_NWPUSHARE_EMAIL_ACCOUNT: z.string(),
+  TOKI_NWPUSHARE_EMAIL_PASSWORD: z.string(),
 
-  KUN_VISUAL_NOVEL_S3_STORAGE_ACCESS_KEY_ID: z.string(),
-  KUN_VISUAL_NOVEL_S3_STORAGE_SECRET_ACCESS_KEY: z.string(),
-  KUN_VISUAL_NOVEL_S3_STORAGE_BUCKET_NAME: z.string(),
-  KUN_VISUAL_NOVEL_S3_STORAGE_ENDPOINT: z.string(),
-  KUN_VISUAL_NOVEL_S3_STORAGE_REGION: z.string(),
-  NEXT_PUBLIC_KUN_VISUAL_NOVEL_S3_STORAGE_URL: z.string(),
+  TOKI_NWPUSHARE_S3_STORAGE_ACCESS_KEY_ID: z.string(),
+  TOKI_NWPUSHARE_S3_STORAGE_SECRET_ACCESS_KEY: z.string(),
+  TOKI_NWPUSHARE_S3_STORAGE_BUCKET_NAME: z.string(),
+  TOKI_NWPUSHARE_S3_STORAGE_ENDPOINT: z.string(),
+  TOKI_NWPUSHARE_S3_STORAGE_REGION: z.string(),
+  NEXT_PUBLIC_TOKI_NWPUSHARE_S3_STORAGE_URL: z.string(),
 
-  KUN_VISUAL_NOVEL_IMAGE_BED_HOST: z.string(),
-  KUN_VISUAL_NOVEL_IMAGE_BED_URL: z.string(),
+  TOKI_NWPUSHARE_IMAGE_BED_HOST: z.string(),
+  TOKI_NWPUSHARE_IMAGE_BED_URL: z.string(),
 
   KUN_CF_CACHE_ZONE_ID: z.string(),
   KUN_CF_CACHE_PURGE_API_TOKEN: z.string(),
 
-  KUN_VISUAL_NOVEL_INDEX_NOW_KEY: z.string(),
+  TOKI_NWPUSHARE_INDEX_NOW_KEY: z.string(),
 
-  KUN_VISUAL_NOVEL_TEST_SITE_LABEL: z.string().optional()
+  TOKI_NWPUSHARE_TEST_SITE_LABEL: z.string().optional()
 })
 
 export const env = envSchema.safeParse(process.env)

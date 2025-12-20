@@ -23,5 +23,9 @@
     ]
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules", "archive"]
+  "exclude": [
+    "node_modules",
+    "archive",
+    "components/course/feedback/FeedbackInteraction.tsx"
+  ]
 }

@@ -3,6 +3,11 @@
 @import './prose.css';
 @import './editor.css';
 
+/* 强制始终显示滚动条，防止切换内容时宽度变化 */
+html {
+  overflow-y: scroll;
+}
+
 [data-overlay-container='true'] {
   height: 100%;
   width: 100%;

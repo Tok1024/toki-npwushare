@@ -15,16 +15,17 @@ export const HISTORY_ACTION_TYPE_MAP: Record<string, string> = {
 }
 
 export const HISTORY_TYPE = [
-  'galgame',
-  'introduction',
-  'tag',
-  'pr',
-  'banner'
+  'course',
+  'resource',
+  'department',
+  'comment',
+  'post'
 ] as const
 
 export const HISTORY_TYPE_MAP: Record<string, string> = {
-  galgame: 'Galgame',
-  tag: 'Galgame 标签',
-  pr: '更新请求',
-  banner: '预览图'
+  course: '课程',
+  resource: '资源',
+  department: '学院',
+  comment: '评论',
+  post: '帖子'
 }

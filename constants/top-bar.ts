@@ -12,17 +12,17 @@ export const kunNavItem: KunNavItem[] = [
     name: '浏览资源',
     href: '/resource'
   },
-  {
-    name: '学院',
-    href: '/department'
-  },
-  {
-    name: '帮助',
-    href: '/doc'
-  },
+  // {
+  //   name: '学院',
+  //   href: '/department'
+  // },
   {
     name: '上传资源',
     href: '/edit/create'
+  },
+  {
+    name: '帮助',
+    href: '/doc/help'
   }
 ]
 

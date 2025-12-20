@@ -24,7 +24,7 @@ export const register = async (
 
   const normalizedName = name.toLowerCase()
   const sameUsernameUser = await prisma.user.findFirst({
-    where: { name: { equals: normalizedName, mode: 'insensitive' } }
+    where: { name: { equals: normalizedName } }
   })
   if (sameUsernameUser) {
     return '您的用户名已经有人注册了, 请修改'
@@ -32,7 +32,7 @@ export const register = async (
 
   const normalizedEmail = email.toLowerCase()
   const sameEmailUser = await prisma.user.findFirst({
-    where: { email: { equals: normalizedEmail, mode: 'insensitive' } }
+    where: { email: { equals: normalizedEmail } }
   })
   if (sameEmailUser) {
     return '您的邮箱已经有人注册了, 请修改'
@@ -63,7 +63,7 @@ export const register = async (
     name: user.name,
     avatar: user.avatar,
     bio: user.bio,
-    moemoepoint: user.moemoepoint,
+    point: user.moemoepoint,
     role: user.role,
     dailyCheckIn: user.daily_check_in,
     dailyImageLimit: user.daily_image_count,

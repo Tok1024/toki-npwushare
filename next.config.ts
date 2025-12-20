@@ -25,20 +25,16 @@ const nextConfig: NextConfig = {
     silenceDeprecations: ['legacy-js-api']
   },
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: env.data!.KUN_VISUAL_NOVEL_IMAGE_BED_HOST,
-        port: '',
-        pathname: '/**'
-      },
-      {
-        protocol: 'https',
-        hostname: 'cloud.touchgaloss.com',
-        port: '',
-        pathname: '/**'
-      }
-    ]
+    remotePatterns: env.data?.TOKI_NWPUSHARE_IMAGE_BED_HOST
+      ? [
+          {
+            protocol: 'https',
+            hostname: env.data!.TOKI_NWPUSHARE_IMAGE_BED_HOST,
+            port: '',
+            pathname: '/**'
+          }
+        ]
+      : []
   },
 
   output: 'standalone',

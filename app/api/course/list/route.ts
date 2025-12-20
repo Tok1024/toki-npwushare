@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { prisma } from '~/prisma'
 import { kunParseGetQuery } from '~/app/api/utils/parseQuery'
+import { parseCourseTags } from '~/utils/parseJsonField'
 
 //这个页是server component, 可以直接用prisma
 
@@ -35,9 +36,9 @@ export const GET = async (req: NextRequest) => {
       ? {
           OR: [
             {
-              name: { contains: parsed.keyword, mode: 'insensitive' as const }
+              name: { contains: parsed.keyword as const }
             },
-            { slug: { contains: parsed.keyword, mode: 'insensitive' as const } }
+            { slug: { contains: parsed.keyword as const } }
           ]
         }
       : {}),
@@ -65,7 +66,7 @@ export const GET = async (req: NextRequest) => {
     name: c.name,
     slug: c.slug,
     deptSlug: c.department.slug,
-    tags: c.tags,
+    tags: parseCourseTags(c.tags),
     heartCount: c.heart_count,
     difficultyAvg: c.difficulty_avg,
     difficultyVotes: c.difficulty_votes,

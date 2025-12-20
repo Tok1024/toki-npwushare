@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState, useCallback } from 'react'
 import { kunFetchGet } from '~/utils/kunFetch'
 import { ResourceCard } from './ResourceCard'
 import { FilterBar } from './FilterBar'
-import { useMounted } from '~/hooks/useMounted'
+import { usePaginatedData } from '~/hooks/usePaginatedData'
 import { KunLoading } from '~/components/kun/Loading'
 import { KunHeader } from '../kun/Header'
 import { useSearchParams } from 'next/navigation'
@@ -12,45 +12,54 @@ import { KunPagination } from '~/components/kun/Pagination'
 import type { SortDirection, SortOption } from './_sort'
 import type { PatchResource } from '~/types/api/resource'
 
+interface Department {
+  slug: string
+  name: string
+}
+
 interface Props {
   initialResources: PatchResource[]
   initialTotal: number
+  departments: Department[]
 }
 
-export const CardContainer = ({ initialResources, initialTotal }: Props) => {
-  const [resources, setResources] = useState<PatchResource[]>(initialResources)
-  const [total, setTotal] = useState(initialTotal)
-  const [loading, setLoading] = useState(false)
+export const CardContainer = ({ initialResources, initialTotal, departments }: Props) => {
   const [sortField, setSortField] = useState<SortOption>('created')
   const [sortOrder, setSortOrder] = useState<SortDirection>('desc')
-  const isMounted = useMounted()
+  const [deptSlug, setDeptSlug] = useState<string>('')
   const searchParams = useSearchParams()
-  const [page, setPage] = useState(Number(searchParams.get('page')) || 1)
+  const initialPage = Number(searchParams.get('page')) || 1
 
-  const fetchData = async () => {
-    setLoading(true)
-
-    const { resources, total: newTotal } = await kunFetchGet<{
-      resources: PatchResource[]
-      total: number
-    }>('/resource', {
-      sortField,
-      sortOrder,
-      page,
-      limit: 10
-    })
-
-    setResources(resources)
-    setTotal(newTotal)
-    setLoading(false)
-  }
-
-  useEffect(() => {
-    if (!isMounted) {
-      return
-    }
-    fetchData()
-  }, [sortField, sortOrder, page])
+  // 使用统一的分页数据Hook
+  const {
+    data: resources,
+    total,
+    totalPages,
+    page,
+    setPage,
+    loading
+  } = usePaginatedData<PatchResource>({
+    fetchFn: useCallback(async (page, limit) => {
+      const response = await kunFetchGet<{
+        resources: PatchResource[]
+        total: number
+      }>('/resource', {
+        sortField,
+        sortOrder,
+        page,
+        limit,
+        ...(deptSlug ? { deptSlug } : {})
+      })
+      return {
+        data: response.resources,
+        total: response.total
+      }
+    }, [sortField, sortOrder, deptSlug]),
+    initialData: initialResources,
+    initialTotal,
+    limit: 10,
+    dependencies: [sortField, sortOrder, deptSlug]
+  })
 
   return (
     <div className="container mx-auto my-4 space-y-6">
@@ -64,6 +73,9 @@ export const CardContainer = ({ initialResources, initialTotal }: Props) => {
         setSortField={setSortField}
         sortOrder={sortOrder}
         setSortOrder={setSortOrder}
+        deptSlug={deptSlug}
+        setDeptSlug={setDeptSlug}
+        departments={departments}
       />
       {loading ? (
         <KunLoading hint="正在获取资源数据..." />
@@ -78,7 +90,7 @@ export const CardContainer = ({ initialResources, initialTotal }: Props) => {
       {total > 10 && (
         <div className="flex justify-center">
           <KunPagination
-            total={Math.ceil(total / 10)}
+            total={totalPages}
             page={page}
             onPageChange={setPage}
             isLoading={loading}

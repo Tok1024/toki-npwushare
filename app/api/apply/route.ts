@@ -9,7 +9,7 @@ export const applyForCreator = async (uid: number) => {
     include: {
       _count: {
         select: {
-          patch_resource: true
+          course_resource: true
         }
       }
     }
@@ -18,8 +18,8 @@ export const applyForCreator = async (uid: number) => {
     return '未找到该用户'
   }
 
-  if (user._count.patch_resource < 3) {
-    return '您暂时不可以申请成为创作者, 您可以继续发布补丁'
+  if (user._count.course_resource < 3) {
+    return '您暂时不可以申请成为创作者，您可以继续发布课程资源'
   }
 
   if (user.role > 1) {

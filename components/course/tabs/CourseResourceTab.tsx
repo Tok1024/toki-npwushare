@@ -7,6 +7,7 @@ import { ArchiveRestore, ExternalLink, FileText } from 'lucide-react'
 import { kunFetchGet } from '~/utils/kunFetch'
 import { formatDistanceToNow } from '~/utils/formatDistanceToNow'
 import { KunNull } from '~/components/kun/Null'
+import { ReportButton } from '../ReportButton'
 
 type ApiResp = {
   total: number
@@ -159,6 +160,7 @@ export const CourseResourceTab = ({
                     还有 {resource.links.length - 1} 个链接
                   </span>
                 )}
+                <ReportButton resourceId={resource.id} resourceTitle={resource.title} />
               </div>
             </CardBody>
           </Card>

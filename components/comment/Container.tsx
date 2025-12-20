@@ -11,10 +11,10 @@ import { useSearchParams } from 'next/navigation'
 import { KunPagination } from '~/components/kun/Pagination'
 import { KunNull } from '~/components/kun/Null'
 import type { SortDirection, SortOption } from './_sort'
-import type { PatchComment } from '~/types/api/comment'
+import type { Comment } from '~/types/api/comment'
 
 interface Props {
-  initialComments: PatchComment[]
+  initialComments: Comment[]
   initialTotal: number
   uid?: number
 }
@@ -24,7 +24,7 @@ export const CardContainer = ({
   initialTotal,
   uid
 }: Props) => {
-  const [comments, setComments] = useState<PatchComment[]>(initialComments)
+  const [comments, setComments] = useState<Comment[]>(initialComments)
   const [total, setTotal] = useState(initialTotal)
   const [loading, setLoading] = useState(false)
   const [sortField, setSortField] = useState<SortOption>('created')
@@ -37,7 +37,7 @@ export const CardContainer = ({
     setLoading(true)
 
     const { comments } = await kunFetchGet<{
-      comments: PatchComment[]
+      comments: Comment[]
       total: number
     }>('/comment', {
       sortField,

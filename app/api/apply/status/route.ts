@@ -3,8 +3,8 @@ import { verifyHeaderCookie } from '~/middleware/_verifyHeaderCookie'
 import { prisma } from '~/prisma/index'
 
 export const getApplyStatus = async (uid: number) => {
-  const count = await prisma.patch_resource.count({
-    where: { user_id: uid }
+  const count = await prisma.resource.count({
+    where: { author_id: uid }
   })
   const user = await prisma.user.findUnique({
     where: { id: uid }

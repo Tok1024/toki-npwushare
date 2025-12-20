@@ -11,11 +11,19 @@ import { Card, CardHeader } from '@heroui/card'
 import { ArrowDownAZ, ArrowUpAZ, ChevronDown } from 'lucide-react'
 import type { SortDirection, SortOption } from './_sort'
 
+interface Department {
+  slug: string
+  name: string
+}
+
 interface Props {
   sortField: SortOption
   setSortField: (option: SortOption) => void
   sortOrder: SortDirection
   setSortOrder: (direction: SortDirection) => void
+  deptSlug?: string
+  setDeptSlug: (slug: string) => void
+  departments: Department[]
 }
 
 const sortFieldLabelMap: Record<string, string> = {
@@ -28,11 +36,43 @@ export const FilterBar = ({
   sortField,
   setSortField,
   sortOrder,
-  setSortOrder
+  setSortOrder,
+  deptSlug = '',
+  setDeptSlug,
+  departments
 }: Props) => {
+  const selectedDept = departments.find((d) => d.slug === deptSlug)
+
   return (
     <Card className="w-full border border-default-100 shadow-sm bg-white/50 backdrop-blur-sm">
-      <div className="p-3 flex items-center gap-2">
+      <div className="p-3 flex items-center gap-2 flex-wrap">
+        <Dropdown>
+          <DropdownTrigger>
+            <Button
+              variant="flat"
+              className="bg-white border border-default-200 text-slate-600"
+              endContent={<ChevronDown className="size-4 text-slate-400" />}
+              size="sm"
+            >
+              {selectedDept ? selectedDept.name : '全部学院'}
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu
+            aria-label="学院筛选"
+            onAction={(key) => setDeptSlug(key as string)}
+            className="min-w-[150px]"
+          >
+            <DropdownItem key="" className="text-slate-600">
+              全部学院
+            </DropdownItem>
+            {departments.map((dept) => (
+              <DropdownItem key={dept.slug} className="text-slate-600">
+                {dept.name}
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        </Dropdown>
+
         <Dropdown>
           <DropdownTrigger>
             <Button

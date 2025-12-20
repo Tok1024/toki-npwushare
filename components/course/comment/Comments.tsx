@@ -14,7 +14,7 @@ import { useUserStore } from '~/store/userStore'
 import { KunNull } from '~/components/kun/Null'
 import { cn } from '~/utils/cn'
 import { PublishComment } from './Publish'
-import type { PatchComment } from '~/types/api/patch'
+import type { Comment } from '~/types/api/comment'
 
 type SortOrder = 'asc' | 'desc'
 
@@ -27,7 +27,7 @@ export const CourseComments = ({
   slug: string
   courseId: number
 }) => {
-  const [comments, setComments] = useState<PatchComment[]>([])
+  const [comments, setComments] = useState<Comment[]>([])
   const [replyTo, setReplyTo] = useState<number | null>(null)
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
   const [loading, setLoading] = useState(true)
@@ -41,7 +41,7 @@ export const CourseComments = ({
     let cancelled = false
     const run = async () => {
       setLoading(true)
-      const res = await kunFetchGet<PatchComment[]>(
+      const res = await kunFetchGet<Comment[]>(
         `/course/${dept}/${slug}/comment`
       )
       if (typeof res === 'string') {
@@ -59,7 +59,7 @@ export const CourseComments = ({
     }
   }, [dept, slug, user.uid])
 
-  const sortComments = (list: PatchComment[]): PatchComment[] => {
+  const sortComments = (list: Comment[]): Comment[] => {
     const sorted = [...list].sort((a, b) => {
       const da = new Date(a.created).getTime()
       const db = new Date(b.created).getTime()
@@ -80,7 +80,7 @@ export const CourseComments = ({
     el?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
-  const setNewComment = async (newComment: PatchComment) => {
+  const setNewComment = async (newComment: Comment) => {
     setComments((prev) => [...prev, newComment])
     await new Promise((r) => setTimeout(r, 300))
     scrollIntoComment(newComment.id)
@@ -113,7 +113,7 @@ export const CourseComments = ({
     </div>
   )
 
-  const renderComments = (list: PatchComment[], depth = 0) =>
+  const renderComments = (list: Comment[], depth = 0) =>
     list.map((comment) => (
       <div
         key={comment.id}

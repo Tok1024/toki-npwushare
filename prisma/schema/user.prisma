@@ -1,19 +1,19 @@
 // role: 1 - user, 2 - publisher, 3 - admin, 4 - super admin
 model user {
-  id            Int      @id @default(autoincrement())
-  name          String   @unique @db.VarChar(17)
-  email         String   @unique @db.VarChar(1007)
-  password      String   @db.VarChar(1007)
-  ip            String   @default("") @db.VarChar(233)
-  avatar        String   @default("") @db.VarChar(233)
-  role          Int      @default(1)
-  status        Int      @default(0)
-  register_time DateTime @default(now())
-  moemoepoint   Int      @default(0)
-  bio           String   @default("") @db.VarChar(107)
-  resource_upload_count   Int @default(0)
-  resource_download_count Int @default(0)
-  contribution_score      Int @default(0)
+  id                      Int      @id @default(autoincrement())
+  name                    String   @unique @db.VarChar(17)
+  email                   String   @unique @db.VarChar(255)  // MySQL utf8mb4索引限制，从1007改为255
+  password                String   @db.VarChar(1007)
+  ip                      String   @default("") @db.VarChar(233)
+  avatar                  String   @default("") @db.VarChar(233)
+  role                    Int      @default(1)
+  status                  Int      @default(0)
+  register_time           DateTime @default(now())
+  point                   Int      @default(0)
+  bio                     String   @default("") @db.VarChar(107)
+  resource_upload_count   Int      @default(0)
+  resource_download_count Int      @default(0)
+  contribution_score      Int      @default(0)
 
   enable_email_notice Boolean @default(true)
   daily_image_count   Int     @default(0)
@@ -22,33 +22,22 @@ model user {
   last_login_time     String  @default("")
 
   admin_log admin_log[]
-  patch_tag patch_tag[]
 
-  patch_comment_like    user_patch_comment_like_relation[]
-  patch_resource_like   user_patch_resource_like_relation[]
-  patch_favorite_folder user_patch_favorite_folder[]
+  following user_follow_relation[] @relation("user_following")
+  follower  user_follow_relation[] @relation("user_follower")
 
-  patch_company     patch_company[]
-  patch_rating      patch_rating[]
-  patch_rating_like patch_rating_like[]
+  course_resource resource[] @relation("user_course_resource")
+  send_message    user_message[] @relation("user_send_message")
+  receive_message user_message[] @relation("user_receive_message")
 
-  following       user_follow_relation[] @relation("user_following")
-  follower        user_follow_relation[] @relation("user_follower")
-  patch           patch[]                @relation("user_patch")
-  patch_comment   patch_comment[]        @relation("user_patch_comment")
-  patch_resource  patch_resource[]       @relation("user_patch_resource")
-  // 课程资源上传（课程模块）
-  course_resource resource[]             @relation("user_course_resource")
-  send_message    user_message[]         @relation("user_send_message")
-  receive_message user_message[]         @relation("user_receive_message")
-
-  course_feedback course_feedback[]
-  resource_ratings resource_rating[]
+  course_feedback       course_feedback[]
+  resource_ratings      resource_rating[]
   resource_interactions resource_interaction[]
-  posts            post[]
-  comments         comment[]
-  course_comment_like course_comment_like[] @relation("user_course_comment_like")
-  badges           user_badge[]
+  posts                 post[]
+  comments              comment[]
+  course_comment_like   course_comment_like[]  @relation("user_course_comment_like")
+  course_favorites      course_favorite[]      @relation("user_course_favorite")
+  badges                user_badge[]
 
   created DateTime @default(now())
   updated DateTime @updatedAt
@@ -81,30 +70,4 @@ model user_message {
 
   created DateTime @default(now())
   updated DateTime @updatedAt
-}
-
-model user_patch_favorite_folder {
-  id          Int                                   @id @default(autoincrement())
-  name        String                                @db.VarChar(100)
-  description String                                @default("") @db.VarChar(500)
-  is_public   Boolean                               @default(false)
-  user_id     Int
-  user        user                                  @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  patch       user_patch_favorite_folder_relation[]
-  created     DateTime                              @default(now())
-  updated     DateTime                              @updatedAt
-
-  @@unique([user_id, name])
-}
-
-model user_patch_favorite_folder_relation {
-  id        Int                        @id @default(autoincrement())
-  folder_id Int
-  patch_id  Int
-  folder    user_patch_favorite_folder @relation(fields: [folder_id], references: [id], onDelete: Cascade)
-  patch     patch                      @relation(fields: [patch_id], references: [id], onDelete: Cascade)
-  created   DateTime                   @default(now())
-  updated   DateTime                   @updatedAt
-
-  @@unique([folder_id, patch_id])
 }

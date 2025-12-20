@@ -427,7 +427,7 @@ CREATE TABLE "public"."user" (
     "role" INTEGER NOT NULL DEFAULT 1,
     "status" INTEGER NOT NULL DEFAULT 0,
     "register_time" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "moemoepoint" INTEGER NOT NULL DEFAULT 0,
+    "point" INTEGER NOT NULL DEFAULT 0,
     "bio" VARCHAR(107) NOT NULL DEFAULT '',
     "resource_upload_count" INTEGER NOT NULL DEFAULT 0,
     "resource_download_count" INTEGER NOT NULL DEFAULT 0,

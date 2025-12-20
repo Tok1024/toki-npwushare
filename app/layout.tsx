@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-Hans" suppressHydrationWarning>
-      {process.env.KUN_VISUAL_NOVEL_TEST_SITE_LABEL && (
+      {process.env.TOKI_NWPUSHARE_TEST_SITE_LABEL && (
         <head>
           <meta name="robots" content="noindex,nofollow" />
           <meta name="googlebot" content="noindex,nofollow" />

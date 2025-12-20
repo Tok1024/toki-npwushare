@@ -49,7 +49,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json('用户未登录')
   }
   if (payload.role < 3) {
-    return NextResponse.json('杂鱼~本页面仅管理员可访问')
+    return NextResponse.json('权限不足，本页面仅管理员可访问')
   }
 
   const res = await getLog(input)

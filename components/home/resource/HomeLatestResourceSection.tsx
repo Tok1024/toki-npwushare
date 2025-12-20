@@ -26,7 +26,7 @@ export const HomeLatestResourceSection = () => {
     const run = async () => {
       try {
         const base =
-          process.env.NEXT_PUBLIC_KUN_PATCH_ADDRESS_DEV ??
+          process.env.NEXT_PUBLIC_NWPUSHARE_ADDRESS_DEV ??
           window.location.origin
         const response = await fetch(`${base}/api/resource/latest`, {
           cache: 'no-store'

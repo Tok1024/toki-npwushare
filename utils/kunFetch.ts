@@ -34,8 +34,8 @@ const kunFetchRequest = async <T>(
 
   let fetchAddress =
     process.env.NODE_ENV === 'development'
-      ? process.env.NEXT_PUBLIC_KUN_PATCH_ADDRESS_DEV
-      : process.env.NEXT_PUBLIC_KUN_PATCH_ADDRESS_PROD
+      ? process.env.NEXT_PUBLIC_NWPUSHARE_ADDRESS_DEV
+      : process.env.NEXT_PUBLIC_NWPUSHARE_ADDRESS_PROD
 
   if (!fetchAddress) {
     if (typeof window !== 'undefined') {

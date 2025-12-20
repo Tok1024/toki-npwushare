@@ -10,9 +10,10 @@ import { KunEditor } from './Editor'
 
 interface Props {
   storeName: 'patchCreate' | 'patchRewrite'
+  disableImageUpload?: boolean
 }
 
-export const KunDualEditorProvider = ({ storeName }: Props) => {
+export const DualEditorProvider = ({ storeName, disableImageUpload }: Props) => {
   const [cmAPI, setCmAPI] = useState({
     update: (_: string) => {}
   })
@@ -98,7 +99,11 @@ export const KunDualEditorProvider = ({ storeName }: Props) => {
           </div>
         }
       >
-        <KunEditor valueMarkdown={getMarkdown()} saveMarkdown={saveMarkdown} />
+        <KunEditor
+          valueMarkdown={getMarkdown()}
+          saveMarkdown={saveMarkdown}
+          disableImageUpload={disableImageUpload}
+        />
       </Tab>
     </Tabs>
   )

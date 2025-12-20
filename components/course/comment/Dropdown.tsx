@@ -11,7 +11,7 @@ import { Edit, MoreHorizontal, Trash2 } from 'lucide-react'
 import { useUserStore } from '~/store/userStore'
 import { kunFetchDelete, kunFetchPut } from '~/utils/kunFetch'
 import toast from 'react-hot-toast'
-import type { PatchComment } from '~/types/api/patch'
+import type { Comment } from '~/types/api/comment'
 
 export const CommentDropdown = ({
   comment,
@@ -20,7 +20,7 @@ export const CommentDropdown = ({
   courseId,
   setComments
 }: {
-  comment: PatchComment
+  comment: Comment
   dept: string
   slug: string
   courseId: number
@@ -36,7 +36,7 @@ export const CommentDropdown = ({
       { commentId: comment.id }
     )
     if (typeof res === 'string') return toast.error(res)
-    setComments((prev: PatchComment[]) =>
+    setComments((prev: Comment[]) =>
       prev.filter((c) => c.id !== comment.id)
     )
     toast.success('评论删除成功')

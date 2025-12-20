@@ -7,14 +7,14 @@ import { useUserStore } from '~/store/userStore'
 import toast from 'react-hot-toast'
 import { kunErrorHandler } from '~/utils/kunErrorHandler'
 import { cn } from '~/utils/cn'
-import type { PatchComment } from '~/types/api/patch'
+import type { Comment } from '~/types/api/comment'
 
 export const CommentLikeButton = ({
   comment,
   dept,
   slug
 }: {
-  comment: PatchComment
+  comment: Comment
   dept: string
   slug: string
 }) => {

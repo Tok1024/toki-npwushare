@@ -7,11 +7,11 @@ import {
   SUPPORTED_RESOURCE_LINK,
   SUPPORTED_RESOURCE_SECTION
 } from '~/constants/resource'
-import {
-  KUN_GALGAME_RATING_RECOMMEND_CONST,
-  KUN_GALGAME_RATING_SPOILER_CONST,
-  KUN_GALGAME_RATING_PLAY_STATUS_CONST
-} from '~/constants/galgame'
+
+// Galgame rating constants (archived feature)
+const KUN_GALGAME_RATING_RECOMMEND_CONST = ['highly_recommended', 'recommended', 'neutral', 'not_recommended']
+const KUN_GALGAME_RATING_SPOILER_CONST = ['none', 'minor', 'moderate', 'major']
+const KUN_GALGAME_RATING_PLAY_STATUS_CONST = ['playing', 'completed', 'abandoned', 'planning']
 
 export const patchTagChangeSchema = z.object({
   patchId: z.coerce.number({ message: 'ID 必须为数字' }).min(1).max(9999999),
@@ -141,7 +141,7 @@ export const createPatchFeedbackSchema = z.object({
     .max(5000, { message: '反馈信息最多 5000 个字符' })
 })
 
-export const createPatchCommentReportSchema = z.object({
+export const createCommentReportSchema = z.object({
   commentId: z.coerce
     .number({ message: '评论 ID 必须为数字' })
     .min(1)

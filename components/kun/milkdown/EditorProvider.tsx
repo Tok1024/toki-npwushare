@@ -77,13 +77,15 @@ type Props = {
   saveMarkdown: (markdown: string) => void
   disableUserKey?: boolean
   placeholder?: string
+  disableImageUpload?: boolean
 }
 
 export const EditorProvider = ({
   valueMarkdown,
   saveMarkdown,
   disableUserKey = false,
-  placeholder
+  placeholder,
+  disableImageUpload = false
 }: Props) => {
   const refreshContentStatus = useKunMilkdownStore(
     (state) => state.data.refreshContentStatus
@@ -111,8 +113,14 @@ export const EditorProvider = ({
 
         ctx.update(uploadConfig.key, (prev) => ({
           ...prev,
-          uploader: kunUploader,
-          uploadWidgetFactory: kunUploadWidgetFactory
+          uploader: disableImageUpload
+            ? async () => {
+                return []
+              }
+            : kunUploader,
+          uploadWidgetFactory: disableImageUpload
+            ? undefined
+            : kunUploadWidgetFactory
         }))
 
         ctx.set(prismConfig.key, {
@@ -191,6 +199,7 @@ export const EditorProvider = ({
       <KunMilkdownPluginsMenu
         editorInfo={editor}
         disableUserKey={disableUserKey}
+        disableImageUpload={disableImageUpload}
       />
 
       <div className="mt-3 relative">

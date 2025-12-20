@@ -26,7 +26,7 @@ export const HomeCourseSection = () => {
       try {
         const res = await kunFetchGet<ApiResp | string>('/course/list', {
           page: 1,
-          pageSize: 8
+          pageSize: 9
         })
         if (typeof res === 'string') {
           setError('Unexpected response')

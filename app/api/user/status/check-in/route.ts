@@ -14,17 +14,17 @@ const checkIn = async (uid: number) => {
     return '您今天已经签到过了'
   }
 
-  const randomMoemoepoints = randomNum(0, 7)
+  const randompoints = randomNum(0, 7)
 
   await prisma.user.update({
     where: { id: uid },
     data: {
-      moemoepoint: { increment: randomMoemoepoints },
+      point: { increment: randompoints },
       daily_check_in: { set: 1 }
     }
   })
 
-  return { randomMoemoepoints }
+  return { randompoints }
 }
 
 export async function POST(req: NextRequest) {

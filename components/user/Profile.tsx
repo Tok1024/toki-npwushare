@@ -63,12 +63,12 @@ export const UserProfile = ({ user }: { user: UserInfo }) => {
               <div className="flex justify-between mb-2">
                 <span className="text-small">贡献值</span>
                 <span className="text-small text-default-500">
-                  {user.moemoepoint}
+                  {user.point}
                 </span>
               </div>
               <Progress
                 aria-label="贡献值"
-                value={user.moemoepoint % 100}
+                value={user.point % 100}
                 color="primary"
                 className="h-2"
               />

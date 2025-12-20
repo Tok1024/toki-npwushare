@@ -9,7 +9,7 @@ export const searchUser = async (input: z.infer<typeof searchUserSchema>) => {
 
   const users: KunUser[] = await prisma.user.findMany({
     where: {
-      name: { contains: query, mode: 'insensitive' }
+      name: { contains: query }
     },
     select: {
       id: true,

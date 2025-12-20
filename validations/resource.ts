@@ -8,5 +8,6 @@ export const resourceSchema = z.object({
   ]),
   sortOrder: z.union([z.literal('asc'), z.literal('desc')]),
   page: z.coerce.number().min(1).max(9999999),
-  limit: z.coerce.number().min(1).max(50)
+  limit: z.coerce.number().min(1).max(50),
+  deptSlug: z.string().optional()
 })

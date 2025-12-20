@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { Card, CardBody } from '@heroui/card'
 import { kunFetchGet } from '~/utils/kunFetch'
+import { ReportButton } from './ReportButton'
 
 type Item = {
   id: number
@@ -39,20 +40,19 @@ export const ResourceList = ({
   return (
     <div className="grid grid-cols-1 gap-3">
       {items.map((r) => (
-        <Card
-          key={r.id}
-          isPressable
-          as={Link}
-          href={`/course/${dept}/${slug}/r/${r.id}`}
-        >
-          <CardBody className="flex items-center justify-between">
-            <div className="space-y-1">
+        <Card key={r.id}>
+          <CardBody className="flex items-center justify-between gap-4">
+            <Link
+              href={`/course/${dept}/${slug}/r/${r.id}`}
+              className="flex-1 space-y-1 hover:opacity-80 transition-opacity"
+            >
               <div className="text-tiny text-default-500">{r.type}</div>
               <div className="font-medium line-clamp-2">{r.title}</div>
-            </div>
-            <div className="text-tiny text-default-400">
-              {new Date(r.created).toLocaleDateString()}
-            </div>
+              <div className="text-tiny text-default-400">
+                {new Date(r.created).toLocaleDateString()}
+              </div>
+            </Link>
+            <ReportButton resourceId={r.id} resourceTitle={r.title} />
           </CardBody>
         </Card>
       ))}

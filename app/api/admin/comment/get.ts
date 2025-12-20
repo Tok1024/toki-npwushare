@@ -13,8 +13,8 @@ export const getComment = async (
   const where = search
     ? {
         content: {
-          contains: search,
-          mode: 'insensitive' as const
+          contains: search
+          // MySQL utf8mb4_unicode_ci is case-insensitive by default
         }
       }
     : {}

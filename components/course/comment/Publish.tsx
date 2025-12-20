@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { Button, Textarea } from '@heroui/react'
 import { kunFetchPost } from '~/utils/kunFetch'
 import toast from 'react-hot-toast'
-import type { PatchComment } from '~/types/api/patch'
+import type { Comment } from '~/types/api/comment'
 
 export const PublishComment = ({
   dept,
@@ -21,7 +21,7 @@ export const PublishComment = ({
   parentId?: number | null
   receiverUsername: string | null
   onSuccess?: () => void
-  setNewComment: (comment: PatchComment) => Promise<void>
+  setNewComment: (comment: Comment) => Promise<void>
 }) => {
   const [content, setContent] = useState('')
   const [loading, setLoading] = useState(false)
@@ -29,7 +29,7 @@ export const PublishComment = ({
   const submit = async () => {
     if (!content.trim()) return
     setLoading(true)
-    const res = await kunFetchPost<KunResponse<PatchComment>>(
+    const res = await kunFetchPost<KunResponse<Comment>>(
       `/course/${dept}/${slug}/comment`,
       {
         courseId,

@@ -6,6 +6,7 @@ interface KunEditorProps {
   valueMarkdown: string
   saveMarkdown: (markdown: string) => void
   placeholder?: string
+  disableImageUpload?: boolean
 }
 
 export const KunEditor = (props: KunEditorProps) => {

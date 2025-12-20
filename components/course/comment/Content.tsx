@@ -1,7 +1,7 @@
 import DOMPurify from 'isomorphic-dompurify'
-import type { PatchComment } from '~/types/api/patch'
+import type { Comment } from '~/types/api/comment'
 
-export const CommentContent = ({ comment }: { comment: PatchComment }) => {
+export const CommentContent = ({ comment }: { comment: Comment }) => {
   return (
     <div
       className="kun-prose max-w-none"

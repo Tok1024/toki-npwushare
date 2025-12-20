@@ -5,7 +5,7 @@ import { prisma } from '~/prisma/index'
 import { commentSchema } from '~/validations/comment'
 import { markdownToText } from '~/utils/markdownToText'
 import { verifyHeaderCookie } from '~/middleware/_verifyHeaderCookie'
-import type { PatchComment } from '~/types/api/comment'
+import type { Comment } from '~/types/api/comment'
 
 export const getComment = async (input: z.infer<typeof commentSchema>) => {
   const { sortField, sortOrder, page, limit } = input
@@ -46,7 +46,7 @@ export const getComment = async (input: z.infer<typeof commentSchema>) => {
     prisma.patch_comment.count()
   ])
 
-  const comments: PatchComment[] = commentsData.map((comment) => ({
+  const comments: Comment[] = commentsData.map((comment) => ({
     id: comment.id,
     uniqueId: comment.patch.unique_id,
     user: comment.user,

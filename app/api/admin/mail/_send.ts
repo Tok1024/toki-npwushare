@@ -64,11 +64,13 @@ export const sendEmailHTML = async (
       subject: getEmailSubject(templateId),
       html: content
     })
-    console.log('[Resend] Admin email sent successfully:', {
-      id: result.data?.id,
-      to: email,
-      template: templateId
-    })
+    if (process.env.NODE_ENV !== 'production') {
+      console.log('[Resend] Admin email sent successfully:', {
+        id: result.data?.id,
+        to: email,
+        template: templateId
+      })
+    }
   } catch (error) {
     console.error('[Resend] Admin email error:', error)
     throw new Error('邮件发送失败')

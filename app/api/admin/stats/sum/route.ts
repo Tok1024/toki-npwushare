@@ -6,28 +6,24 @@ import type { SumData } from '~/types/api/admin'
 export const getSumData = async (): Promise<SumData> => {
   const [
     userCount,
-    galgameCount,
-    galgameResourceCount,
-    galgamePatchResourceCount,
-    galgameCommentCount
+    courseCount,
+    resourceCount,
+    commentCount,
+    departmentCount
   ] = await Promise.all([
     prisma.user.count(),
-    prisma.patch.count(),
-    prisma.patch_resource.count({
-      where: { section: 'galgame' }
-    }),
-    prisma.patch_resource.count({
-      where: { section: 'patch' }
-    }),
-    prisma.patch_comment.count()
+    prisma.course.count(),
+    prisma.resource.count(),
+    prisma.comment.count(),
+    prisma.department.count()
   ])
 
   return {
     userCount,
-    galgameCount,
-    galgameResourceCount,
-    galgamePatchResourceCount,
-    galgameCommentCount
+    courseCount,
+    resourceCount,
+    commentCount,
+    departmentCount
   }
 }
 

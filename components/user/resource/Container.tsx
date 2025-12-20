@@ -7,6 +7,7 @@ import { useMounted } from '~/hooks/useMounted'
 import { KunLoading } from '~/components/kun/Loading'
 import { KunNull } from '~/components/kun/Null'
 import { UserResourceCard } from './Card'
+import { useUserStore } from '~/store/userStore'
 import type { UserResource as UserResourceType } from '~/types/api/user'
 
 interface Props {
@@ -20,6 +21,8 @@ export const UserResource = ({ resources, total, uid }: Props) => {
   const [patches, setPatches] = useState<UserResourceType[]>(resources)
   const [loading, setLoading] = useState(false)
   const [page, setPage] = useState(1)
+  const currentUid = useUserStore((s) => s.user.uid)
+  const isSelf = currentUid === uid
 
   const fetchPatches = async () => {
     setLoading(true)
@@ -51,7 +54,12 @@ export const UserResource = ({ resources, total, uid }: Props) => {
       ) : (
         <>
           {patches.map((resource) => (
-            <UserResourceCard key={resource.id} resource={resource} />
+            <UserResourceCard
+              key={resource.id}
+              resource={resource}
+              isSelf={isSelf}
+              onChanged={fetchPatches}
+            />
           ))}
         </>
       )}

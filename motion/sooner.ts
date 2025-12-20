@@ -31,20 +31,6 @@ export const toastVariants = {
   }
 } satisfies Variants
 
-export const iconVariants = {
-  initial: { scale: 0, rotate: -180 },
-  animate: {
-    scale: 1,
-    rotate: 0,
-    transition: {
-      type: 'spring',
-      stiffness: 260,
-      damping: 20,
-      delay: 0.2
-    }
-  }
-} satisfies Variants
-
 export const textVariants = {
   initial: { opacity: 0, x: 20 },
   animate: {

@@ -1,7 +1,7 @@
 'use client'
 
 import { Button } from '@heroui/button'
-import { BadgeCheck, Pencil, Shield } from 'lucide-react'
+import { Pencil, Shield } from 'lucide-react'
 import { useRouter } from '@bprogress/next'
 import type { UserInfo } from '~/types/api/user'
 
@@ -39,16 +39,7 @@ export const SelfButton = ({ user }: Props) => {
         )}
       </div>
 
-      {user.role < 2 && (
-        <Button
-          startContent={<BadgeCheck className="size-4" />}
-          color="primary"
-          fullWidth
-          onPress={() => router.push('/apply')}
-        >
-          申请成为创作者
-        </Button>
-      )}
+      {/* 保留空位，后续可加其它入口 */}
     </div>
   )
 }

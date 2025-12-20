@@ -2,48 +2,44 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { Card, CardBody } from '@heroui/card'
 import { kunFetchGet } from '~/utils/kunFetch'
+import { PostList as SharedPostList, type PostListItem } from '../post/PostList'
 
-type Item = {
-  id: number
-  title: string
-  created: string
+type ApiResp = {
+  total: number
+  page: number
+  pageSize: number
+  list: {
+    id: number
+    title: string
+    created: string
+    status: string
+    author: { id: number; name: string; avatar: string | null } | null
+  }[]
 }
 
-type ApiResp = { total: number; page: number; pageSize: number; list: Item[] }
-
 export const PostList = ({ dept, slug }: { dept: string; slug: string }) => {
-  const [items, setItems] = useState<Item[]>([])
+  const [items, setItems] = useState<PostListItem[]>([])
 
   useEffect(() => {
     const run = async () => {
       const res = await kunFetchGet<ApiResp>(`/course/${dept}/${slug}/posts`)
       if (typeof res === 'string') return
-      setItems(res.list)
+      setItems(
+        res.list.map((p) => ({
+          id: p.id,
+          title: p.title,
+          date: p.created,
+          href: `/course/${dept}/${slug}/p/${p.id}`,
+          authorName: p.author?.name,
+          authorAvatar: p.author?.avatar ?? undefined,
+          authorId: p.author?.id,
+          statusLabel: p.status !== 'published' ? p.status : undefined
+        }))
+      )
     }
     run()
   }, [dept, slug])
 
-  if (!items.length) return <div className="text-default-500">暂无帖子</div>
-
-  return (
-    <div className="grid grid-cols-1 gap-3">
-      {items.map((p) => (
-        <Card
-          key={p.id}
-          isPressable
-          as={Link}
-          href={`/course/${dept}/${slug}/p/${p.id}`}
-        >
-          <CardBody className="flex items-center justify-between">
-            <div className="font-medium line-clamp-2">{p.title}</div>
-            <div className="text-tiny text-default-400">
-              {new Date(p.created).toLocaleDateString()}
-            </div>
-          </CardBody>
-        </Card>
-      ))}
-    </div>
-  )
+  return <SharedPostList items={items} />
 }

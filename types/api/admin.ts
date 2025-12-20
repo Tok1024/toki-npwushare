@@ -1,27 +1,27 @@
 import type { PatchResource } from '~/types/api/patch'
-import type { PatchComment } from '~/types/api/comment'
+import type { Comment } from '~/types/api/comment'
 import type { Message } from '~/types/api/message'
 
 export type AdminStatsName =
   | 'user'
   | 'active'
-  | 'patch'
-  | 'patch_resource'
-  | 'patch_comment'
+  | 'course'
+  | 'resource'
+  | 'comment'
 
 export interface SumData {
   userCount: number
-  galgameCount: number
-  galgameResourceCount: number
-  galgamePatchResourceCount: number
-  galgameCommentCount: number
+  courseCount: number
+  resourceCount: number
+  commentCount: number
+  departmentCount: number
 }
 
 export interface OverviewData {
   newUser: number
   newActiveUser: number
-  newGalgame: number
-  newGalgameResource: number
+  newCourse: number
+  newResource: number
   newComment: number
 }
 
@@ -62,7 +62,7 @@ export interface AdminResource extends PatchResource {
   patchName: string
 }
 
-export type AdminComment = PatchComment
+export type AdminComment = Comment
 
 export type AdminFeedback = Message
 

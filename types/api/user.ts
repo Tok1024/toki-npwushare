@@ -8,16 +8,17 @@ export interface UserInfo {
   role: number
   status: number
   registerTime: string
-  moemoepoint: number
+  point: number
   follower: number
   following: number
   isFollow: boolean
   _count: {
-    patch: number
-    patch_resource: number
-    patch_comment: number
-    patch_favorite: number
+    course_resource: number
+    comments: number
     send_message: number
+    resource_interactions: number
+    course_feedback: number
+    course_favorites: number
   }
 }
 
@@ -41,6 +42,7 @@ export interface UserResource {
   type: string[]
   language: string[]
   platform: string[]
+  status?: 'draft' | 'pending' | 'published' | 'rejected'
   created: string
 }
 
@@ -70,13 +72,13 @@ export interface FloatingCardUser {
   name: string
   avatar: string
   bio: string
-  moemoepoint: number
+  point: number
   role: number
   isFollow: boolean
   _count: {
     follower: number
-    patch: number
-    patch_resource: number
+    course_resource: number
+    comments: number
   }
 }
 

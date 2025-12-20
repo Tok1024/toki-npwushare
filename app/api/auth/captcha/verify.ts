@@ -1,25 +1,18 @@
 import { delKv, getKv, setKv } from '~/lib/redis'
 import { generateRandomString } from '~/utils/random'
 
-export const verifyCaptcha = async (
-  sessionId: string,
-  selectedIds: string[]
-) => {
-  const session = await getKv(`captcha:generate:${sessionId}`)
+export const verifyCaptcha = async (sessionId: string, captchaCode: string) => {
+  const correctCode = await getKv(`captcha:generate:${sessionId}`)
 
   await delKv(`captcha:generate:${sessionId}`)
 
-  if (!session) {
-    return '未找到您的验证请求, 请重新验证'
+  if (!correctCode) {
+    return '未找到您的验证请求，请重新验证'
   }
 
-  const correctIdsArray: string[] = JSON.parse(session)
-
-  const isCorrect =
-    selectedIds.length === correctIdsArray.length &&
-    selectedIds.every((id) => correctIdsArray.includes(id))
-  if (!isCorrect) {
-    return '您选择的白毛女孩子不正确, 请重试'
+  // 不区分大小写比对
+  if (captchaCode.toUpperCase() !== correctCode.toUpperCase()) {
+    return '验证码输入错误，请重试'
   }
 
   const randomCode = generateRandomString(10)

@@ -1,29 +1,33 @@
 import { z } from 'zod'
 import { NextRequest, NextResponse } from 'next/server'
-import {
-  kunParseDeleteQuery,
-  kunParseGetQuery,
-  kunParsePutBody
-} from '~/app/api/utils/parseQuery'
-import { adminPaginationSchema } from '~/validations/admin'
-import { getPatchResource } from './get'
 import { verifyHeaderCookie } from '~/middleware/_verifyHeaderCookie'
-import { patchResourceUpdateSchema } from '~/validations/patch'
-import { updatePatchResource } from './update'
-import { deleteResource } from './delete'
+import { prisma } from '~/prisma'
 
-const resourceIdSchema = z.object({
-  resourceId: z.coerce
-    .number({ message: '资源 ID 必须为数字' })
-    .min(1)
-    .max(9999999)
+const QuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(20),
+  status: z.enum(['draft', 'pending', 'published', 'rejected']).optional(),
+  authorId: z.coerce.number().int().optional(),
+  courseId: z.coerce.number().int().optional()
 })
 
+const UpdateSchema = z.object({
+  id: z.coerce.number().int().min(1),
+  status: z.enum(['draft', 'pending', 'published', 'rejected']).optional(),
+  title: z.string().max(255).optional(),
+  type: z
+    .enum(['note', 'slides', 'assignment', 'exam', 'solution', 'link', 'other'])
+    .optional(),
+  links: z.array(z.string()).optional()
+})
+
+const DeleteSchema = z.object({ id: z.coerce.number().int().min(1) })
+
 export const GET = async (req: NextRequest) => {
-  const input = kunParseGetQuery(req, adminPaginationSchema)
-  if (typeof input === 'string') {
-    return NextResponse.json(input)
-  }
+  const url = new URL(req.url)
+  const params = Object.fromEntries(url.searchParams.entries())
+  const parsed = QuerySchema.safeParse(params)
+  if (!parsed.success) return NextResponse.json('参数不合法')
   const payload = await verifyHeaderCookie(req)
   if (!payload) {
     return NextResponse.json('用户未登录')
@@ -31,16 +35,54 @@ export const GET = async (req: NextRequest) => {
   if (payload.role < 3) {
     return NextResponse.json('本页面仅管理员可访问')
   }
+  const { page, pageSize, status, authorId, courseId } = parsed.data
+  const where = {
+    ...(status ? { status } : {}),
+    ...(authorId ? { author_id: authorId } : {}),
+    ...(courseId ? { course_id: courseId } : {})
+  } as const
 
-  const res = await getPatchResource(input)
-  return NextResponse.json(res)
+  const [total, list] = await Promise.all([
+    prisma.resource.count({ where }),
+    prisma.resource.findMany({
+      where,
+      orderBy: { created: 'desc' },
+      select: {
+        id: true,
+        title: true,
+        type: true,
+        status: true,
+        created: true,
+        links: true,
+        author: { select: { id: true, name: true } },
+        course: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            department: { select: { slug: true } }
+          }
+        }
+      },
+      skip: (page - 1) * pageSize,
+      take: pageSize
+    })
+  ])
+
+  // 解析JSON字段
+  const formattedList = list.map(item => ({
+    ...item,
+    links: JSON.parse(item.links)
+  }))
+
+  return NextResponse.json({ total, page, pageSize, list: formattedList })
 }
 
 export const PUT = async (req: NextRequest) => {
-  const input = await kunParsePutBody(req, patchResourceUpdateSchema)
-  if (typeof input === 'string') {
-    return NextResponse.json(input)
-  }
+  const body = await req.json().catch(() => null)
+  const parsed = body ? UpdateSchema.safeParse(body) : { success: false }
+  if (!('success' in parsed) || !parsed.success)
+    return NextResponse.json('参数不合法')
   const payload = await verifyHeaderCookie(req)
   if (!payload) {
     return NextResponse.json('用户未登录')
@@ -48,16 +90,26 @@ export const PUT = async (req: NextRequest) => {
   if (payload.role < 3) {
     return NextResponse.json('本页面仅管理员可访问')
   }
+  const { id, ...data } = parsed.data
 
-  const response = await updatePatchResource(input, payload.uid)
-  return NextResponse.json(response)
+  // 如果更新links，需要转换为JSON字符串
+  const updateData = {
+    ...data,
+    ...(data.links ? { links: JSON.stringify(data.links) } : {})
+  }
+
+  const updated = await prisma.resource.update({
+    where: { id },
+    data: updateData
+  })
+  return NextResponse.json({ id: updated.id, status: updated.status })
 }
 
 export const DELETE = async (req: NextRequest) => {
-  const input = kunParseDeleteQuery(req, resourceIdSchema)
-  if (typeof input === 'string') {
-    return NextResponse.json(input)
-  }
+  const url = new URL(req.url)
+  const params = Object.fromEntries(url.searchParams.entries())
+  const parsed = DeleteSchema.safeParse(params)
+  if (!parsed.success) return NextResponse.json('参数不合法')
   const payload = await verifyHeaderCookie(req)
   if (!payload) {
     return NextResponse.json('用户未登录')
@@ -65,7 +117,6 @@ export const DELETE = async (req: NextRequest) => {
   if (payload.role < 3) {
     return NextResponse.json('本页面仅管理员可访问')
   }
-
-  const response = await deleteResource(input, payload.uid)
-  return NextResponse.json(response)
+  await prisma.resource.delete({ where: { id: parsed.data.id } })
+  return NextResponse.json({ ok: true })
 }

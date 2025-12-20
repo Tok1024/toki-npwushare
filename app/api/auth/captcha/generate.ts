@@ -1,64 +1,60 @@
-import fs from 'fs/promises'
-import path from 'path'
 import crypto from 'crypto'
 import { setKv } from '~/lib/redis'
-import { readImageBase64, shuffleKunArray } from './_utils'
+import sharp from 'sharp'
 
-const IMAGES_PER_CAPTCHA = 4
-const MIN_WHITE_HAIR_IMAGES = 1
-const MAX_WHITE_HAIR_IMAGES = 3
+// 生成随机验证码：4个字符，混合大小写字母和数字
+const generateRandomCode = (): string => {
+  const chars = 'ABCDEFGHJKMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789'
+  let code = ''
+  for (let i = 0; i < 4; i++) {
+    code += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return code
+}
+
+// 生成验证码图片
+const generateCaptchaImage = async (code: string): Promise<string> => {
+  const width = 200
+  const height = 80
+
+  // 使用 SVG 生成验证码图片
+  const svg = `
+    <svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+      <!-- 背景 -->
+      <rect width="${width}" height="${height}" fill="#f5f5f5" />
+
+      <!-- 干扰线 -->
+      <line x1="10" y1="20" x2="190" y2="70" stroke="#ddd" stroke-width="1" />
+      <line x1="20" y1="70" x2="180" y2="10" stroke="#ddd" stroke-width="1" />
+      <line x1="5" y1="50" x2="195" y2="50" stroke="#ddd" stroke-width="1" />
+
+      <!-- 验证码文字 -->
+      <text x="50" y="55" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#333" opacity="0.9">
+        ${code
+          .split('')
+          .map((char, i) => `<tspan x="${30 + i * 40}">${char}</tspan>`)
+          .join('')}
+      </text>
+    </svg>
+  `
+
+  const imageBuffer = await sharp(Buffer.from(svg)).png().toBuffer()
+
+  return `data:image/png;base64,${imageBuffer.toString('base64')}`
+}
 
 export const generateCaptcha = async () => {
-  const whiteHairPath = path.join(process.cwd(), 'server/image/auth/white')
-  const otherHairPath = path.join(process.cwd(), 'server/image/auth/other')
-
-  const whiteHairFiles = await fs.readdir(whiteHairPath)
-  const otherHairFiles = await fs.readdir(otherHairPath)
-
-  const numWhiteHair = Math.floor(
-    Math.random() * (MAX_WHITE_HAIR_IMAGES - MIN_WHITE_HAIR_IMAGES + 1) +
-      MIN_WHITE_HAIR_IMAGES
-  )
-  const numOtherHair = IMAGES_PER_CAPTCHA - numWhiteHair
-
-  const selectedWhite = shuffleKunArray(whiteHairFiles).slice(0, numWhiteHair)
-  const selectedOther = shuffleKunArray(otherHairFiles).slice(0, numOtherHair)
-
-  const images = [
-    ...(await Promise.all(
-      selectedWhite.map(async (file) => ({
-        id: crypto.randomUUID(),
-        data: await readImageBase64(path.join(whiteHairPath, file)),
-        isWhiteHair: true
-      }))
-    )),
-    ...(await Promise.all(
-      selectedOther.map(async (file) => ({
-        id: crypto.randomUUID(),
-        data: await readImageBase64(path.join(otherHairPath, file)),
-        isWhiteHair: false
-      }))
-    ))
-  ]
-
-  const shuffledImages = shuffleKunArray(images)
   const sessionId = crypto.randomUUID()
+  const captchaCode = generateRandomCode()
 
-  const correctIds = images
-    .filter((img) => img.isWhiteHair)
-    .map((img) => img.id)
+  // 生成验证码图片
+  const imageData = await generateCaptchaImage(captchaCode)
 
-  await setKv(
-    `captcha:generate:${sessionId}`,
-    JSON.stringify(correctIds),
-    5 * 60
-  )
+  // 保存验证码到 Redis，有效期 5 分钟
+  await setKv(`captcha:generate:${sessionId}`, captchaCode, 5 * 60)
 
   return {
-    images: shuffledImages.map((img) => ({
-      id: img.id,
-      data: img.data
-    })),
-    sessionId
+    sessionId,
+    image: imageData
   }
 }

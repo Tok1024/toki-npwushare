@@ -22,15 +22,15 @@ export const ALLOWED_VIDEO_EXTENSIONS = ['.mp4', '.wmv', '.webm']
 export const ADMIN_STATS_MAP: Record<keyof OverviewData, string> = {
   newUser: '新注册用户',
   newActiveUser: '新活跃用户',
-  newGalgame: '新发布 Galgame',
-  newGalgameResource: '新发布资源',
+  newCourse: '新发布课程',
+  newResource: '新发布资源',
   newComment: '新发布评论'
 }
 
 export const ADMIN_STATS_SUM_MAP: Record<string, string> = {
   userCount: '用户总数',
-  galgameCount: 'Galgame 总数',
-  galgameResourceCount: 'Galgame 资源总数',
-  galgamePatchResourceCount: 'Galgame 补丁总数',
-  galgameCommentCount: '评论总数'
+  courseCount: '课程总数',
+  resourceCount: '资源总数',
+  commentCount: '评论总数',
+  departmentCount: '学院总数'
 }

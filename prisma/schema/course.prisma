@@ -30,45 +30,46 @@ enum resource_interaction_type {
 
 // 学院 / 部门
 model department {
-  id      Int      @id @default(autoincrement())
-  slug    String   @unique @db.VarChar(128)
-  code    String?  @unique @db.VarChar(64)
-  name    String   @db.VarChar(255)
-  description String? @db.VarChar(1000)
-  created DateTime @default(now())
-  updated DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique @db.VarChar(128)
+  code        String?  @unique @db.VarChar(64)
+  name        String   @db.VarChar(255)
+  description String?  @db.VarChar(1000)
+  created     DateTime @default(now())
+  updated     DateTime @updatedAt
 
-  courses course[]
+  courses  course[]
   teachers teacher[]
 }
 
 // 课程（按学院区分）
 model course {
-  id             Int        @id @default(autoincrement())
-  department_id  Int
-  department     department @relation(fields: [department_id], references: [id], onDelete: Cascade)
+  id            Int        @id @default(autoincrement())
+  department_id Int
+  department    department @relation(fields: [department_id], references: [id], onDelete: Cascade)
 
-  slug           String     @db.VarChar(128) // 与学院组合唯一
-  code           String?    @db.VarChar(64) @unique
-  name           String     @db.VarChar(255)
-  description    String?    @db.VarChar(1000)
-  instructor_name String?   @db.VarChar(255)
-  cover_url      String?    @db.VarChar(512)
-  tags           String[]
+  slug            String   @db.VarChar(128) // 与学院组合唯一
+  code            String?  @unique @db.VarChar(64)
+  name            String   @db.VarChar(255)
+  description     String?  @db.VarChar(1000)
+  instructor_name String?  @db.VarChar(255)
+  cover_url       String?  @db.VarChar(512)
+  tags            String?  @db.Text // MySQL不支持数组，改为JSON字符串存储
 
-  resource_count Int        @default(0)
-  post_count     Int        @default(0)
-  heart_count    Int        @default(0)
-  difficulty_avg Float      @default(0)
+  resource_count   Int      @default(0)
+  post_count       Int      @default(0)
+  heart_count      Int      @default(0)
+  difficulty_avg   Float    @default(0)
   difficulty_votes Int      @default(0)
-  created        DateTime   @default(now())
-  updated        DateTime   @updatedAt
+  created          DateTime @default(now())
+  updated          DateTime @updatedAt
 
   resources      resource[]
   posts          post[]
   course_teacher course_teacher[]
   comments       comment[]
   feedbacks      course_feedback[]
+  favorites      course_favorite[]
 
   @@unique([department_id, slug])
   @@index([department_id, created])
@@ -97,7 +98,7 @@ model teacher {
   department_id Int?
   department    department? @relation(fields: [department_id], references: [id], onDelete: SetNull)
   name          String      @db.VarChar(128)
-  title         String?     @db.VarChar(64)  // 职称，可选
+  title         String?     @db.VarChar(64) // 职称，可选
   created       DateTime    @default(now())
   updated       DateTime    @updatedAt
 
@@ -126,33 +127,33 @@ model course_teacher {
 }
 
 model resource {
-  id           Int            @id @default(autoincrement())
-  course_id    Int
-  course       course         @relation(fields: [course_id], references: [id], onDelete: Cascade)
-  title        String         @db.VarChar(255)
-  summary      String?        @db.VarChar(1000)
-  type         resource_type
-  // 仅存储资源链接，不保存文件
-  links        String[]
-  s3_key       String?        @db.VarChar(512)
-  mime         String?        @db.VarChar(64)
-  size_bytes   Int?
-  hash_sha256  String?        @db.VarChar(128)
-  status       content_status @default(published)
-  visibility   visibility     @default(public)
-  term         String?        @db.VarChar(32)  // 学期/学年筛选
-  teacher_id   Int?
-  teacher      teacher?       @relation(fields: [teacher_id], references: [id], onDelete: SetNull)
-  teacher_name String?        @db.VarChar(128)
+  id             Int            @id @default(autoincrement())
+  course_id      Int
+  course         course         @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  title          String         @db.VarChar(255)
+  summary        String?        @db.VarChar(1000)
+  type           resource_type
+  // 仅存储资源链接，不保存文件（MySQL不支持数组，改为JSON字符串）
+  links          String         @db.Text
+  s3_key         String?        @db.VarChar(512)
+  mime           String?        @db.VarChar(64)
+  size_bytes     Int?
+  hash_sha256    String?        @db.VarChar(128)
+  status         content_status @default(published)
+  visibility     visibility     @default(public)
+  term           String?        @db.VarChar(32) // 学期/学年筛选
+  teacher_id     Int?
+  teacher        teacher?       @relation(fields: [teacher_id], references: [id], onDelete: SetNull)
+  teacher_name   String?        @db.VarChar(128)
   // 上传者（必填）
-  author_id    Int
-  author       user           @relation("user_course_resource", fields: [author_id], references: [id], onDelete: Cascade)
-  rating_avg   Float          @default(0)
-  rating_count Int            @default(0)
-  download_count Int          @default(0)
-  click_count  Int            @default(0)
-  created      DateTime       @default(now())
-  updated      DateTime       @updatedAt
+  author_id      Int
+  author         user           @relation("user_course_resource", fields: [author_id], references: [id], onDelete: Cascade)
+  rating_avg     Float          @default(0)
+  rating_count   Int            @default(0)
+  download_count Int            @default(0)
+  click_count    Int            @default(0)
+  created        DateTime       @default(now())
+  updated        DateTime       @updatedAt
 
   ratings      resource_rating[]
   comments     comment[]
@@ -182,22 +183,22 @@ model resource_rating {
 }
 
 model post {
-  id        Int            @id @default(autoincrement())
-  course_id Int
-  course    course         @relation(fields: [course_id], references: [id], onDelete: Cascade)
-  title     String         @db.VarChar(255)
-  content   String         @db.VarChar(100000)
-  author_id Int?
-  author    user?          @relation(fields: [author_id], references: [id], onDelete: SetNull)
-  term      String?        @db.VarChar(32)
+  id         Int            @id @default(autoincrement())
+  course_id  Int
+  course     course         @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  title      String         @db.VarChar(255)
+  content    String         @db.MediumText // MySQL VARCHAR最大65535，长文本用MediumText
+  author_id  Int?
+  author     user?          @relation(fields: [author_id], references: [id], onDelete: SetNull)
+  term       String?        @db.VarChar(32)
   teacher_id Int?
-  teacher    teacher?      @relation(fields: [teacher_id], references: [id], onDelete: SetNull)
-  status    content_status @default(published)
-  visibility visibility    @default(public)
-  created   DateTime       @default(now())
-  updated   DateTime       @updatedAt
+  teacher    teacher?       @relation(fields: [teacher_id], references: [id], onDelete: SetNull)
+  status     content_status @default(published)
+  visibility visibility     @default(public)
+  created    DateTime       @default(now())
+  updated    DateTime       @updatedAt
 
-  comments  comment[]
+  comments comment[]
 
   @@index([course_id, created])
   @@index([course_id, teacher_id, term, created])
@@ -214,17 +215,17 @@ model comment {
   resource_id Int?
   resource    resource? @relation(fields: [resource_id], references: [id], onDelete: Cascade)
 
-  post_id     Int?
-  post        post?     @relation(fields: [post_id], references: [id], onDelete: Cascade)
+  post_id Int?
+  post    post? @relation(fields: [post_id], references: [id], onDelete: Cascade)
 
-  parent_id   Int?
-  parent      comment?  @relation("comment_reply", fields: [parent_id], references: [id], onDelete: Cascade)
-  reply       comment[] @relation("comment_reply")
+  parent_id Int?
+  parent    comment?  @relation("comment_reply", fields: [parent_id], references: [id], onDelete: Cascade)
+  reply     comment[] @relation("comment_reply")
 
   like_by course_comment_like[]
 
-  created     DateTime  @default(now())
-  updated     DateTime  @updatedAt
+  created DateTime @default(now())
+  updated DateTime @updatedAt
 
   @@index([course_id, created])
   @@index([resource_id, created])
@@ -247,37 +248,50 @@ model course_comment_like {
 }
 
 model resource_interaction {
-  id          Int                         @id @default(autoincrement())
+  id          Int                       @id @default(autoincrement())
   resource_id Int
-  resource    resource                    @relation(fields: [resource_id], references: [id], onDelete: Cascade)
+  resource    resource                  @relation(fields: [resource_id], references: [id], onDelete: Cascade)
   user_id     Int?
-  user        user?                       @relation(fields: [user_id], references: [id], onDelete: SetNull)
+  user        user?                     @relation(fields: [user_id], references: [id], onDelete: SetNull)
   interaction resource_interaction_type
-  created     DateTime                    @default(now())
+  created     DateTime                  @default(now())
 
   @@index([resource_id, created])
   @@index([user_id, created])
 }
 
 model badge {
-  id          Int        @id @default(autoincrement())
-  slug        String     @unique
+  id          Int          @id @default(autoincrement())
+  slug        String       @unique
   name        String
   description String?
-  min_points  Int        @default(0)
-  created     DateTime   @default(now())
-  updated     DateTime   @updatedAt
+  min_points  Int          @default(0)
+  created     DateTime     @default(now())
+  updated     DateTime     @updatedAt
   holders     user_badge[]
 }
 
 model user_badge {
-  id        Int      @id @default(autoincrement())
-  user_id   Int
-  user      user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
-  badge_id  Int
-  badge     badge    @relation(fields: [badge_id], references: [id], onDelete: Cascade)
+  id         Int      @id @default(autoincrement())
+  user_id    Int
+  user       user     @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  badge_id   Int
+  badge      badge    @relation(fields: [badge_id], references: [id], onDelete: Cascade)
   granted_at DateTime @default(now())
 
   @@unique([user_id, badge_id])
   @@index([badge_id])
+}
+
+model course_favorite {
+  id        Int      @id @default(autoincrement())
+  user_id   Int
+  user      user     @relation("user_course_favorite", fields: [user_id], references: [id], onDelete: Cascade)
+  course_id Int
+  course    course   @relation(fields: [course_id], references: [id], onDelete: Cascade)
+  created   DateTime @default(now())
+
+  @@unique([user_id, course_id])
+  @@index([user_id, created])
+  @@index([course_id])
 }

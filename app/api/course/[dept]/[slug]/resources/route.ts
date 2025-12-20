@@ -72,7 +72,13 @@ export const GET = async (
     })
   ])
 
-  return NextResponse.json({ total, page, pageSize, list })
+  // 解析JSON字段
+  const formattedList = list.map(item => ({
+    ...item,
+    links: JSON.parse(item.links)
+  }))
+
+  return NextResponse.json({ total, page, pageSize, list: formattedList })
 }
 
 export const POST = async (
@@ -111,7 +117,7 @@ export const POST = async (
         department_id: department.id,
         slug,
         name: courseName,
-        tags: []
+        tags: null  // MySQL不支持数组，使用null或JSON字符串
       }
     })
   }
@@ -120,16 +126,17 @@ export const POST = async (
     return NextResponse.json('课程信息不一致')
   }
 
+  // 所有用户资源自动上架，通过举报机制审核
   const created = await prisma.resource.create({
     data: {
       course_id: course.id,
       title: input.title,
       type: input.type,
-      links: input.links,
+      links: JSON.stringify(input.links),  // 转换为JSON字符串存储
       term: input.term,
       teacher_id: input.teacherId ?? null,
       author_id: payload.uid,
-      status: 'pending',
+      status: 'published',  // 自动上架
       visibility: 'public'
     },
     select: {
@@ -143,5 +150,9 @@ export const POST = async (
     }
   })
 
-  return NextResponse.json(created)
+  // 返回时解析JSON字段
+  return NextResponse.json({
+    ...created,
+    links: JSON.parse(created.links)
+  })
 }

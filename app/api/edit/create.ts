@@ -40,7 +40,7 @@ export const createGalgame = async (
       if (typeof uploadResult === 'string') {
         return uploadResult
       }
-      const imageLink = `${process.env.KUN_VISUAL_NOVEL_IMAGE_BED_URL}/patch/${newId}/banner/banner.avif`
+      const imageLink = `${process.env.TOKI_NWPUSHARE_IMAGE_BED_URL}/patch/${newId}/banner/banner.avif`
 
       await prisma.patch.update({
         where: { id: newId },
@@ -67,7 +67,7 @@ export const createGalgame = async (
         where: { id: uid },
         data: {
           daily_image_count: { increment: 1 },
-          moemoepoint: { increment: 3 }
+          point: { increment: 3 }
         }
       })
 

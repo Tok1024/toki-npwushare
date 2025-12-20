@@ -14,42 +14,37 @@ export const getUserComment = async (
   const offset = (page - 1) * limit
 
   const [data, total] = await Promise.all([
-    prisma.patch_comment.findMany({
-      where: { user_id: uid },
+    prisma.comment.findMany({
+      where: { author_id: uid },
       include: {
-        user: true,
-        patch: true,
-        parent: {
-          include: {
-            user: true
-          }
-        },
-        like_by: {
-          include: {
-            user: true
-          }
-        }
+        author: true,
+        course: { include: { department: true } },
+        parent: { include: { author: true } },
+        _count: { select: { like_by: true } }
       },
       orderBy: { created: 'desc' },
       take: limit,
       skip: offset
     }),
-    prisma.patch_comment.count({
-      where: { user_id: uid }
+    prisma.comment.count({
+      where: { author_id: uid }
     })
   ])
 
   const comments: UserComment[] = data.map((comment) => ({
     id: comment.id,
-    patchUniqueId: comment.patch.unique_id,
+    patchUniqueId:
+      comment.course && comment.course.department
+        ? `${comment.course.department.slug}/${comment.course.slug}`
+        : '',
     content: markdownToText(comment.content).slice(0, 233),
-    like: comment.like_by.length,
-    userId: comment.user_id,
-    patchId: comment.patch_id,
-    patchName: comment.patch.name,
+    like: comment._count.like_by,
+    userId: comment.author_id || 0,
+    patchId: comment.course_id || 0,
+    patchName: comment.course?.name || '',
     created: String(comment.created),
-    quotedUserUid: comment.parent?.user.id,
-    quotedUsername: comment.parent?.user.name
+    quotedUserUid: comment.parent?.author?.id,
+    quotedUsername: comment.parent?.author?.name
   }))
 
   return { comments, total }

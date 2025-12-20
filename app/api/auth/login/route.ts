@@ -18,27 +18,51 @@ export const login = async (
   const res = true
 
   const normalizedName = name.toLowerCase()
-  const user = await prisma.user.findFirst({
-    where: {
-      OR: [
-        { email: { equals: normalizedName, mode: 'insensitive' } },
-        { name: { equals: normalizedName, mode: 'insensitive' } }
-      ]
-    }
-  })
-  if (!user) {
+
+  // MySQL不支持mode: 'insensitive'，使用原始查询实现大小写不敏感
+  const user = await prisma.$queryRaw<
+    Array<{
+      id: number
+      name: string
+      email: string
+      password: string
+      avatar: string
+      bio: string
+      point: number
+      role: number
+      status: number
+      daily_check_in: number
+      daily_image_count: number
+      daily_upload_size: number
+      enable_email_notice: boolean
+    }>
+  >`
+    SELECT * FROM user
+    WHERE LOWER(email) = ${normalizedName}
+       OR LOWER(name) = ${normalizedName}
+    LIMIT 1
+  `
+
+  if (!user || user.length === 0) {
     return '用户未找到'
   }
-  if (user.status === 2) {
+
+  const foundUser = user[0]
+  if (foundUser.status === 2) {
     return '该用户已被封禁, 如果您觉得有任何问题, 请联系我们'
   }
 
-  const isPasswordValid = await verifyPassword(password, user.password)
+  const isPasswordValid = await verifyPassword(password, foundUser.password)
   if (!isPasswordValid) {
     return '用户密码错误'
   }
 
-  const token = await generateKunToken(user.id, user.name, user.role, '30d')
+  const token = await generateKunToken(
+    foundUser.id,
+    foundUser.name,
+    foundUser.role,
+    '30d'
+  )
   const cookie = await cookies()
   cookie.set('toki-nwpushare-access-token', token, {
     httpOnly: true,
@@ -48,16 +72,16 @@ export const login = async (
 
   const redirectConfig = await getRedirectConfig()
   const responseData: UserState = {
-    uid: user.id,
-    name: user.name,
-    avatar: user.avatar,
-    bio: user.bio,
-    moemoepoint: user.moemoepoint,
-    role: user.role,
-    dailyCheckIn: user.daily_check_in,
-    dailyImageLimit: user.daily_image_count,
-    dailyUploadLimit: user.daily_upload_size,
-    enableEmailNotice: user.enable_email_notice,
+    uid: foundUser.id,
+    name: foundUser.name,
+    avatar: foundUser.avatar,
+    bio: foundUser.bio,
+    point: foundUser.point,
+    role: foundUser.role,
+    dailyCheckIn: foundUser.daily_check_in,
+    dailyImageLimit: foundUser.daily_image_count,
+    dailyUploadLimit: foundUser.daily_upload_size,
+    enableEmailNotice: foundUser.enable_email_notice,
     ...redirectConfig
   }
 

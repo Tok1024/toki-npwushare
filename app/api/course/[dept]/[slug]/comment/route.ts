@@ -14,7 +14,7 @@ import {
   courseCommentUpdateSchema
 } from '~/validations/course'
 import { nestCourseComments } from './_helpers'
-import type { PatchComment } from '~/types/api/patch'
+import type { Comment } from '~/types/api/comment'
 
 const deptSlugSchema = z.object({ dept: z.string(), slug: z.string() })
 
@@ -56,7 +56,7 @@ export const GET = async (
     }
   })
 
-  const flat: PatchComment[] = await Promise.all(
+  const flat: Comment[] = await Promise.all(
     data.map(async (c) => ({
       id: c.id,
       uniqueId: `${dept}/${slug}`,

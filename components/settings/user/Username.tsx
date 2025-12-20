@@ -26,7 +26,7 @@ export const Username = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   const handleSave = async () => {
-    if (user.moemoepoint < 30) {
+    if (user.point < 30) {
       toast.error('更改用户名最少需要 30 贡献值, 您的贡献值不足')
       return
     }
@@ -45,7 +45,7 @@ export const Username = () => {
       )
       kunErrorHandler(res, () => {
         toast.success('更新用户名成功')
-        setUser({ ...user, name: username, moemoepoint: user.moemoepoint - 30 })
+        setUser({ ...user, name: username, point: user.point - 30 })
         setUsername('')
       })
       setLoading(false)

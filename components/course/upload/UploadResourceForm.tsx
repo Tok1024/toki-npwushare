@@ -220,7 +220,7 @@ export const UploadResourceForm = () => {
         return
       }
 
-      toast.success('资源已提交，等待审核')
+      toast.success('资源已发布！')
       reset({
         deptSlug: dept,
         courseId: mode === 'existing' ? courseId : undefined,

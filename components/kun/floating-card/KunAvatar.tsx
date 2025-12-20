@@ -20,7 +20,7 @@ export const KunAvatar = ({ uid, avatarProps }: Props) => {
   const router = useRouter()
 
   const { alt, name, ...rest } = avatarProps
-  const username = name?.charAt(0).toUpperCase() ?? '杂鱼'
+  const username = name?.charAt(0).toUpperCase() ?? '用户'
   const altString = alt ? alt : username
 
   return (

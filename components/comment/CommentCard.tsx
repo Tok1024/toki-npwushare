@@ -3,10 +3,10 @@ import { KunAvatar } from '~/components/kun/floating-card/KunAvatar'
 import { ThumbsUp } from 'lucide-react'
 import { formatDate } from '~/utils/time'
 import Link from 'next/link'
-import type { PatchComment } from '~/types/api/comment'
+import type { Comment } from '~/types/api/comment'
 
 interface Props {
-  comment: PatchComment
+  comment: Comment
 }
 
 export const CommentCard = ({ comment }: Props) => {

@@ -6,9 +6,10 @@ import { KunEditor } from './Editor'
 
 interface Props {
   storeName: 'patchCreate' | 'patchRewrite'
+  disableImageUpload?: boolean
 }
 
-export const KunEditorProvider = ({ storeName }: Props) => {
+export const KunEditorProvider = ({ storeName, disableImageUpload }: Props) => {
   const getCreatePatchData = useCreatePatchStore((state) => state.getData)
   const setCreatePatchData = useCreatePatchStore((state) => state.setData)
   const getRewritePatchData = useRewritePatchStore((state) => state.getData)
@@ -38,5 +39,11 @@ export const KunEditorProvider = ({ storeName }: Props) => {
     return <KunLoading className="min-h-64" hint="正在加载编辑器" />
   }
 
-  return <KunEditor valueMarkdown={getMarkdown()} saveMarkdown={saveMarkdown} />
+  return (
+    <KunEditor
+      valueMarkdown={getMarkdown()}
+      saveMarkdown={saveMarkdown}
+      disableImageUpload={disableImageUpload}
+    />
+  )
 }

@@ -19,8 +19,8 @@ export const getUserFloatingProfile = async (
       _count: {
         select: {
           follower: true,
-          patch: true,
-          patch_resource: true
+          course_resource: true,
+          comments: true
         }
       },
       following: true
@@ -37,7 +37,7 @@ export const getUserFloatingProfile = async (
     name: data.name,
     avatar: data.avatar,
     bio: data.bio,
-    moemoepoint: data.moemoepoint,
+    point: data.point,
     role: data.role,
     isFollow: followerUserUid.includes(currentUserUid),
     _count: data._count

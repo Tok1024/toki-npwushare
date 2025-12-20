@@ -15,6 +15,6 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(input)
   }
 
-  const captcha = await verifyCaptcha(input.sessionId, input.selectedIds)
+  const captcha = await verifyCaptcha(input.sessionId, input.captchaCode)
   return NextResponse.json(captcha)
 }

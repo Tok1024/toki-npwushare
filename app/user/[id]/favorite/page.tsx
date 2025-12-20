@@ -1,6 +1,7 @@
-import { UserFavorite } from '~/components/user/favorite/Container'
-import { kunGetActions } from './actions'
+import { UserFavoritesContainer } from '~/components/user/favorite/CoursesContainer'
+import { kunGetFavorites } from './get-actions'
 import { ErrorComponent } from '~/components/error/ErrorComponent'
+import { verifyHeaderCookie } from '~/utils/actions/verifyHeaderCookie'
 
 export const revalidate = 3
 
@@ -10,17 +11,24 @@ interface Props {
 
 export default async function Kun({ params }: Props) {
   const { id } = await params
+  const userId = Number(id)
 
-  const response = await kunGetActions(Number(id))
-  if (typeof response === 'string') {
-    return <ErrorComponent error={response} />
+  const payload = await verifyHeaderCookie()
+
+  const response = await kunGetFavorites(userId, 1)
+
+  if (response.error || !response.data) {
+    return <ErrorComponent error={response.error || '获取收藏列表失败'} />
   }
 
   return (
-    <UserFavorite
-      initialFolders={response.folders}
-      pageUid={Number(id)}
-      currentUserUid={response.currentUserUid}
+    <UserFavoritesContainer
+      initialData={response.data}
+      initialTotal={response.total}
+      initialPage={response.page}
+      userId={userId}
+      currentUserUid={payload?.uid || 0}
     />
   )
 }
+

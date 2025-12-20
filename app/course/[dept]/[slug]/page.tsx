@@ -4,8 +4,8 @@ import { CourseHeader } from '~/components/course/Header'
 async function getCourseDetail(dept: string, slug: string) {
   const base =
     process.env.NODE_ENV === 'development'
-      ? process.env.NEXT_PUBLIC_KUN_PATCH_ADDRESS_DEV
-      : process.env.NEXT_PUBLIC_KUN_PATCH_ADDRESS_PROD
+      ? process.env.NEXT_PUBLIC_NWPUSHARE_ADDRESS_DEV
+      : process.env.NEXT_PUBLIC_NWPUSHARE_ADDRESS_PROD
   const res = await fetch(`${base}/api/course/${dept}/${slug}`, {
     cache: 'no-store'
   })

@@ -15,8 +15,8 @@ export const stepTwo = async (input: z.infer<typeof stepTwoSchema>) => {
   const user = await prisma.user.findFirst({
     where: {
       OR: [
-        { email: { equals: normalizedInput, mode: 'insensitive' } },
-        { name: { equals: normalizedInput, mode: 'insensitive' } }
+        { email: { equals: normalizedInput } },
+        { name: { equals: normalizedInput } }
       ]
     }
   })

@@ -58,8 +58,9 @@ export const disableEmailNoticeSchema = z.object({
 
 export const captchaSchema = z.object({
   sessionId: z.string().trim().uuid({ message: '非法的 sessionId 格式' }),
-  selectedIds: z
-    .array(z.string().trim().uuid({ message: '非法的验证图片 ID' }))
-    .min(1, { message: '验证图片中最少有一只白毛小只可爱软萌妹子' })
-    .max(3, { message: '验证图片中最多有三只白毛小只可爱软萌妹子' })
+  captchaCode: z
+    .string()
+    .trim()
+    .length(4, { message: '验证码必须是 4 位' })
+    .regex(/^[A-Za-z0-9]+$/, { message: '验证码只能包含字母和数字' })
 })

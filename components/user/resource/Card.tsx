@@ -1,17 +1,22 @@
 import { Chip } from '@heroui/chip'
 import { Card, CardBody } from '@heroui/card'
+import { Button } from '@heroui/button'
 import { Image } from '@heroui/image'
 import { formatDistanceToNow } from '~/utils/formatDistanceToNow'
 import Link from 'next/link'
 import { KunPatchAttribute } from '~/components/kun/PatchAttribute'
+import toast from 'react-hot-toast'
+import { RESOURCE_STATUS_COLOR, getStatusText } from '~/constants/statusColor'
 
 import type { UserResource as UserResourceType } from '~/types/api/user'
 
 interface Props {
   resource: UserResourceType
+  isSelf?: boolean
+  onChanged?: () => void
 }
 
-export const UserResourceCard = ({ resource }: Props) => {
+export const UserResourceCard = ({ resource, isSelf, onChanged }: Props) => {
   const bannerImageSrc = resource.patchBanner
     ? resource.patchBanner.replace(/\.avif$/, '-mini.avif')
     : '/touchgal.avif'
@@ -38,9 +43,14 @@ export const UserResourceCard = ({ resource }: Props) => {
               <h2 className="text-lg font-semibold transition-colors line-clamp-2 hover:text-primary-500">
                 {resource.patchName}
               </h2>
-              <Chip variant="flat">
-                {formatDistanceToNow(resource.created)}
-              </Chip>
+              <div className="flex items-center gap-2">
+                {resource.status && (
+                  <Chip size="sm" variant="flat" color={RESOURCE_STATUS_COLOR[resource.status]}>
+                    {resource.status}
+                  </Chip>
+                )}
+                <Chip variant="flat">{formatDistanceToNow(resource.created)}</Chip>
+              </div>
             </div>
 
             <KunPatchAttribute
@@ -49,6 +59,59 @@ export const UserResourceCard = ({ resource }: Props) => {
               platforms={resource.platform}
               size="sm"
             />
+
+            {isSelf && (
+              <div className="flex items-center gap-2">
+                {resource.status === 'draft' && (
+                  <Button
+                    size="sm"
+                    color="primary"
+                    onPress={async (e) => {
+                      e.preventDefault()
+                      try {
+                        const res = await fetch(`/api/resource/${resource.id}/status`, {
+                          method: 'PATCH',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ status: 'pending' })
+                        })
+                        const data = await res.json().catch(() => null)
+                        if (!res.ok || typeof data === 'string') return toast.error(typeof data === 'string' ? data : '提交失败')
+                        toast.success('已提交审核')
+                        onChanged?.()
+                      } catch {
+                        toast.error('请求失败')
+                      }
+                    }}
+                  >
+                    提交审核
+                  </Button>
+                )}
+                {resource.status === 'pending' && (
+                  <Button
+                    size="sm"
+                    variant="flat"
+                    onPress={async (e) => {
+                      e.preventDefault()
+                      try {
+                        const res = await fetch(`/api/resource/${resource.id}/status`, {
+                          method: 'PATCH',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({ status: 'draft' })
+                        })
+                        const data = await res.json().catch(() => null)
+                        if (!res.ok || typeof data === 'string') return toast.error(typeof data === 'string' ? data : '操作失败')
+                        toast.success('已转为草稿')
+                        onChanged?.()
+                      } catch {
+                        toast.error('请求失败')
+                      }
+                    }}
+                  >
+                    转为草稿
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </CardBody>

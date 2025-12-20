@@ -83,6 +83,9 @@ RUN apk add --no-cache libc6-compat openssl
 
 WORKDIR /app
 
+# 安装 pnpm（用于运行 prisma 命令）
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 # 创建非root用户
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
@@ -92,8 +95,16 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
-# 复制 prisma schema（用于运行时数据库迁移命令）
+# 复制 prisma schema 和相关文件（用于运行时数据库迁移命令）
 COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
+COPY --from=builder --chown=nextjs:nodejs /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
+COPY --from=builder --chown=nextjs:nodejs /app/pnpm-lock.yaml ./pnpm-lock.yaml
+COPY --from=builder --chown=nextjs:nodejs /app/validations ./validations
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+
+# 安装 prisma CLI（仅用于运行迁移命令）
+RUN pnpm add -g prisma@latest
 
 USER nextjs
 

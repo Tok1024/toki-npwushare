@@ -34,11 +34,31 @@ COPY . .
 # 创建构建时的占位符 .env 文件
 RUN cat > .env << 'EOF'
 TOKI_DATABASE_URL="mysql://placeholder:placeholder@localhost:3306/placeholder"
+TOKI_NWPUSHARE_SITE_URL="http://localhost:3000"
+NEXT_PUBLIC_NWPUSHARE_ADDRESS_DEV="http://localhost:3000"
 NEXT_PUBLIC_NWPUSHARE_ADDRESS_PROD="http://localhost:3000"
-NEXT_PUBLIC_TOKI_NWPUSHARE_S3_STORAGE_URL="http://localhost"
-JWT_SECRET="placeholder"
+REDIS_HOST="localhost"
+REDIS_PORT="6379"
 JWT_ISS="placeholder"
 JWT_AUD="placeholder"
+JWT_SECRET="placeholder"
+NODE_ENV="production"
+TOKI_NWPUSHARE_EMAIL_FROM="placeholder"
+TOKI_NWPUSHARE_EMAIL_HOST="placeholder"
+TOKI_NWPUSHARE_EMAIL_PORT="587"
+TOKI_NWPUSHARE_EMAIL_ACCOUNT="placeholder"
+TOKI_NWPUSHARE_EMAIL_PASSWORD="placeholder"
+TOKI_NWPUSHARE_S3_STORAGE_ACCESS_KEY_ID="placeholder"
+TOKI_NWPUSHARE_S3_STORAGE_SECRET_ACCESS_KEY="placeholder"
+TOKI_NWPUSHARE_S3_STORAGE_BUCKET_NAME="placeholder"
+TOKI_NWPUSHARE_S3_STORAGE_ENDPOINT="s3.amazonaws.com"
+TOKI_NWPUSHARE_S3_STORAGE_REGION="us-east-1"
+NEXT_PUBLIC_TOKI_NWPUSHARE_S3_STORAGE_URL="http://localhost"
+TOKI_NWPUSHARE_IMAGE_BED_HOST="localhost"
+TOKI_NWPUSHARE_IMAGE_BED_URL="http://localhost"
+KUN_CF_CACHE_ZONE_ID="placeholder"
+KUN_CF_CACHE_PURGE_API_TOKEN="placeholder"
+TOKI_NWPUSHARE_INDEX_NOW_KEY="placeholder"
 EOF
 
 # 构建参数

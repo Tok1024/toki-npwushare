@@ -83,36 +83,17 @@ RUN apk add --no-cache libc6-compat openssl
 
 WORKDIR /app
 
-# 安装 pnpm
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
-# 复制 standalone 输出
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/public ./public
-
-# 复制 Prisma 相关文件
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
-COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
-
-# 复制 validations 目录（prisma.config.ts 依赖）
-COPY --from=builder /app/validations ./validations
-
-# 设置占位符环境变量
-ENV TOKI_DATABASE_URL="mysql://placeholder:placeholder@localhost:3306/placeholder"
-
-# 安装 Prisma 并生成客户端
-RUN pnpm install --prod --frozen-lockfile && \
-    pnpm prisma generate
-
 # 创建非root用户
 RUN addgroup --system --gid 1001 nodejs && \
     adduser --system --uid 1001 nextjs
 
-# 设置权限
-RUN chown -R nextjs:nodejs /app
+# 复制 standalone 输出（已包含所有运行时依赖，包括 Prisma 客户端）
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+
+# 复制 prisma schema（用于运行时数据库迁移命令）
+COPY --from=builder --chown=nextjs:nodejs /app/prisma ./prisma
 
 USER nextjs
 

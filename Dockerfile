@@ -31,6 +31,16 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
+# 创建构建时的占位符 .env 文件
+RUN cat > .env << 'EOF'
+TOKI_DATABASE_URL="mysql://placeholder:placeholder@localhost:3306/placeholder"
+NEXT_PUBLIC_NWPUSHARE_ADDRESS_PROD="http://localhost:3000"
+NEXT_PUBLIC_TOKI_NWPUSHARE_S3_STORAGE_URL="http://localhost"
+JWT_SECRET="placeholder"
+JWT_ISS="placeholder"
+JWT_AUD="placeholder"
+EOF
+
 # 构建参数
 ARG NEXT_PUBLIC_NWPUSHARE_ADDRESS_PROD
 ARG NEXT_PUBLIC_TOKI_NWPUSHARE_S3_STORAGE_URL

@@ -74,8 +74,8 @@ ENV TOKI_DATABASE_URL="mysql://placeholder:placeholder@localhost:3306/placeholde
 # 生成Prisma客户端
 RUN pnpm prisma generate
 
-# 构建Next.js应用（跳过postbuild以避免依赖scripts目录）
-RUN pnpm build --ignore-scripts=postbuild 2>/dev/null || pnpm --ignore-scripts build
+# 构建Next.js应用
+RUN pnpm build
 
 # Stage 3: 运行应用
 FROM node:20-alpine AS runner

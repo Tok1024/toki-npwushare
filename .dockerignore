@@ -54,8 +54,8 @@ docker-compose*.yml
 # Archive
 archive
 
-# Scripts (optional, keep if needed for container)
-scripts
+# Scripts are needed for postbuild hook
+# scripts
 
 # Prisma
 prisma/migrations/*.sql

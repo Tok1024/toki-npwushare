@@ -83,20 +83,35 @@ RUN apk add --no-cache libc6-compat openssl
 
 WORKDIR /app
 
-# 创建非root用户
-RUN addgroup --system --gid 1001 nodejs && \
-  adduser --system --uid 1001 nextjs
+# 安装 pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# 复制必要文件
-COPY --from=builder /app/public ./public
+# 复制 standalone 输出
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/scripts ./scripts
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/public ./public
 
-# 设置正确的权限
+# 复制 Prisma 相关文件
+COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/prisma.config.ts ./prisma.config.ts
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+
+# 复制 validations 目录（prisma.config.ts 依赖）
+COPY --from=builder /app/validations ./validations
+
+# 设置占位符环境变量
+ENV TOKI_DATABASE_URL="mysql://placeholder:placeholder@localhost:3306/placeholder"
+
+# 安装 Prisma 并生成客户端
+RUN pnpm install --prod --frozen-lockfile && \
+    pnpm prisma generate
+
+# 创建非root用户
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 nextjs
+
+# 设置权限
 RUN chown -R nextjs:nodejs /app
 
 USER nextjs
@@ -107,7 +122,6 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 ENV NODE_ENV=production
 
-# 健康检查
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/api/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 

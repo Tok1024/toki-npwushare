@@ -100,7 +100,8 @@ COPY --from=builder /app/validations ./validations
 COPY --from=builder /app/scripts ./scripts
 
 # 安装 prisma CLI（本地安装，用于运行迁移命令）
-RUN pnpm add -D prisma@latest && pnpm add @prisma/client@latest
+# 使用 Prisma 6.x 版本以保持兼容性
+RUN pnpm add -D prisma@6 && pnpm add @prisma/client@6
 
 # 创建非root用户
 RUN addgroup --system --gid 1001 nodejs && \

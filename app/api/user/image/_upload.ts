@@ -1,6 +1,7 @@
+import { mkdir, writeFile } from 'fs/promises'
+import { join } from 'path'
 import sharp from 'sharp'
 
-import { uploadImageToS3 } from '~/lib/s3'
 import { checkBufferSize } from '~/app/api/utils/checkBufferSize'
 
 export const uploadIntroductionImage = async (
@@ -20,7 +21,9 @@ export const uploadIntroductionImage = async (
     return '图片体积过大'
   }
 
-  const s3Key = `user/image/${uid}/${name}.avif`
-
-  await uploadImageToS3(s3Key, minImage)
+  // Save to public/ so it can be served directly by Next static assets
+  const dir = join(process.cwd(), 'public', 'user', 'image', String(uid))
+  await mkdir(dir, { recursive: true })
+  const filePath = join(dir, `${name}.avif`)
+  await writeFile(filePath, minImage)
 }

@@ -28,7 +28,8 @@ export const uploadImage = async (uid: number, image: ArrayBuffer) => {
     data: { daily_image_count: { increment: 1 } }
   })
 
-  const imageLink = `${process.env.TOKI_NWPUSHARE_IMAGE_BED_URL}/user/image/${uid}/${newFileName}.avif`
+  // Use relative URL so same-origin works without remote image host config
+  const imageLink = `/user/image/${uid}/${newFileName}.avif`
   return { imageLink }
 }
 

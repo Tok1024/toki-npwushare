@@ -1,12 +1,12 @@
 import { z } from 'zod'
 import { prisma } from '~/prisma/index'
-import { patchCommentUpdateSchema } from '~/validations/patch'
+import { courseCommentUpdateSchema } from '~/validations/course'
 
 export const updateComment = async (
-  input: z.infer<typeof patchCommentUpdateSchema>,
+  input: z.infer<typeof courseCommentUpdateSchema>,
   uid: number
 ) => {
-  const comment = await prisma.patch_comment.findUnique({
+  const comment = await prisma.comment.findUnique({
     where: { id: input.commentId }
   })
   if (!comment) {
@@ -20,14 +20,13 @@ export const updateComment = async (
   const { commentId, content } = input
 
   return await prisma.$transaction(async (prisma) => {
-    await prisma.patch_comment.update({
+    await prisma.comment.update({
       where: { id: commentId },
       data: {
-        content,
-        edit: Date.now().toString()
+        content
       },
       include: {
-        user: true,
+        author: true,
         like_by: {
           include: {
             user: true

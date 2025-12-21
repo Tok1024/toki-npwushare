@@ -7,7 +7,7 @@ import {
   kunParsePutBody
 } from '~/app/api/utils/parseQuery'
 import { verifyHeaderCookie } from '~/middleware/_verifyHeaderCookie'
-import { patchCommentUpdateSchema } from '~/validations/patch'
+import { courseCommentUpdateSchema } from '~/validations/course'
 import { getComment } from './get'
 import { updateComment } from './update'
 import { deleteComment } from './delete'
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
 }
 
 export const PUT = async (req: NextRequest) => {
-  const input = await kunParsePutBody(req, patchCommentUpdateSchema)
+  const input = await kunParsePutBody(req, courseCommentUpdateSchema)
   if (typeof input === 'string') {
     return NextResponse.json(input)
   }

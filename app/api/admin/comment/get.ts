@@ -20,19 +20,32 @@ export const getComment = async (
     : {}
 
   const [data, total] = await Promise.all([
-    prisma.patch_comment.findMany({
+    prisma.comment.findMany({
       where,
       take: limit,
       skip: offset,
       orderBy: { created: 'desc' },
       include: {
-        patch: {
+        course: {
           select: {
             name: true,
-            unique_id: true
+            slug: true,
+            department: { select: { slug: true } }
           }
         },
-        user: {
+        resource: {
+          select: {
+            title: true,
+            course: { select: { slug: true, department: { select: { slug: true } } } }
+          }
+        },
+        post: {
+          select: {
+            title: true,
+            course: { select: { slug: true, department: { select: { slug: true } } } }
+          }
+        },
+        author: {
           select: {
             id: true,
             name: true,
@@ -46,19 +59,27 @@ export const getComment = async (
         }
       }
     }),
-    prisma.patch_comment.count({ where })
+    prisma.comment.count({ where })
   ])
 
-  const comments: AdminComment[] = data.map((comment) => ({
-    id: comment.id,
-    uniqueId: comment.patch.unique_id,
-    user: comment.user,
-    content: markdownToText(comment.content).slice(0, 233),
-    patchName: comment.patch.name,
-    patchId: comment.patch_id,
-    like: comment._count.like_by,
-    created: comment.created
-  }))
+  const comments: AdminComment[] = data.map((comment) => {
+    const course = comment.course ?? comment.resource?.course ?? comment.post?.course
+    const courseSlug = course?.slug
+    const deptSlug = course?.department?.slug
+    const uniqueId = courseSlug && deptSlug ? `course/${deptSlug}/${courseSlug}` : ''
+    const title = course?.name ?? comment.resource?.title ?? comment.post?.title ?? ''
+
+    return {
+      id: comment.id,
+      uniqueId,
+      user: comment.author as any,
+      content: markdownToText(comment.content).slice(0, 233),
+      patchName: title,
+      patchId: course ? (course as any).id : undefined,
+      like: comment._count.like_by,
+      created: comment.created
+    }
+  })
 
   return { comments, total }
 }

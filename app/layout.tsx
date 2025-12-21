@@ -28,7 +28,7 @@ export default function RootLayout({
 
       <body>
         <Providers>
-          <div className="relative flex flex-col items-center justify-center min-h-screen bg-radial">
+          <div className="relative flex flex-col items-center justify-center min-h-screen bg-background text-foreground">
             <KunTopBar />
             <KunNavigationBreadcrumb />
             <div className="flex min-h-[calc(100dvh-256px)] w-full max-w-7xl grow px-3 sm:px-6">

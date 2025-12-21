@@ -36,13 +36,17 @@ export const getComment = async (
         resource: {
           select: {
             title: true,
-            course: { select: { slug: true, department: { select: { slug: true } } } }
+            course: {
+              select: { slug: true, department: { select: { slug: true } } }
+            }
           }
         },
         post: {
           select: {
             title: true,
-            course: { select: { slug: true, department: { select: { slug: true } } } }
+            course: {
+              select: { slug: true, department: { select: { slug: true } } }
+            }
           }
         },
         author: {
@@ -63,11 +67,14 @@ export const getComment = async (
   ])
 
   const comments: AdminComment[] = data.map((comment) => {
-    const course = comment.course ?? comment.resource?.course ?? comment.post?.course
+    const course =
+      comment.course ?? comment.resource?.course ?? comment.post?.course
     const courseSlug = course?.slug
     const deptSlug = course?.department?.slug
-    const uniqueId = courseSlug && deptSlug ? `course/${deptSlug}/${courseSlug}` : ''
-    const title = course?.name ?? comment.resource?.title ?? comment.post?.title ?? ''
+    const uniqueId =
+      courseSlug && deptSlug ? `course/${deptSlug}/${courseSlug}` : ''
+    const title =
+      course?.name ?? comment.resource?.title ?? comment.post?.title ?? ''
 
     return {
       id: comment.id,

@@ -3,7 +3,6 @@ import { Card, CardBody } from '@heroui/card'
 import { Chip } from '@heroui/chip'
 import { Download, Heart, FileText } from 'lucide-react'
 import { formatDistanceToNow } from '~/utils/formatDistanceToNow'
-import { KunPatchAttribute } from '~/components/kun/PatchAttribute'
 import { KunUser } from '../kun/floating-card/KunUser'
 import type { PatchResource } from '~/types/api/resource'
 
@@ -63,13 +62,22 @@ export const ResourceCard = ({ resource }: Props) => {
         </div>
 
         {(resource.type.length > 0 || resource.language.length > 0 || resource.platform.length > 0) && (
-          <div className="pt-1">
-            <KunPatchAttribute
-              types={resource.type}
-              languages={resource.language}
-              platforms={resource.platform}
-              size="sm"
-            />
+          <div className="pt-1 flex flex-wrap gap-2">
+            {resource.type.map((t) => (
+              <Chip key={`type-${t}`} size="sm" variant="flat" color="primary">
+                {t}
+              </Chip>
+            ))}
+            {resource.language.map((l) => (
+              <Chip key={`lang-${l}`} size="sm" variant="flat" color="secondary">
+                {l}
+              </Chip>
+            ))}
+            {resource.platform.map((p) => (
+              <Chip key={`plat-${p}`} size="sm" variant="flat">
+                {p}
+              </Chip>
+            ))}
           </div>
         )}
 

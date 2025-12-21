@@ -20,7 +20,7 @@ export const homeNavigationItems: HomeNavItem[] = [
     href: '/course',
     color: 'primary',
     isExternal: false,
-    description: '查阅各学院课程资料'
+    description: '按学院浏览与筛选课程'
   },
   {
     icon: Share2,
@@ -32,10 +32,10 @@ export const homeNavigationItems: HomeNavItem[] = [
   },
   {
     icon: MessageSquare,
-    label: '经验帖',
-    href: '/doc',
+    label: '帮助',
+    href: '/doc/help',
     color: 'warning',
     isExternal: false,
-    description: '查看学长学姐经验'
+    description: '使用指南与帮助文档'
   }
 ]

@@ -4,7 +4,6 @@ import { Button } from '@heroui/button'
 import { Image } from '@heroui/image'
 import { formatDistanceToNow } from '~/utils/formatDistanceToNow'
 import Link from 'next/link'
-import { KunPatchAttribute } from '~/components/kun/PatchAttribute'
 import toast from 'react-hot-toast'
 import { RESOURCE_STATUS_COLOR, getStatusText } from '~/constants/statusColor'
 
@@ -17,15 +16,13 @@ interface Props {
 }
 
 export const UserResourceCard = ({ resource, isSelf, onChanged }: Props) => {
-  const bannerImageSrc = resource.patchBanner
-    ? resource.patchBanner.replace(/\.avif$/, '-mini.avif')
-    : '/touchgal.avif'
+  const bannerImageSrc = '/default-resource.avif'
 
   return (
     <Card
       isPressable
       as={Link}
-      href={`/${resource.patchUniqueId}`}
+      href={`/course/${resource.courseId}`}
       className="w-full"
     >
       <CardBody className="p-4">
@@ -33,7 +30,7 @@ export const UserResourceCard = ({ resource, isSelf, onChanged }: Props) => {
           <div className="relative w-full sm:h-auto sm:w-40">
             <Image
               src={bannerImageSrc}
-              alt={resource.patchName}
+              alt={resource.title}
               className="object-cover rounded-lg size-full max-h-52"
               radius="lg"
             />
@@ -41,7 +38,7 @@ export const UserResourceCard = ({ resource, isSelf, onChanged }: Props) => {
           <div className="flex-1 space-y-3">
             <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
               <h2 className="text-lg font-semibold transition-colors line-clamp-2 hover:text-primary-500">
-                {resource.patchName}
+                {resource.title}
               </h2>
               <div className="flex items-center gap-2">
                 {resource.status && (
@@ -52,13 +49,6 @@ export const UserResourceCard = ({ resource, isSelf, onChanged }: Props) => {
                 <Chip variant="flat">{formatDistanceToNow(resource.created)}</Chip>
               </div>
             </div>
-
-            <KunPatchAttribute
-              types={resource.type}
-              languages={resource.language}
-              platforms={resource.platform}
-              size="sm"
-            />
 
             {isSelf && (
               <div className="flex items-center gap-2">

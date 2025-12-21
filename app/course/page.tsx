@@ -51,7 +51,14 @@ export default async function CourseIndexPage({ searchParams }: Props) {
   const [courses, total, departments] = await Promise.all([
     prisma.course.findMany({
       where,
-      include: { department: true },
+      include: {
+        department: true,
+        _count: {
+          select: {
+            favorites: true,
+          }
+        }
+       },
       orderBy,
       take: limit,
       skip: offset
@@ -183,7 +190,7 @@ export default async function CourseIndexPage({ searchParams }: Props) {
           slug: course.slug,
           deptSlug: course.department.slug,
           tags: parseCourseTags(course.tags),
-          heartCount: course.heart_count,
+          heartCount: course._count.favorites,
           difficultyAvg: course.difficulty_avg,
           difficultyVotes: course.difficulty_votes,
           resourceCount: course.resource_count,

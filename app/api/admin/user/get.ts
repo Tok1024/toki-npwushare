@@ -27,8 +27,7 @@ export const getUserInfo = async (
       include: {
         _count: {
           select: {
-            patch_resource: true,
-            patch: true
+            course_resource: true,
           }
         }
       }

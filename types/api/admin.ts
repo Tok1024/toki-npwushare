@@ -35,8 +35,7 @@ export interface AdminUser {
   dailyImageCount: number
   created: Date | string
   _count: {
-    patch: number
-    patch_resource: number
+    course_resource: number
   }
 }
 

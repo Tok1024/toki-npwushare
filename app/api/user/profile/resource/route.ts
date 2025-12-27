@@ -37,6 +37,7 @@ export const getUserPatchResource = async (
 
   const resources: UserResource[] = data.map((res) => ({
     id: res.id,
+    title: res.title,
     patchUniqueId: `course/${res.course.department.slug}/${res.course.slug}`,
     patchId: res.course_id,
     patchName: res.course.name,

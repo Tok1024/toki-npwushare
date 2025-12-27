@@ -34,6 +34,7 @@ export interface UserFollow {
 
 export interface UserResource {
   id: number
+  title: string
   patchUniqueId: string
   patchId: number
   patchName: string

@@ -22,7 +22,7 @@ export const UserResourceCard = ({ resource, isSelf, onChanged }: Props) => {
     <Card
       isPressable
       as={Link}
-      href={`/course/${resource.courseId}`}
+      href={`/${resource.patchUniqueId}`}
       className="w-full"
     >
       <CardBody className="p-4">

@@ -1,7 +1,6 @@
 import sharp from 'sharp'
-import { mkdir, writeFile } from 'fs/promises'
-import { join } from 'path'
 import { checkBufferSize } from '~/app/api/utils/checkBufferSize'
+import { saveFileToPublic } from '~/app/api/utils/saveFileToPublic'
 
 export const uploadUserAvatar = async (image: ArrayBuffer, uid: number) => {
   const avatar = await sharp(image)
@@ -23,10 +22,8 @@ export const uploadUserAvatar = async (image: ArrayBuffer, uid: number) => {
     return '图片体积过大'
   }
 
-  // 保存到 public/avatars/user_{uid}/ 目录
-  const avatarDir = join(process.cwd(), 'public', 'avatars', `user_${uid}`)
-  await mkdir(avatarDir, { recursive: true })
-
-  await writeFile(join(avatarDir, 'avatar.avif'), avatar)
-  await writeFile(join(avatarDir, 'avatar-mini.avif'), miniAvatar)
+  const relativePath = `avatars/user_${uid}`
+  
+  await saveFileToPublic(relativePath, 'avatar.avif', avatar)
+  await saveFileToPublic(relativePath, 'avatar-mini.avif', miniAvatar)
 }

@@ -1,7 +1,6 @@
 import sharp from 'sharp'
-import { mkdir, writeFile } from 'fs/promises'
-import { join } from 'path'
 import { checkBufferSize } from '~/app/api/utils/checkBufferSize'
+import { saveFileToPublic } from '~/app/api/utils/saveFileToPublic'
 
 export const uploadPatchBanner = async (image: ArrayBuffer, id: number) => {
   const banner = await sharp(image)
@@ -23,9 +22,8 @@ export const uploadPatchBanner = async (image: ArrayBuffer, id: number) => {
     return '图片体积过大'
   }
 
-  const bannerDir = join(process.cwd(), 'public', 'patch', `${id}`, 'banner')
-  await mkdir(bannerDir, { recursive: true })
+  const relativePath = `patch/${id}/banner`
 
-  await writeFile(join(bannerDir, 'banner.avif'), banner)
-  await writeFile(join(bannerDir, 'banner-mini.avif'), miniBanner)
+  await saveFileToPublic(relativePath, 'banner.avif', banner)
+  await saveFileToPublic(relativePath, 'banner-mini.avif', miniBanner)
 }

@@ -94,11 +94,13 @@ export const KunCaptchaModal = ({
             <ModalBody className="gap-4">
               {loading && <KunLoading hint="正在加载验证码..." />}
               <div className="flex justify-center">
-                <img
-                  src={captchaImage}
-                  alt="验证码"
-                  className="rounded border border-gray-300"
-                />
+                {captchaImage ? (
+                  <img
+                    src={captchaImage}
+                    alt="验证码"
+                    className="rounded border border-gray-300"
+                  />
+                ) : null}
               </div>
               <Button
                 size="sm"

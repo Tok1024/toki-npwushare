@@ -25,10 +25,7 @@ export const HomeLatestResourceSection = () => {
   useEffect(() => {
     const run = async () => {
       try {
-        const base =
-          process.env.NEXT_PUBLIC_NWPUSHARE_ADDRESS_DEV ??
-          window.location.origin
-        const response = await fetch(`${base}/api/resource/latest`, {
+        const response = await fetch(`/api/resource/latest`, {
           cache: 'no-store'
         })
         if (!response.ok) {

@@ -72,7 +72,19 @@ pnpm seed:courses
 
 > **💡 提示**: 数据库 Schema 定义位于 `prisma/schema/` 目录下。如果修改了模型，请运行 `pnpm prisma:generate` 更新客户端，并使用 `pnpm prisma:push` 同步到数据库。
 
-### 3. 启动开发服务器
+### 3. 环境变量配置 (Environment Variables)
+
+复制 `.env.example` 为 `.env` 并填入以下关键配置：
+
+| 变量名 | 说明 | 示例 |
+| :--- | :--- | :--- |
+| `TOKI_DATABASE_URL` | MySQL 连接字符串 | `mysql://user:pass@localhost:3306/db` |
+| `REDIS_HOST` | Redis 主机地址 | `127.0.0.1` |
+| `JWT_SECRET` | JWT 签名密钥 | `openssl rand -base64 32` |
+| `TOKI_NWPUSHARE_IMAGE_BED_*` | 图床配置 (用于图片展示) | 见 `.env.example` |
+| `RESEND_*` | 邮件服务配置 (用于发送验证码) | 见 `.env.example` |
+
+### 4. 启动开发服务器
 
 ```bash
 # 安装依赖
@@ -103,10 +115,6 @@ pnpm start
 # 导出 SQL 备份文件
 docker exec nwpushare-db mysqldump -uroot -prootpass tokidb > backup_$(date +%Y%m%d).sql
 ```
-
-## 🤝 贡献
-
-欢迎提交 Issue 或 Pull Request 来改进本项目。在提交代码前，请确保通过了类型检查和 Lint 校验。
 
 ## 📄 许可证
 

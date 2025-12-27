@@ -23,7 +23,7 @@ export const uploadUserAvatar = async (image: ArrayBuffer, uid: number) => {
   }
 
   const relativePath = `avatars/user_${uid}`
-  
+
   await saveFileToPublic(relativePath, 'avatar.avif', avatar)
   await saveFileToPublic(relativePath, 'avatar-mini.avif', miniAvatar)
 }

@@ -39,6 +39,9 @@ const nextConfig: NextConfig = {
 
   output: 'standalone',
   experimental: {
+    // 限制构建时的 CPU 使用，防止内存溢出
+    workerThreads: false,
+    cpus: 1
     // turbotrace: {
     //   logLevel: 'error',
     //   logDetail: false,

@@ -12,18 +12,21 @@ export const saveFileToPublic = async (
   data: Buffer
 ) => {
   const cwd = process.cwd()
-  
+
   // 1. Path to source public directory (Persistent)
   const sourceDir = join(cwd, 'public', relativePath)
-  
+
   // 2. Path to standalone public directory (Runtime serving)
   const standaloneDir = join(cwd, '.next', 'standalone', 'public', relativePath)
 
   const paths = [sourceDir]
-  
+
   // Only add standalone path if it's different and the base standalone dir exists
   // (meaning we are likely running in standalone mode or have built it)
-  if (sourceDir !== standaloneDir && existsSync(join(cwd, '.next', 'standalone'))) {
+  if (
+    sourceDir !== standaloneDir &&
+    existsSync(join(cwd, '.next', 'standalone'))
+  ) {
     paths.push(standaloneDir)
   }
 
@@ -33,7 +36,7 @@ export const saveFileToPublic = async (
       await writeFile(join(dir, fileName), data)
     } catch (error) {
       console.error(`Failed to save file to ${dir}:`, error)
-      // We don't throw here to ensure at least one write might succeed, 
+      // We don't throw here to ensure at least one write might succeed,
       // but in practice if source fails, we have bigger problems.
     }
   }

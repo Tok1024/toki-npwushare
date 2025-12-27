@@ -1,5 +1,3 @@
-// 初版课程中心化数据模型
-
 enum content_status {
   draft
   pending

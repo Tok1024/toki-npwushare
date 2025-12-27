@@ -32,7 +32,7 @@ export const HomeCourseSection = () => {
           setError('Unexpected response')
           return
         }
-        setCourses(res.list.slice(0, 8))
+        setCourses(res.list.slice(0, 9))
       } catch (err: any) {
         // eslint-disable-next-line no-console
         console.error('Failed to fetch course list', err)

@@ -28,25 +28,54 @@ export async function POST(req: NextRequest) {
     }
 
     if (action === 'add') {
-      await prisma.course_favorite.upsert({
-        where: {
-          user_id_course_id: {
-            user_id: payload.uid,
-            course_id: courseId
+      await prisma.$transaction(async (tx) => {
+        const existing = await tx.course_favorite.findUnique({
+          where: {
+            user_id_course_id: {
+              user_id: payload.uid,
+              course_id: courseId
+            }
           }
-        },
-        update: {},
-        create: {
-          user_id: payload.uid,
-          course_id: courseId
+        })
+
+        if (!existing) {
+          await tx.course_favorite.create({
+            data: {
+              user_id: payload.uid,
+              course_id: courseId
+            }
+          })
+          await tx.course.update({
+            where: { id: courseId },
+            data: { heart_count: { increment: 1 } }
+          })
         }
       })
       return NextResponse.json({ success: true, message: '已收藏' })
     } else {
-      await prisma.course_favorite.deleteMany({
-        where: {
-          user_id: payload.uid,
-          course_id: courseId
+      await prisma.$transaction(async (tx) => {
+        const existing = await tx.course_favorite.findUnique({
+          where: {
+            user_id_course_id: {
+              user_id: payload.uid,
+              course_id: courseId
+            }
+          }
+        })
+
+        if (existing) {
+          await tx.course_favorite.delete({
+            where: {
+              user_id_course_id: {
+                user_id: payload.uid,
+                course_id: courseId
+              }
+            }
+          })
+          await tx.course.update({
+            where: { id: courseId },
+            data: { heart_count: { decrement: 1 } }
+          })
         }
       })
       return NextResponse.json({ success: true, message: '已取消收藏' })
